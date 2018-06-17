@@ -1,0 +1,9 @@
+__pycache__/
+.tox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+*.pot
+*.log
