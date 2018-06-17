@@ -1,0 +1,1366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>MOA SS und SP - Anwendung</title>
+  <link rel="stylesheet" href="../common/MOA.css" type="text/css">
+</head>
+<body link="#990000"> 
+  <table class="logoTable" width="100%" border="0" cellspacing="0" cellpadding="10">
+    <tr>
+     <td align="center" class="logoTitle" width="267"><img src="../common/LogoBKA.png" alt="Logo BKA" width="267" height="37" align="left"></td>
+      <td align="center" class="logoTitle">Dokumentation</td>
+      <td align="center" class="logoTitle" width="123"><img src="../common/LogoEGIZ.png" alt="Logo EGIZ" width="230" height="81" align="right"></td>
+    </tr>
+  </table>
+  <hr/>
+  <p class="title"><a href="../index.html">MOA: Serversignatur (SS) und Signaturpr&uuml;fung (SP)</a></p>
+  <p class="subtitle">Anwendung</p>
+  <hr/>
+  <h1>Inhalt</h1>
+  <ol>
+    <li>
+      <p><a href="#&#252;bersicht">&Uuml;bersicht</a></p>
+    </li>
+    <li>
+      <p><a href="#webservice">Verwendung des Webservices</a></p>
+      <ol>
+        <li><a href="#webservice_xmlrequests">XML-Requests</a>          <ol>
+            <li><a href="#webservice_xmlrequests_erstellungcms">Erstellung einer CMS bzw. CAdES-Signatur</a></li>
+              <ol>
+                <li><a href="#webservice_xmlrequests_erstellungcms_einfach">Beispiel (Base64-codiertes Datenobjekt)</a></li>
+                <li><a href="#webservice_xmlrequests_erstellungcms_erweitert">Beispiel (Datenobjekt als Referenz)</a></li>
+              </ol>
+            <li><a href="#webservice_xmlrequests_erstellungxml">Erstellung einer XML bzw. XAdES-Signatur</a>              
+              <ol>
+                <li><a href="#webservice_xmlrequests_erstellungxml_simple">Einfaches Beispiel</a></li>
+                <li><a href="#webservice_xmlrequests_erstellungxml_daten">Angabe der zu signierenden Daten</a></li>
+                <li><a href="#webservice_xmlrequests_erstellungxml_transformationen">Transformationen</a></li>
+                <li><a href="#webservice_xmlrequests_erstellungxml_ergaenzungsobjekte">Erg&auml;nzungsobjekte</a> </li>
+              </ol>
+            </li>
+            <li><a href="#webservice_xmlrequests_pruefungcms">Pr&uuml;fung einer CMS bzw. CAdES-Signatur </a>              
+              <ol>
+                <li><a href="#webservice_xmlrequests_pruefungcms_einfach">Einfaches Beispiel</a></li>
+                <li><a href="#webservice_xmlrequests_pruefungcms_erweitert">Erweitertes Beispiel</a>  </li>
+              </ol>
+            </li>
+            <li><a href="#webservice_xmlrequests_pruefungxml">Pr&uuml;fung einer XML bzw. XAdES-Signatur </a>              
+              <ol>
+                <li><a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a></li>
+                <li><a href="#webservice_xmlrequests_pruefungxml_erweitert">Erweitertes Beispiel</a></li>
+                <li><a href="#webservice_xmlrequests_pruefungxml_xmldsigmanifest">Pr&uuml;fung eines XMLDSIG-Manifests</a></li>
+                <li><a href="#webservice_xmlrequests_pruefungxml_ergaenzungsobjekte">Erg&auml;nzungsobjekte</a></li>
+                <li><a href="#webservice_xmlrequests_pruefungxml_signaturmanifest">Signatur-Manifest des Security-Layers</a></li>
+                <li><a href="#webservice_xmlrequests_pruefungxml_tsl">Pr&uuml;fung gegen Trustprofil mit TSL Unterst&uuml;tzung</a></li>
+            </ol>
+            </li>
+          </ol>
+        </li>
+        <li><a href="#webservice_clients">Webservice-Clients
+        </a>          <ol>
+            <li><a href="#webservice_clients_&#252;bersicht">&Uuml;bersicht</a></li>
+            <li><a href="#webservice_clients_gemeinsamkeiten">Gemeinsamkeiten</a></li>
+            <li><a href="#webservice_clients_httpsserverauth">Besonderheiten von <code>HTTPSServerAuth.java</code></a></li>
+            <li><a href="#webservice_clients_httpsclientauth">Besonderheiten von <code>HTTPSClientAuth.java</code></a></li>
+            </ol>
+        </li>
+        <li><a href="#readcert">Zertifikat einer Schl&uuml;sselgruppe auslesen</a></li>
+      </ol>
+    </li>
+    <li><a href="#klassenbibliothek">Verwendung der Klassenbibliothek</a>
+      <ol>
+        <li><a href="#klassenbibliothek_vorbereitung">Vorbereitung</a></li>
+        <li><a href="#klassenbibliothek_allgemeines">Allgemeines</a> </li>
+        <li><a href="#klassenbibliothek_beispiele">Beispiele</a></li>
+        <li><a href="#klassenbibliothek_apidoc">API-Dokumentation</a> </li>
+      </ol>
+    </li>
+  </ol>
+  <ol type="A">
+    <li><a href="#referenzierte_software">Referenzierte Software</a></li>
+    <li><a href="#referenzierte_spezifikation">Referenzierte Spezifikation</a></li>
+  </ol>
+
+<hr/>
+  <h1><a name="übersicht" id="übersicht"></a>1 &Uuml;bersicht</h1>
+  <p>   Die Module Signaturpr&uuml;fung (SP) und Serversignatur (SS) sind als plattformunabh&auml;ngige Module ausgelegt, die entweder als Webservice &uuml;ber HTTP bzw. HTTPS oder als Klassenbibliothek &uuml;ber ein API angesprochen werden k&ouml;nnen. Dieses Handbuch beschreibt die Anwendung der beiden Module auf jede dieser beiden Arten.</p>
+  <h1><a name="webservice"></a>2 Verwendung des Webservices </h1>
+  <p>Dieser Abschnitt beschreibt die Verwendung der Module SP und SS &uuml;ber die Webservice-Schnittstelle. Im ersten Unterabschnitt werden typische XML-Requests zur Signaturerstellung mittels SS bzw. zur Signaturpr&uuml;fung mittels SP vorgestellt, wie sie an das Webservice gesendet werden k&ouml;nnen. Der zweite Unterabschnitt stellt beispielhafte Implementierungen eines Webservice-Clients in Java vor, mit dem die Requests aus dem ersten Unterabschnitt an das Webservice gesendet werden k&ouml;nnen.</p>
+  <h2><a name="webservice_xmlrequests" id="webservice_xmlrequests"></a>2.1 XML-Requests </h2>
+  <p>Dieser Abschnitt stellt typische XML-Requests f&uuml;r die Erstellung einer XML/XAdES- und CMS/CAdES-Signatur mittels SS bzw. zur Pr&uuml;fung einer CMS/CAdES- bzw. XML/XAdES-Signatur mittels SP vor. Zu jedem Request wird jeweils auch eine typische Response des Services besprochen. </p>
+<p class="remark">Bitte beachten Sie: Einige der vorgestellten Requests referenzieren beispielhafte Daten auf <code>localhost</code>, z.B. <code>http://localhost:8080/referencedData/Text.txt</code>. Wenn Sie diese Beispiele ausprobieren m&ouml;chten, m&uuml;ssen Sie daf&uuml;r sorgen, dass MOA SS bzw. SP diese Daten auch tats&auml;chlich aufl&ouml;sen kann. Wenn Sie Ihre Tomcat-Installation auf <code>localhost:8080</code> betreiben, ist es ausreichend, wenn sie die diesem Handbuch beiliegende Webapplikation <code><a href="../../clients/common/referencedData/referencedData.war">referencedData.war</a></code> in das Verzeichnis <code>webapps</code> Ihrer Tomcat-Installation kopieren. Ansonsten m&uuml;ssen Sie zus&auml;tzlich die URLs in den Requests anpassen. </p>
+  <h3><a name="webservice_xmlrequests_erstellungcms" id="webservice_xmlrequests_erstellungcms"></a>2.1.1 Erstellung einer CMS bzw. CAdES-Signatur</h3>
+  <p>MOA-SS erm&ouml;glicht die Erstellung einer herk&ouml;mmlichen CMS-Signatur und einer CAdES-Signatur&nbsp;gem&auml;&szlig; der <a href="#sl"> Security-Layer Spezifikation</a>. Die Auswahl ob eine herk&ouml;mmliche XML oder eine Security-Layer konforme CAdES-Signatur erstellt wird, erfolgt durch das Attribute <code>SecurityLayerConformity</code> im Signaturerstelltungs-Request (siehe auch folgende Beispiele).</p>
+<h4><a name="webservice_xmlrequests_erstellungcms_einfach" id="webservice_xmlrequests_erstellungcms_einfach"></a>2.1.1.1 Beispiel (Base64-codiertes Datenobjekt)</h4>
+<h5>Request</h5>
+  <p><code><a href="../../clients/webservice/resources/requests/CreateCMSSignatureRequest.Base64Content.xml" target="_blank">CreateCMSSignatureRequest.Base64Content.xml</a></code> ist ein einfacher XML-Request zur Erzeugung einer CAdES-Signatur. Sein Aufbau wird nachfolgend analysiert:</p>
+  <pre>  &lt;KeyIdentifier&gt;KG_allgemein&lt;/KeyIdentifier&gt; </pre>
+  <p><code>KG_allgemein</code> bezeichnet eine Schl&uuml;sselgruppe, aus der SS einen Signaturschl&uuml;ssel selektieren soll und muss einer in der SP/SS-Konfigurationsdatei definierten Schl&uuml;sselgruppe entsprechen. </p>
+  <pre>  &lt;SingleSignatureInfo SecurityLayerConformity="true"&gt;</pre>
+  <p> F&uuml;r jedes <code>SingleSignatureInfo</code>Element wird eine eigene CMS/CAdES-Signatur erzeugt. Wird das Attribut <code>SecurityLayerConformity</code> auf <code>true</code> gesetzt, dann wird eine CAdES-Signatur gem&auml;&szlig; <a href="#sl"> Security-Layer Spezifikation</a> erzeugt; d.h. es werden signierte Properties (Zeitpunkt der Signaturerstellung, das f&uuml;r die Signatur&uuml;berpr&uuml;fung zu verwendende Zertifikat, Metainformationen zu den signierten Datenobjekten).</p>
+<pre>  &lt;DataObjectInfo Structure="enveloping"&gt;
+	  &lt;DataObject&gt;
+	    &lt;MetaInfo&gt;
+        &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+      &lt;/MetaInfo&gt;
+      &lt;Content&gt;
+        &lt;Base64Content&gt;RGllc2UgRGF0ZW4gc2luZCByZWluZXIgVGV4dC4=&lt;/Base64Content&gt;
+      &lt;/Content&gt;			
+    &lt;/DataObject&gt;		
+	&lt;/DataObjectInfo&gt;
+</pre>
+<p>Das zu signierende Daten-Objekt muss in einem  <code>DataObjectInfo</code> Element spezifiziert werden. Das Attribut <code>Structure</code> gibt an, ob die Daten in die Signatur integriert werden sollen (<code>Structure="enveloping"</code>) oder nicht (<code>Structure="detached"</code>). </p>
+<p> Im nachfolgenden <code>DataObject</code> Element muss entweder das Attribut <code>Reference</code> (enth&auml;lt eine URL, von der SS die Daten beziehen soll) gesetzt sein, oder aber die zu signierenden Daten werden explizit im Element <code>Base64Content</code> (enth&auml;lt Daten in Base64 kodierter Form) spezifiziert sein. Die Angabe der zu signierenden Daten &uuml;ber das Attribut <code>Reference</code> und gleichzeitig im Element <code>Base64Content</code> ist nicht erlaubt. Zus&auml;tzlich muss im Element <code>MimeType</code> (unter dem Element <code>MetaInfo</code>) der MIME-Type der zu signierenden Daten spezifiziert werden.</p>
+  <p>Im konkreten Beispiel sollen die Daten in die Signatur integriert werden (<code>Structure="enveloping"</code>). Die Daten werden in diesem Beispiel mittels <code>Base64Content</code> angegeben. Der MIME-Type wird mit <code>text/plain</code> angegeben.</p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/CreateCMSSignatureRequest.Base64Content.resp.xml" target="_blank">CreateCMSSignatureRequest.Base64Content.resp.xml</a></code> ist eine typische Response des SS Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  die  dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.  </p>
+  <pre>  &lt;CreateCMSSignatureResponse
+    xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot; <br>    xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;<br>	  &lt;CMSSignature&gt;MIAGCSqGSI...p92gh6wAAAAAAAA=&lt;/CMSSignature&gt;<br>  &lt;/CreateCMSSignatureResponse&gt;</pre>
+<p><code>CreateCMSSignatureResponse</code> enth&auml;lt je erzeugter Signatur ein Element <code>CMSSignature</code> (in diesem Fall genau ein Element). <code>CMSSignature</code> enth&auml;lt die von SS erzeugte CAdES-Signatur (da <code>SecurityLayerConformity="true"</code> im Request angegeben wurde) als Base64-codierten Wert. Das unterzeichnete Datenobjekt ist in der Signaturstruktur selbst enthalten (<code>enveloping</code>). </p>
+<h4><a name="webservice_xmlrequests_erstellungcms_erweitert" id="webservice_xmlrequests_erstellungcms_erweitert"></a>2.1.1.2 Beispiel (Datenobjekt als Referenz)</h4>
+  
+<h5>Request</h5>
+<p><code><a href="../../clients/webservice/resources/requests/CreateCMSSignatureRequest.Reference.xml" target="_blank">CreateCMSSignatureRequest.Reference.xml</a></code> ist ein einfacher XML-Request zur Erzeugung einer CMS-Signatur. Sein Aufbau wird nachfolgend analysiert:</p>
+<pre>  &lt;KeyIdentifier&gt;KG_allgemein&lt;/KeyIdentifier&gt; </pre>
+<p><code>KG_allgemein</code> bezeichnet eine Schl&uuml;sselgruppe, aus der SS einen Signaturschl&uuml;ssel selektieren soll und muss einer in der SP/SS-Konfigurationsdatei definierten Schl&uuml;sselgruppe entsprechen. </p>
+<pre>  &lt;SingleSignatureInfo SecurityLayerConformity="false"&gt;</pre>
+<p> F&uuml;r jedes <code>SingleSignatureInfo</code>Element wird eine eigene CMS/CAdES-Signatur erzeugt. Wird das Attribut <code>SecurityLayerConformity</code> auf <code>true</code> gesetzt, dann wird eine CAdES-Signatur gem&auml;&szlig; <a href="#sl"> Security-Layer Spezifikation</a> erzeugt; d.h. es werden signierte Properties (Zeitpunkt der Signaturerstellung, das f&uuml;r die Signatur&uuml;berpr&uuml;fung zu verwendende Zertifikat, Metainformationen zu den signierten Datenobjekten).</p>
+<pre>  &lt;DataObjectInfo Structure="detached"&gt;
+	  &lt;DataObject&gt;
+	    &lt;MetaInfo&gt;
+        &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+      &lt;/MetaInfo&gt;
+      &lt;Content Reference=&quot;http://localhost:8080/moa-spss-handbook-referencedData/Text.txt&quot;/&gt;         	   
+    &lt;/DataObject&gt;		
+	&lt;/DataObjectInfo&gt;
+</pre>
+<p>Das zu signierende Daten-Objekt muss in einem <code>DataObjectInfo</code> Element spezifiziert werden. Das Attribut <code>Structure</code> gibt an, ob die Daten in die Signatur integriert werden sollen (<code>Structure="enveloping"</code>) oder nicht (<code>Structure="detached"</code>). </p>
+<p> Im nachfolgenden <code>DataObject</code> Element muss entweder das Attribut <code>Reference</code> (enth&auml;lt eine URL, von der SS die Daten beziehen soll) gesetzt sein, oder aber die zu signierenden Daten werden explizit im Element <code>Base64Content</code> (enth&auml;lt Daten in Base64 kodierter Form) spezifiziert sein. Die Angabe der zu signierenden Daten &uuml;ber das Attribut <code>Reference</code> und gleichzeitig im Element <code>Base64Content</code> ist nicht erlaubt. Zus&auml;tzlich muss im Element <code>MimeType</code> (unter dem Element <code>MetaInfo</code>) der MIME-Type der zu signierenden Daten spezifiziert werden.</p>
+<p>Im konkreten Beispiel sollen die Daten nicht in die Signatur integriert werden (<code>Structure="detached"</code>). Die Daten werden in diesem Beispiel mittels der Attributs <code>Refernce</code> angegeben und SS muss es von dieser URL laden. Der MIME-Type wird mit <code>text/plain</code> angegeben.</p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/CreateCMSSignatureRequest.Reference.resp.xml" target="_blank">CreateCMSSignatureRequest.Reference.resp.xml</a></code> ist eine typische Response des SS Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  die  dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde. </p>
+<pre>  &lt;CreateCMSSignatureResponse
+    xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot; <br>    xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;<br>	  &lt;CMSSignature&gt;MIAGCSqGSI...SwxhbA9pAAAAAAAA&lt;/CMSSignature&gt;<br>  &lt;/CreateCMSSignatureResponse&gt;</pre>
+<p><code>CreateCMSSignatureResponse</code> enth&auml;lt je erzeugter Signatur ein Element <code>CMSSignature</code> (in diesem Fall genau ein Element). <code>CMSSignature</code> enth&auml;lt die von SS erzeugte CMS-Signatur (da <code>SecurityLayerConformity="false"</code> im Request angegeben wurde) als Base64-codierten Wert. Das unterzeichnete Datenobjekt ist in der Signaturstruktur nicht enthalten (<code>detached</code>).</p>
+<h3><a name="webservice_xmlrequests_erstellungxml" id="webservice_xmlrequests_erstellungxml"></a>2.1.2 Erstellung einer XML bzw. XAdES-Signatur</h3>
+<p>MOA-SS erm&ouml;glicht die Erstellung einer herk&ouml;mmlichen XML-Signatur und einer XAdES-Signatur&nbsp;gem&auml;&szlig; der <a href="#sl"> Security-Layer Spezifikation</a>. Die Auswahl ob eine herk&ouml;mmliche XML oder eine Security-Layer konforme XAdES-Signatur erstellt wird, erfolgt durch das Attribute <code>SecurityLayerConformity</code> im Signaturerstelltungs-Request (siehe auch folgende Beispiele). </p>
+<p>Im Falle einer XAdES-Signatur, kann entweder eine XAdES-Signatur in der Version 1.1.1 oder in der Version 1.4.2 erstellt werden. Dies h&auml;ngt von der in der MOA-SS Konfiguration angegeben XAdES-Version ab (siehe hierzu <a href="../config/config.html#konfigurationsparameter_ss_xades">Konfiguration der XAdES Version</a>).</p>
+<h4><a name="webservice_xmlrequests_erstellungxml_simple" id="webservice_xmlrequests_erstellungxml_simple"></a>2.1.2.1 Einfaches Beispiel</h4>
+  <h5>Request</h5>
+  <p><code><a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Simple.xml" target="_blank">CreateXMLSignatureRequest.Simple.xml</a></code> ist ein einfacher XML-Request zur Erzeugung einer XML-Signatur. Sein Aufbau wird nachfolgend analysiert:</p>
+  <pre>  &lt;KeyIdentifier&gt;KG_allgemein&lt;/KeyIdentifier&gt; </pre>
+  <p><code>KG_allgemein</code> bezeichnet eine Schl&uuml;sselgruppe, aus der SS einen Signaturschl&uuml;ssel selektieren soll und muss einer in der SP/SS-Konfigurationsdatei definierten Schl&uuml;sselgruppe entsprechen. </p>
+  <pre>  &lt;SingleSignatureInfo SecurityLayerConformity="false"&gt;</pre>
+  <p> F&uuml;r jedes <code>SingleSignatureInfo</code>Element wird eine eigene XML-Signatur erzeugt. Wird das Attribut <code>SecurityLayerConformity</code> auf <code>true</code> gesetzt, dann wird eine XML-Signatur gem&auml;&szlig; <a href="#sl"> Security-Layer Spezifikation</a> erzeugt; d.h. es werden signierte Properties (Zeitpunkt der Signaturerstellung, das f&uuml;r die Signatur&uuml;berpr&uuml;fung zu verwendende Zertifikat, Metainformationen zu den signierten Datenobjekten) und ein Manifest, das alle implizite Transformationsparameter enth&auml;lt, zur Signatur hinzugef&uuml;gt (=eine XAdES Signatur).</p>
+<pre>  &lt;DataObjectInfo Structure="enveloping"&gt;
+    &lt;DataObject&gt;
+      &lt;XMLContent&gt;Diese Daten werden signiert.&lt;XMLContent&gt;
+    &lt;/DataObject&gt;</pre>
+<p> </p>
+  <p> F&uuml;r jedes Daten-Objekt, das in die XML-Signatur als <code>dsig:Reference</code> aufgenommen werden soll, muss ein <code>DataObjectInfo</code> Element spezifiziert werden. Das Attribut <code>Structure</code> gibt an, ob die Daten in die Signatur in ein <code>dsig:Object</code> Element integriert werden sollen (<code>Structure="enveloping"</code>), oder &uuml;ber einen URL referenziert werden sollen (<code>Structure="detached"</code>). </p>
+  <p> Im Fall von <code>Structure="enveloping"</code> muss im nachfolgenden <code>DataObject</code> Element entweder das Attribut <code>Reference</code> (enth&auml;lt eine URL, von der SS die Daten beziehen soll) gesetzt sein, oder aber die zu signierenden Daten werden explizit in einem der Elemente <code>Base64Content</code> (enth&auml;lt Daten in Base64 kodierter Form) oder <code>XMLContent</code> (enth&auml;lt Daten als beliebiges XML-Fragment) oder <code>LocRefContent</code> (enth&auml;lt eine URL, von der SS die Daten beziehen soll; in diesem Fall also gleichwertig wie ein gesetztes Attribut <code>Reference</code>) spezifiziert sein. Die Angabe der zu signierenden Daten &uuml;ber das Attribut <code>Reference</code> und gleichzeitig einem der Elemente <code>Base64Content</code> oder <code>XMLContent</code> oder <code>LocRefContent</code> ist nicht erlaubt.</p>
+  <p>Im Fall von <code>Structure="detached"</code> muss das Attribut <code>Reference</code> im nachfolgenden <code>DataObject</code> Element gesetzt sein. Es enth&auml;lt jene URL, die  zur Referenzierung der Daten als Wert von <code>dsig:Reference/@URI</code> in die XML-Signatur aufgenommen wird. Die Angabe eines der Element <code>Base64Content</code> oder <code>XMLContent</code> oder <code>LocRefContent</code> ist optional. Unterbleibt die Angabe, bezieht SS die Daten von der URL im Attribut <code>Reference</code>. Wird eines der Elemente verwendet, bezieht SS die Daten durch Analyse des angegebenen Elements (siehe obiger Absatz). </p>
+  <p>Im konkreten Beispiel sollen die Daten in ein <code>dsig:Object</code> Element integriert werden (<code>Structure="enveloping"</code>). Die Daten werden mittels <code>XMLContent</code> als XML-Fragment (ein einfacher Textknoten) angegeben.</p>
+  <p>
+  <pre>  &lt;CreateTransformsInfoProfile&gt;<br>    &lt;CreateTransformsInfo&gt;
+      &lt;FinalDataMetaInfo&gt;
+        &lt;MimeType&gt;text/plain&lt;MimeType&gt;
+      &lt;/FinalDataMetaInfo&gt;
+    &lt;/CreateTransformsInfo&gt;
+  &lt;/CreateTransformsInfoProfile&gt;</pre>
+  Zu jedem Daten-Objekt k&ouml;nnen optional Transformationen (z.B. XPath, XSLT, Base64-Decodierung, etc.) angegeben werden. Werden - wie hier im Beispiel - keine Transformationen angegeben, so muss zumindest der MIME-Type der zu signierenden Daten spezifiziert werden. <p></p>
+  <h5>Response</h5>
+  <p><code><a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Simple.resp.xml" target="_blank">CreateXMLSignatureRequest.Simple.resp.xml</a></code> ist eine typische Response des SS Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  die  dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.  </p>
+  <pre>  &lt;CreateXMLSignatureResponse
+    xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot; <br>    xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;<br>    &lt;SignatureEnvironment&gt;<br>      &lt;dsig:Signature Id=&quot;signature-1-1&quot; xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;<br>        &lt;dsig:SignedInfo&gt;
+          ...
+          &lt;dsig:Reference Id=&quot;reference-1-1&quot; URI=&quot;#xpointer(id(&amp;apos;signed-data-1-1-1&amp;apos;)/node())&quot;&gt;
+          ...
+          &lt;/dsig:Reference&gt;
+          ...
+        &lt;/dsig:SignedInfo&gt;
+        ...
+        &lt;dsig:Object Id=&quot;signed-data-1-1-1&quot;&gt;Diese Daten werden signiert.&lt;/dsig:Object&gt;
+      &lt;/dsig:Signature&gt;<br>    &lt;/SignatureEnvironment&gt;<br>  &lt;/CreateXMLSignatureResponse&gt;</pre>
+<p></p>
+  <p><code>CreateXMLSignatureResponse</code> enth&auml;lt je erzeugter Signatur ein Element <code>SignatureEnvironment</code> (in diesem Fall genau ein Element). <code>SignatureEnvironment</code> enth&auml;lt die von SS erzeugte XML-Signatur, die im obigen Request spezifiziert wurde. Man erkennt, dass die XML-Signatur genau ein Daten-Objekt unterzeichnet (ein <code>dsig:Reference</code> Element ist enthalten). Das unterzeichnete Datenobjekt ist in der Signaturstruktur selbst enthalten (<code>enveloping</code>), und zwar in einem <code>dsig:Object</code> Element. </p>
+  <h4><a name="webservice_xmlrequests_erstellungxml_daten" id="webservice_xmlrequests_erstellungxml_daten"></a>2.1.2.2 Angabe der zu signierenden Daten </h4>
+  <h5>Request</h5>
+  <p>Dieses Beispiel stellt die vielf&auml;ltigen M&ouml;glichkeiten vor, wie MOA SS mitgeteilt werden kann, welche Daten signiert (wenn keine Transformationen angegeben werden) bzw. als Eingangsdaten f&uuml;r die Berechnung der Transformationen verwendet werden sollen (wenn Transformationen angegeben werden).</p>
+  <p>Mit <a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Refs.xml" target="_blank"><code>CreateXMLSignatureRequest.Refs.xml</code></a> sollen insgesamt neun Datenobjekte signiert werden:</p>
+  <pre>  &lt;CreateXMLSignatureRequest
+    xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+    xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;<br>    &lt;KeyIdentifier&gt;KG_allgemein&lt;/KeyIdentifier&gt;<br>    &lt;SingleSignatureInfo SecurityLayerConformity=&quot;false&quot;&gt;</pre>
+  <p>Die Signatur soll mit dem Schl&uuml;ssel <code>KG_allgemein</code> erstellt werden; jene Elemente, die speziell f&uuml;r eine Security-Layer V1.1 konforme Signatur notwendig sind (vergleiche <a href="#webservice_xmlrequests_erstellungxml_simple" class="term">Einfaches Beispiel</a>), brauchen nicht erstellt zu werden (<code>SecurityLayerConformity=&quot;false&quot;</code>).</p>
+  <pre>  &lt;DataObjectInfo Structure=&quot;enveloping&quot; ChildOfManifest=&quot;true&quot;&gt;
+    &lt;DataObject&gt;
+      &lt;Base64Content&gt;RGllc2UgRGF0ZW4gd2FyZW4gYmFzZTY0IGtvZGllcnQu&lt;/Base64Content&gt;
+    &lt;/DataObject&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;</pre>
+  <p>Die Daten sollen in der <span class="term">Enveloping</span> Form in die Signatur integriert werden, d. h. die Daten werden in einem <code>dsig:Object</code> als Teil der XML-Struktur der Signatur aufgenommen (<code>Structure=&quot;enveloping&quot;</code>). Weiters sollen die Daten nicht &uuml;ber &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code>, sondern &uuml;ber eine <code>dsig:Reference</code> in einem eigenen <code>dsig:Manifest</code> aufgenommen werden (<code>ChildOfManifest=&quot;true&quot;</code>).</p>
+  <p>Die Daten selbst werden explizit in base64 kodierter Form als Inhalt des Elements <code>Base64Content</code> angegeben. Das Attribut <code>DataObject/@Reference</code> darf nicht angegeben werden, da die Daten in der <span class="term">Enveloping</span> Form integriert werden sollen, und <code>Base64Content</code> verwendet wird.</p>
+  <p>Es werden - wie in allen &uuml;brigen F&auml;llen dieses Beispiels - keine Transformationen angegeben. Der Mime-Type der zu signierenden Daten wird als <code>text/plain</code> angegeben, da der Inhalt von <code>Base64Content</code> die base64-Kodierung des Texts <code>Diese Daten waren base64 kodiert.</code> ist. </p>
+  <pre>
+  &lt;DataObjectInfo Structure=&quot;enveloping&quot; ChildOfManifest=&quot;false&quot;&gt;
+    &lt;DataObject&gt;
+      &lt;XMLContent&gt;&lt;doc:XMLDocument xmlns:doc=&quot;urn:document&quot;&gt;
+        &lt;doc:Paragraph&gt;Ich bin der erste Absatz in diesem Dokument.&lt;/doc:Paragraph&gt;
+        &lt;doc:Paragraph ParaId=&quot;Para2&quot;&gt;Und ich bin der zweite Absatz in diesem Dokument.
+          Ich habe weiters ein eigenens ID-Attribut bekommen.&lt;/doc:Paragraph&gt;
+      &lt;/doc:XMLDocument&gt;&lt;/XMLContent&gt;
+    &lt;/DataObject&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;application/xml&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+  <p>Die Daten sollen in der <span class="term">Enveloping</span> Form in die Signatur integriert werden, d. h. die Daten werden in einem <code>dsig:Object</code> als Teil der XML-Struktur der Signatur aufgenommen (<code>Structure=&quot;enveloping&quot;</code>). Diesmal sollen die Daten direkt &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> aufgenommen werden (<code>ChildOfManifest=&quot;false&quot;</code>).</p>
+  <p>Die Daten selbst werden explizit als XML-Fragment als Inhalt des Elements <code>XMLContent</code> angegeben. Das Attribut <code>DataObject/@Reference</code> darf nicht angegeben werden, da die Daten in der <span class="term">Enveloping</span> Form integriert werden sollen, und <code>XMLContent</code> verwendet wird.</p>
+  <p>Der Mime-Type der zu signierenden Daten wird als <code>application/xml</code> angegeben.</p>
+<pre>
+  &lt;DataObjectInfo Structure=&quot;enveloping&quot; ChildOfManifest=&quot;false&quot;&gt;
+    &lt;DataObject Reference=&quot;http://localhost:8080/referencedData/Text.txt&quot;/&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+<p>Die Daten sollen in der <span class="term">Enveloping</span> Form in die Signatur integriert werden, d. h. die Daten werden in einem <code>dsig:Object</code> als Teil der XML-Struktur der Signatur aufgenommen (<code>Structure=&quot;enveloping&quot;</code>). Wiederum sollen die Daten direkt &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> aufgenommen werden (<code>ChildOfManifest=&quot;false&quot;</code>).
+</p>
+<p>Die Daten werden diesmal nicht explizit angegeben, sondern mittels der URL in <code>DataObject/@Reference</code> referenziert. MOA SS versucht diese URL aufzul&ouml;sen, um zu den zu signierenden Daten zu gelangen. <code>Base64Content</code> oder <code>XMLContent</code> oder <code>LocRefContent</code> d&uuml;rfen nicht verwendet werden,  da die Daten in der <span class="term">Enveloping</span> Form integriert werden sollen, und bereits <code>DataObject/@Reference</code> eingesetzt wird. </p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>text/plain</code> angegeben.</p>
+<pre>
+  &lt;DataObjectInfo Structure=&quot;enveloping&quot; ChildOfManifest=&quot;false&quot;&gt;
+    &lt;DataObject&gt;
+      &lt;LocRefContent&gt;http://localhost:8080/referencedData/Text.txt&lt;/LocRefContent&gt;
+    &lt;/DataObject&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+<p>Die Daten sollen wiederum in der <span class="term">Enveloping</span> Form in die Signatur integriert werden, d. h. die Daten werden in einem <code>dsig:Object</code> als Teil der XML-Struktur der Signatur aufgenommen (<code>Structure=&quot;enveloping&quot;</code>). Wiederum sollen die Daten direkt &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> aufgenommen werden (<code>ChildOfManifest=&quot;false&quot;</code>). </p>
+<p>Die Daten werden wie im vorhergehenden Fall nicht explizit angegeben, sondern referenziert. Diesmal wird die URL jedoch nicht <code>DataObject/@Reference</code> verwendet, sondern als Textinhalt des Elements <code>LocRefContent</code> (<code>LocRef</code> steht f&uuml;r <span class="term">Location Reference</span>). <code>DataObject/@Reference</code> darf in diesem Fall nicht verwendet werden. Diese Methode ist semantisch v&ouml;llig ident mit dem vorhergehenden Fall. </p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>text/plain</code> angegeben.</p>
+<pre>
+  &lt;DataObjectInfo Structure=&quot;detached&quot; ChildOfManifest=&quot;true&quot;&gt;
+    &lt;DataObject Reference=&quot;http://localhost:8080/referencedData/Text.b64&quot;&gt;
+      &lt;Base64Content&gt;RGllc2UgRGF0ZW4gd2FyZW4gYmFzZTY0IGtvZGllcnQu&lt;/Base64Content&gt;
+    &lt;/DataObject&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+<p>Die Daten sollen diesmal in der <span class="term">Detached</span> Form in die Signatur aufgenommen werden, d. h. die Daten werden nicht direkt in die Signaturstruktur integriert, sondern lediglich mittels URI im Attribut <code>URI</code> der anzufertigenden <code>dsig:Reference</code> referenziert (<code>Structure=&quot;detached&quot;</code>). Die Daten sollen indirekt &uuml;ber eine <code>dsig:Reference</code> eines <code>dsig:Manifest</code>s aufgenommen werden  (<code>ChildOfManifest=&quot;true&quot;</code>). </p>
+<p>Die URI in <code>DataObject/@Reference</code> enth&auml;lt dabei die URI, die zur Referenzierung in <code>dsig:Reference/@URI</code> aufgenommen werden soll. Die Daten selbst hingegen werden im diesem Beispiel explizit in base64 kodierter Form als Inhalt des Elements <code>Base64Content</code> angegeben. MOA SS l&ouml;st also keine URL zur Erlangung der Daten auf, sondern verwendet den Inhalt von <code>Base64Content</code>. </p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>text/plain</code> angegeben.</p>
+<pre>
+  &lt;DataObjectInfo Structure="detached" ChildOfManifest="false"&gt;
+    &lt;DataObject Reference="NichtAufloesbareReferenz1"&gt;
+      &lt;XMLContent&gt;&lt;doc:XMLDocument xmlns:doc="urn:document"&gt;
+        &lt;doc:Paragraph&gt;Ich bin der erste Absatz in diesem Dokument.&lt;/doc:Paragraph&gt;
+        &lt;doc:Paragraph ParaId="Para2"&gt;Und ich bin der zweite Absatz in diesem Dokument.
+          Ich habe weiters ein eigenens ID-Attribut bekommen.&lt;/doc:Paragraph&gt;
+        &lt;/doc:XMLDocument&gt;
+      &lt;/XMLContent&gt;
+    &lt;/DataObject&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;application/xml&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+<p>Die Daten sollen auch diesmal in der <span class="term">Detached</span> Form in die Signatur aufgenommen werden, d. h. die Daten werden nicht direkt in die Signaturstruktur integriert, sondern lediglich mittels URI im Attribut <code>URI</code> der anzufertigenden <code>dsig:Reference</code> referenziert (<code>Structure=&quot;detached&quot;</code>). Diesmal sollen die Daten direkt &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> aufgenommen werden (<code>ChildOfManifest=&quot;false&quot;</code>).
+</p>
+<p>Die URI in <code>DataObject/@Reference</code> enth&auml;lt dabei die URI, die zur Referenzierung in <code>dsig:Reference/@URI</code> aufgenommen werden soll. Die Daten selbst hingegen werden im diesem Beispiel explizit als XML-Fragment in <code>XMLContent</code> angegeben. MOA SS l&ouml;st auch hier keine URL zur Erlangung der Daten auf, sondern verwendet den Inhalt von <code>XMLContent</code>. Zur Verdeutlichung dieses Umstandes wurde die URI in <code>DataObject/@Reference</code> auf einen Wert gesetzt, der von MOA SS ganz sicher nicht aufgel&ouml;st werden kann (<code>NichtAufloesbareReferenz1</code>). </p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>application/xml</code> angegeben.</p>
+<pre>
+  &lt;DataObjectInfo Structure=&quot;detached&quot; ChildOfManifest=&quot;false&quot;&gt;
+    &lt;DataObject Reference=&quot;http://localhost:8080/referencedData/Text.txt&quot;&gt;
+    &lt;/DataObject&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+<p>Wiederum sollen die Daten in der <span class="term">Detached</span> Form in die Signatur aufgenommen werden (<code>Structure=&quot;detached&quot;</code>). Wie zuvor sollen die Daten direkt &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> aufgenommen werden (<code>ChildOfManifest=&quot;false&quot;</code>). </p>
+<p>Die URI in <code>DataObject/@Reference</code> enth&auml;lt dabei die URI, die zur Referenzierung in <code>dsig:Reference/@URI</code> aufgenommen werden soll. Nachdem eine explizite Angabe der Daten mittels <code>Base64Content</code>, <code>XMLContent</code> oder <code>LocRefContent</code> unterbleibt, wird MOA SS versuchen, die URI in  <code>dsig:Reference/@URI</code> als URL aufzul&ouml;sen, um so zu den zu signierenden Daten zu gelangen. </p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>text/plain</code> angegeben.</p>
+<pre>
+  &lt;DataObjectInfo Structure=&quot;detached&quot; ChildOfManifest=&quot;false&quot;&gt;
+    &lt;DataObject Reference=&quot;NichtAufloesbareReferenz2&quot;&gt;
+      &lt;LocRefContent&gt;http://localhost:8080/referencedData/Text.txt&lt;/LocRefContent&gt;
+    &lt;/DataObject&gt;
+   &lt;CreateTransformsInfoProfile&gt;
+     &lt;CreateTransformsInfo&gt;
+       &lt;FinalDataMetaInfo&gt;
+         &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+       &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+<p>Wiederum sollen die Daten in der <span class="term">Detached</span> Form in die Signatur aufgenommen werden (<code>Structure=&quot;detached&quot;</code>). Wie zuvor sollen die Daten direkt &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> aufgenommen werden (<code>ChildOfManifest=&quot;false&quot;</code>).</p>
+<p>Die URI in <code>DataObject/@Reference</code> enth&auml;lt dabei die URI, die zur Referenzierung in <code>dsig:Reference/@URI</code> aufgenommen werden soll. Den Hinweis, wie MOA SS zu den zu signierenden Daten gelangen soll, ist jedoch in LocRefContent enthalten. MOA SS wird also versuchen, die dort enthaltene URL aufzul&ouml;sen, um zu den zu signierenden Daten zu gelangen. Zur Verdeutlichung dieses Umstandes wurde die URI in <code>DataObject/@Reference</code> auf einen Wert gesetzt, der von MOA SS ganz sicher nicht aufgel&ouml;st werden kann (<code>NichtAufloesbareReferenz2</code>). Diese Art der Datenangabe kann eingesetzt werden, wenn die Daten zum Zeitpunkt der Signaturerstellung von einem anderen Ort bezogen werden m&uuml;ssen, als sp&auml;ter dann bei der Signaturpr&uuml;fung.</p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>text/plain</code> angegeben.</p>
+<pre>
+  &lt;DataObjectInfo Structure=&quot;detached&quot; ChildOfManifest=&quot;false&quot;&gt;
+    &lt;DataObject Reference=&quot;&quot;/&gt;
+    &lt;CreateTransformsInfoProfile&gt;
+      &lt;CreateTransformsInfo&gt;
+        &lt;dsig:Transforms&gt;
+          &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#enveloped-signature&quot;/&gt;
+        &lt;/dsig:Transforms&gt;
+        &lt;FinalDataMetaInfo&gt;
+          &lt;MimeType&gt;application/xml&lt;/MimeType&gt;
+        &lt;/FinalDataMetaInfo&gt;
+      &lt;/CreateTransformsInfo&gt;
+    &lt;/CreateTransformsInfoProfile&gt;
+  &lt;/DataObjectInfo&gt;
+</pre>
+<p>Im letzten Fall schlie&szlig;lich sollen wiederum Daten in der <span class="term">Detached</span> Form in die Signatur aufgenommen werden (<code>Structure=&quot;detached&quot;</code>). Wie zuvor sollen die Daten direkt &uuml;ber eine <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> aufgenommen werden (<code>ChildOfManifest=&quot;false&quot;</code>).</p>
+<p>Die Referenz auf die zu signierenden Daten ist wiederum in <code>DataObject/@Reference</code> enthalten; sie verweist diesmal jedoch nicht auf ein externes Dokument, sondern auf das gesamte (XML-)Dokument, in das die zu erstellende Signatur integriert werden soll, und zwar, indem <code>DataObject/@Reference</code> den leeren String (<code>&quot;&quot;</code>) enth&auml;lt. Nachdem dadurch zwangsl&auml;ufig auch die Signatur in den zu signierenden Daten enthalten w&auml;re, wird die Signatur durch die Angabe einer Enveloped Signature Transform aus den zu signierenden Daten herausgenommen, bevor dar&uuml;ber der Hashwert berechnet wird (dsig:Transform).</p>
+<p>Offen bleibt die Frage, wie MOA SS nun wei&szlig;, in welches (XML-)Dokument es die die Signatur integrieren soll. Siehe dazu die Erl&auml;uterungen zum n&auml;chsten Ausschnitts des Requests. </p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>application/xml</code> angegeben.</p>
+<pre>
+  &lt;CreateSignatureInfo&gt;
+    &lt;CreateSignatureEnvironment&gt;
+      &lt;LocRefContent&gt;http://localhost:8080/referencedData/XMLDocument.xml&lt;/LocRefContent&gt;
+    &lt;/CreateSignatureEnvironment&gt;
+    &lt;CreateSignatureEnvironmentProfile&gt;
+      &lt;CreateSignatureLocation Index=&quot;4&quot; xmlns:doc=&quot;urn:document&quot;&gt;/doc:XMLDocument&lt;/CreateSignatureLocation&gt;
+    &lt;/CreateSignatureEnvironmentProfile&gt;
+  &lt;/CreateSignatureInfo&gt;
+</pre>
+<p>Das Element <code>CreateSignatureInfo</code> ist grunds&auml;tzlich optional, und muss nur angegeben werden, wenn die zu erstellende Signatur von MOA SS in ein bestehendes XML-Dokument integriert werden soll (was in diesem Beispiel ja der Fall ist).</p>
+<p><code>CreateSignatureEnvironment</code> enth&auml;lt das XML-Dokument, in das die zu erstellende Signatur integriert werden soll. In diesem Beispiel wird dieses Dokument mit Hilfe von <code>LocRefContent</code> referenziert, d. h. MOA SS wird versuchen, die darin enthaltene URL aufzul&ouml;sen, um das XML-Dokument zu erhalten. Alternativ k&ouml;nnte auch <code>Base64Content</code> (explizite Angabe des XML-Dokuments in base64 kodierter Form) oder <code>XMLContent</code> (direkte Angabe des XML-Dokuments im Request) verwendet werden.</p>
+<p><a name="webservice_xmlrequests_erstellungxml_daten_hinweisCreateSignatureLocation"></a><code>CreateSignatureLocation</code> enth&auml;lt die Angabe jener Stelle, an der die Signatur in das XML-Dokument eingesetzt werden soll. Der Inhalt dieses Elements bezeichnet mittels <span class="term">XPath</span>-Ausdruck das <span class="term">Parent</span>-Element der Signatur, der Wert des Attributs <code>CreateSignatureLocation/@Index</code> enth&auml;lt den Offset innerhalb dieses <span class="term">Parent</span>-Elements. Betrachten Sie zur Verdeutlichung das XML-Dokument <a href="../../clients/referencedData/src/main/webapp/XMLDocument.xml" target="_blank"><code>XMLDocument.xml</code></a>, in das die Signatur integriert werden soll: Die Signatur soll unmittelbar nach dem zweiten <code>doc:Paragraph</code> Element in das XML-Dokument eingef&uuml;gt werden. Der Inhalt von <code>CreateSignatureLocation</code> (<code>/doc:XMLDocument</code>) selektiert das zuk&uuml;nftige <span class="term">Parent</span>-Element der Signatur, also <code>doc:XMLDocument</code>. Das Attribut <code>Index</code> enth&auml;lt deshalb den Wert <code>4</code> (und nicht etwa <code>2</code> oder <code>3</code>), da erstens bei <code>0</code> zu z&auml;hlen begonnen wird, und zweitens auch die Text-Knoten, die lediglich Whitespace enthalten, f&uuml;r diesen Offset z&auml;hlen (um diese Textknoten erkennen zu k&ouml;nnen, m&uuml;ssen Sie das XML-Dokument in einem Text-Editor &ouml;ffnen). Beachten Sie weiters, dass  das im <span class="term">XPath</span>-Ausdruck verwendete Namespace-Prefix <code>doc</code> im Kontext des Elements <code>CreateSignatureLocation</code> bekannt sein muss. Deshalb enth&auml;lt dieses Element auch die entsprechende Namespace-Deklaration (<code>xmlns:doc=&quot;urn:document&quot;</code>).</p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Refs.resp.xml" target="_blank">CreateXMLSignatureRequest.Refs.resp.xml</a></code> ist eine typische Response des SS Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  die  dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+  &lt;CreateXMLSignatureResponse
+    xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+    xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+    &lt;SignatureEnvironment&gt;
+      &lt;doc:XMLDocument xmlns:doc=&quot;urn:document&quot;&gt;
+        &lt;doc:Paragraph&gt;Ich bin der erste Absatz in diesem Dokument.&lt;/doc:Paragraph&gt;
+        &lt;doc:Paragraph ParaId=&quot;Para2&quot;&gt;Und ich bin der zweite Absatz in diesem Dokument.
+          Ich habe weiters ein eigenens ID-Attribut bekommen.&lt;/doc:Paragraph&gt;
+        &lt;dsig:Signature Id=&quot;signature-1-1&quot; xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+		    &lt;dsig:SignedInfo&gt;
+            &lt;dsig:CanonicalizationMethod Algorithm=&quot;http://www.w3.org/TR/2001/REC-xml-c14n-20010315&quot;/&gt;
+            &lt;dsig:SignatureMethod Algorithm=&quot;http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1&quot;/&gt;
+</pre>
+<p>Die Antwort enth&auml;lt in <code>SignatureEnvironment</code> das Ergebnis der Signaturerstellung. Nachdem die Signatur in ein bestehendes XML-Dokument integriert werden sollte, enth&auml;lt <code>SignatureEnvironment</code> das Dokument-Element dieses XML-Dokuments (<code>doc:XMLDocument</code>). Man erkennt auch gut, dass die XML-Signatur als f&uuml;nfter Kindknoten (Offset <code>4</code>) von <code>doc:XMLDocument</code> eingef&uuml;gt wurde.</p>
+<pre>
+            &lt;dsig:Reference Id=&quot;reference-1-2&quot; URI=&quot;#xpointer(id(&apos;signed-data-1-2-1&apos;)/node())&quot;&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;A8ml6/aZKCmj1hONwvLItIwGHoc=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> wurde auf Grund des zweiten <code>DataObjectInfo</code> Elements im Request erstellt. Man erkennt gut den Verweis in <code>dsig:Reference/@URI</code> auf das <code>dsig:Object</code>, das die signierten Daten enth&auml;lt (der XPointer verweist auf s&auml;mtliche Kindknoten jenes Elements, das ein ID-Attribut mit dem Wert <code>signed-data-1-2-1</code> aufweist, des ersten vorkommenden <code>dsig:Object</code>s der Signatur). </p>
+<pre>
+            &lt;dsig:Reference Id=&quot;reference-1-3&quot; URI=&quot;#xpointer(id(&apos;signed-data-1-3-1&apos;)/node())&quot;&gt;
+              &lt;dsig:Transforms&gt;
+                &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#base64&quot;/&gt;
+              &lt;/dsig:Transforms&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;0P878Dsmtxv5goj+6KgNmj6S/EE=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> wurde auf Grund des dritten <code>DataObjectInfo</code> Elements im Request erstellt. Die Text-Daten wurden von der angegebenen URL (<code>http://localhost:8080/referencedData/Text.txt</code>) aufgel&ouml;st und in das <code>dsig:Object</code> mit dem ID-Attribut <code>signed-data-1-3-1</code> gesteckt. Um Probleme mit nicht in XML darstellbare Zeichen zu vermeiden, wurde der Text nicht direkt signiert, sondern in base64 kodierter Form in das <code>dsig:Object</code> integriert, und eine Transformation zur base64 Dekodierung spezifiziert. </p>
+<pre>
+            &lt;dsig:Reference Id=&quot;reference-1-4&quot; URI=&quot;#xpointer(id(&apos;signed-data-1-4-1&apos;)/node())&quot;&gt;
+              &lt;dsig:Transforms&gt;
+                &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#base64&quot;/&gt;
+              &lt;/dsig:Transforms&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;0P878Dsmtxv5goj+6KgNmj6S/EE=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> wurde auf Grund des vierten <code>DataObjectInfo</code> Elements im Request erstellt. Wie schon bei der Beschreibung des Requests angef&uuml;hrt, ist die erstellte<code> dsig:Reference</code> semantisch genau gleich wie die vorhergehende. </p>
+<pre>
+            &lt;dsig:Reference Id=&quot;reference-1-6&quot; URI=&quot;NichtAufloesbareReferenz1&quot;&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;2b83+NbXDFijHzz+sH0T7fM36sA=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> wurde auf Grund des sechsten <code>DataObjectInfo</code> Elements im Request erstellt. Die zu signierenden Daten wurden aus dem <code>XMLContent</code> des Requests entnommen, als Wert von <code>dsig:Reference/@URI</code> wurde der Wert von <code>DataObjectInfo/@Reference</code> &uuml;bernommen. </p>
+<pre>
+            &lt;dsig:Reference Id=&quot;reference-1-7&quot; URI=&quot;http://localhost:8080/referencedData/Text.txt&quot;&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;0P878Dsmtxv5goj+6KgNmj6S/EE=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> wurde auf Grund des siebenten <code>DataObjectInfo</code> Elements im Request erstellt. Um zu den zu signierenden Daten zu gelangen, wurde von MOA SS die URL in <code>DataObjectInfo/@Reference</code> aufgel&ouml;st. Gleicherma&szlig;en wurde die URL in <code>dsig:Reference/@URI</code> &uuml;bernommen. </p>
+<pre>
+            &lt;dsig:Reference Id=&quot;reference-1-8&quot; URI=&quot;NichtAufloesbareReferenz2&quot;&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;0P878Dsmtxv5goj+6KgNmj6S/EE=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> wurde auf Grund des achten <code>DataObjectInfo</code> Elements im Request erstellt. Um zu den zu signierenden Daten zu gelangen, wurde von MOA SS die URL in LocRefContent aufgel&ouml;st. In <code>dsig:Reference/@URI</code> wurde der Wert aus <code>DataObjectInfo/@Reference</code> &uuml;bernommen.</p>
+<pre>
+            &lt;dsig:Reference Id=&quot;reference-1-9&quot; URI=&quot;&quot;&gt;
+              &lt;dsig:Transforms&gt;
+                &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#enveloped-signature&quot;/&gt;
+              &lt;/dsig:Transforms&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;2b83+NbXDFijHzz+sH0T7fM36sA=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> wurde auf Grund des neunten <code>DataObjectInfo</code> Elements im Request erstellt. Als zu signierende Daten wurde das XML-Dokument ausgew&auml;hlt, in das die XML-Signatur integriert werden solle. Vor der Berechnung des Hashwerts wurde eine <span class="term">Enveloped Signature</span> Transformation zwischengeschaltet, welche die XML-Struktur der Signatur selbst aus den Hash-Eingangsdaten herausschneidet. </p>
+<pre>
+            &lt;dsig:Reference Type=&quot;http://www.w3.org/2000/09/xmldsig#Manifest&quot; URI=&quot;#dsig-manifest-1-1&quot;&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;mNsxUkFoF46XZVBivBo4aasFCTQ=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+</pre>
+<p>Diese <code>dsig:Reference</code> verweist auf das <code>dsig:Manifest</code> weiter unten in der XML-Struktur der Signatur. Das <code>dsig:Manifest</code> wurde angelegt, weil bei zwei <code>DataObjectInfo</code>s im Request das Attribut <code>ChildOfManifest</code> auf den Wert <code>true</code> gesetzt wurde.</p>
+<pre>
+          &lt;/dsig:SignedInfo&gt;
+          &lt;dsig:SignatureValue&gt;...&lt;/dsig:SignatureValue&gt;
+          &lt;dsig:KeyInfo&gt;...&lt;/dsig:KeyInfo&gt;
+          &lt;dsig:Object Id=&quot;signed-data-1-2-1&quot;&gt;
+            &lt;doc:XMLDocument xmlns:doc=&quot;urn:document&quot;&gt;
+              &lt;doc:Paragraph&gt;Ich bin der erste Absatz in diesem Dokument.&lt;/doc:Paragraph&gt;
+              &lt;doc:Paragraph ParaId=&quot;Para2&quot;&gt;Und ich bin der zweite Absatz in diesem Dokument.
+                Ich habe weiters ein eigenens ID-Attribut bekommen.&lt;/doc:Paragraph&gt;
+            &lt;/doc:XMLDocument&gt;
+          &lt;/dsig:Object&gt;
+          &lt;dsig:Object Id=&quot;signed-data-1-3-1&quot;&gt;RGllc2UgRGF0ZW4gc2luZCByZWluZXIgVGV4dC4=&lt;/dsig:Object&gt;
+          &lt;dsig:Object Id=&quot;signed-data-1-4-1&quot;&gt;RGllc2UgRGF0ZW4gc2luZCByZWluZXIgVGV4dC4=&lt;/dsig:Object&gt;
+          &lt;dsig:Object Id=&quot;signed-data-1-1-1&quot;&gt;RGllc2UgRGF0ZW4gd2FyZW4gYmFzZTY0IGtvZGllcnQu&lt;/dsig:Object&gt;
+</pre>
+<p><code>SignatureValue</code> und <code>KeyInfo</code> werden an dieser Stelle nicht n&auml;her betrachtet.</p>
+<p>Das erste <code>dsig:Object</code> enth&auml;lt die Daten aus dem zweiten <code>DataObjectInfo</code>; das zweite <code>dsig:Object</code> jene aus dem dritten <code>DataObjectInfo</code>; das dritte <code>dsig:Object</code> jene aus dem vierten <code>DataObjectInfo</code>; das vierte <code>dsig:Object</code> schlie&szlig;lich jene aus dem ersten <code>DataObjectInfo</code>.</p>
+<pre>
+          &lt;dsig:Object&gt;
+            &lt;dsig:Manifest Id=&quot;dsig-manifest-1-1&quot;&gt;
+              &lt;dsig:Reference Id=&quot;reference-1-1&quot; URI=&quot;#xpointer(id(&apos;signed-data-1-1-1&apos;)/node())&quot;&gt;
+                &lt;dsig:Transforms&gt;
+                  &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#base64&quot;/&gt;
+                &lt;/dsig:Transforms&gt;
+                &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+                &lt;dsig:DigestValue&gt;a53jOsL7KbyltpByAK87FoMZphI=&lt;/dsig:DigestValue&gt;
+              &lt;/dsig:Reference&gt;
+              &lt;dsig:Reference Id=&quot;reference-1-5&quot; URI=&quot;http://localhost:8080/referencedData/Text.b64&quot;&gt;
+                &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+                &lt;dsig:DigestValue&gt;a53jOsL7KbyltpByAK87FoMZphI=&lt;/dsig:DigestValue&gt;
+              &lt;/dsig:Reference&gt;
+            &lt;/dsig:Manifest&gt;
+          &lt;/dsig:Object&gt;
+</pre>
+<p>Das f&uuml;nfte <code>dsig:Object</code> enth&auml;lt das <code>dsig:Manifest</code>, das von MOA SS auf Grund des ersten bzw. f&uuml;nften <code>DataObjectInfo</code> des Requests erstellt wurde. Darin enthalten sind die zum ersten und f&uuml;nten <code>DataObjectInfo</code> korrespondierenden <code>dsig:Reference</code> Elemente. Die Daten f&uuml;r die erste im <code>dsig:Manifest</code> enthaltene <code>dsig:Reference</code> wurden aus dem <code>Base64Content</code> Element des ersten <code>DataObjectInfo</code> entnommen, jene f&uuml;r die zweite <code>dsig:Reference</code> aus dem <code>Base64Content</code> Element des f&uuml;nften <code>DataObjectInfo</code>. Der Wert des <code>URI</code> Attributs der zweiten <code>dsig:Reference</code> wurde aus dem <code>DataObject/@Reference</code> des f&uuml;nften <code>DataObjectInfo</code> &uuml;bernommen. </p>
+<h4><a name="webservice_xmlrequests_erstellungxml_transformationen" id="webservice_xmlrequests_erstellungxml_transformationen"></a>2.1.2.3 Transformationen</h4>
+<h5>Request</h5>
+<p>Dieses Beispiel (<a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Transforms.xml" target="_blank"><code>CreateXMLSignatureRequest.Transforms.xml</code></a>) stellt die wichtigsten Transformationen vor, die von MOA SS bei der Erstellung einer Signatur verwendet werden k&ouml;nnen. Eine Transformation bzw. eine Kette mehrerer hintereinandergeschalteter Transformationen werden auf die Referenz-Eingangsdaten (also jene Daten, die in DataObjectInfo/DataObject angegeben werden) angewendet; das Ergebnis flie&szlig;t dann in die Hashwert-Berechnung ein. </p>
+<pre>&lt;CreateXMLSignatureRequest
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;<br>  &lt;KeyIdentifier&gt;KG_allgemein&lt;/KeyIdentifier&gt;<br>  &lt;SingleSignatureInfo SecurityLayerConformity=&quot;false&quot;&gt;</pre>
+<p>Die Signatur soll mit dem Schl&uuml;ssel <code>KG_allgemein</code> erstellt werden; jene Elemente, die speziell f&uuml;r eine Security-Layer V1.1 konforme Signatur notwendig sind (vergleiche <a href="#webservice_xmlrequests_erstellungxml_simple" class="term">Einfaches Beispiel</a>), brauchen nicht erstellt zu werden (<code>SecurityLayerConformity=&quot;false&quot;</code>).</p>
+<pre>
+    &lt;DataObjectInfo Structure=&quot;detached&quot;&gt;
+      &lt;DataObject Reference=&quot;http://localhost:8080/referencedData/Text.b64&quot;/&gt;
+      &lt;CreateTransformsInfoProfile&gt;
+        &lt;CreateTransformsInfo&gt;
+          &lt;dsig:Transforms&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#base64&quot;/&gt;
+          &lt;/dsig:Transforms&gt;
+          &lt;FinalDataMetaInfo&gt;
+            &lt;MimeType&gt;text/plain&lt;/MimeType&gt;
+          &lt;/FinalDataMetaInfo&gt;
+        &lt;/CreateTransformsInfo&gt;
+      &lt;/CreateTransformsInfoProfile&gt;
+    &lt;/DataObjectInfo&gt;
+</pre>
+<p>F&uuml;r das erste zu signierende Datenobjekt werden die Referenz-Eingangsdaten  mittels <code>DataObject/@Reference</code> referenziert, d. h. MOA SS l&ouml;st die darin enthaltene URL auf, um zu den Daten zu gelangen. Es handelt sich dabei um einen <a href="../../clients/referencedData/src/main/webapp/Text.b64" target="_blank">base64 kodierten Text</a>.</p>
+<p>Unterschrieben werden soll nun aber nicht dieser base64 kodierte Text, sondern der entsprechend dekodierte Text. Dies l&auml;sst sich elegant durch die Angabe einer <span class="term"><a href="http://www.w3.org/TR/xmldsig-core/#sec-Base-64" target="_blank">Base64 Decoding</a></span><a href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/#sec-Base-64" target="_blank"> Transformation</a> bewerkstelligen. Dazu wird als erstes Kindelement von <code>CreateTransformsInfo</code> ein <code>dsig:Transforms</code> Element im Request angegeben. Dieses <code>dsig:Transforms</code> Element nimmt ein oderer mehrere <code>dsig:Transform</code> Elemente auf, wobei jedes <code>dsig:Transform</code> Element f&uuml;r eine Transformation steht. In unserem Fall wird nur eine einzige Transformation ben&ouml;tigt; die Angabe, um welche Transformation es sich handelt, wird durch das Attribut <code>dsig:Transform/@Algorithm</code> angegeben. F&uuml;r die <span class="term">Base64 Decoding</span> Transformation muss der Wert auf <code>http://www.w3.org/2000/09/xmldsig#base64</code> gesetzt werden. Sie ist eine parameterlose Transformation, d. h. <code>dsig:Transform</code> hat keine Kindelemente.</p>
+<p>Der Mime-Type der zu signierenden Daten wird als <code>text/plain</code> angegeben, da ja tats&auml;chlich nach der durchgef&uuml;hrten Transformation dekodierter Text vorliegt, &uuml;ber den dann der Hashwert berechnet wird. </p>
+<pre>
+    &lt;DataObjectInfo Structure=&quot;detached&quot;&gt;
+      &lt;DataObject Reference=&quot;http://localhost:8080/referencedData/XMLDocument.xml&quot;/&gt;
+      &lt;CreateTransformsInfoProfile&gt;
+        &lt;CreateTransformsInfo&gt;
+          &lt;dsig:Transforms&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2002/06/xmldsig-filter2&quot;&gt;
+              &lt;xp2:XPath
+                xmlns:xp2=&quot;http://www.w3.org/2002/06/xmldsig-filter2&quot;
+                xmlns:doc=&quot;urn:document&quot;
+                Filter=&quot;subtract&quot;&gt;/doc:XMLDocument/doc:Paragraph[2]&lt;/xp2:XPath&gt;
+            &lt;/dsig:Transform&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/1999/REC-xslt-19991116&quot;&gt;
+              &lt;xsl:stylesheet version=&quot;1.0&quot;
+                xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot; xmlns:doc=&quot;urn:document&quot;&gt;
+  &lt;xsl:output encoding=&quot;UTF-8&quot; method=&quot;xml&quot; indent=&quot;yes&quot;/&gt;
+  &lt;xsl:template match=&quot;/doc:XMLDocument&quot;&gt;
+    &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+      &lt;head&gt;
+        &lt;title&gt;HTML-Dokument&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;xsl:for-each select=&quot;doc:Paragraph&quot;&gt;
+          &lt;p&gt;
+            &lt;xsl:value-of select=&quot;child::text()&quot;/&gt;
+          &lt;/p&gt;
+        &lt;/xsl:for-each&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;&lt;/dsig:Transform&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/2001/REC-xml-c14n-20010315&quot;/&gt;
+          &lt;/dsig:Transforms&gt;
+          &lt;FinalDataMetaInfo&gt;
+            &lt;MimeType&gt;application/xhtml+xml&lt;/MimeType&gt;
+          &lt;/FinalDataMetaInfo&gt;
+        &lt;/CreateTransformsInfo&gt;
+      &lt;/CreateTransformsInfoProfile&gt;
+    &lt;/DataObjectInfo&gt;
+</pre>
+<p>F&uuml;r das zweite zu signierende Datenobjekt werden die Referenz-Eingangsdaten wiederum mittels <code>DataObject/@Reference</code> referenziert, d. h. MOA SS l&ouml;st die darin enthaltene URL auf, um zu den Daten zu gelangen. Es handelt sich dabei um ein <a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Transforms.xml" target="_blank">XML-Dokument</a>.</p>
+<p>Zun&auml;chst soll von diesem XML-Dokument jedoch ein Teil weggeschnitten werden, da er nicht mitsigniert werden soll. F&uuml;r diesen Zweck bietet sich die<a href="http://www.w3.org/TR/2002/REC-xmldsig-filter2-20021108/" target="_blank" class="term"> XPath Filter 2 Transformation</a> an. Das Attribut <code>dsig:Transform/@Algorithm</code> ist dazu auf den Wert <code>http://www.w3.org/2002/06/xmldsig-filter2</code> zu setzen. Diese Transformation ben&ouml;tigt weiters Transformationsparameter. Diese werden als Kindelement <code>xp2:XPath</code> in <code>dsig:Transform</code> angegeben. Das Attribut <code>Filter</code> selektiert den Filtermodus; f&uuml;r das Bespiel  wird den Modus <code>subtract</code> ben&ouml;tigt, da ein Teil weggefiltert werden soll. Der Textinhalt von <code>xp2:XPath</code> ist ein XPath-Ausdruck, der den Wurzelknoten jenes Teilbaums selektiert, der weggefiltert werden soll. F&uuml;r das Beispiel soll das zweite <code>doc:Paragraph</code> Element des XML-Dokuments weggefiltert werden. Beachten Sie, dass das im XPath-Ausdruck verwendete Namespace-Prefix <code>doc</code> im Kontext des <code>xp2:XPath</code> Elements deklariert sein muss.</p>
+<p>Als n&auml;chstes soll nun das XML-Dokument mit Hilfe eines Stylesheets in ein XHTML-Dokument &uuml;bergef&uuml;hrt werden. Dazu kann die <a href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/#sec-XSLT" target="_blank" class="term">XSLT Transformation</a> verwendet werden. Das Attribut <code>dsig:Transform/@Algorithm</code> ist dazu auf den Wert <code>http://www.w3.org/TR/1999/REC-xslt-19991116</code> zu setzen. Auch diese Transformation ben&ouml;tigt Transformationsparameter: Als Kindelement von <code>dsig:Transform</code> wird jener Stylesheet angegeben, mit dem die Stylesheet-Transformation ausgef&uuml;hrt werden soll.</p>
+<p>Abschlie&szlig;end soll, wie in der Spezifikation der<span class="term"> XSLT-Transformation</span> <a href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/#sec-XSLT" target="_blank">empfohlen</a>, eine Kanonisierungstransformation angewendet werden. Damit k&ouml;nnen Unterschiede im Output unterschiedlicher XSLT-Engines, wie sie in der Praxis vorkommen, abgefangen werden. Beachten Sie, dass als Voraussetzung dazu die Output-Methode im Stylesheet auf <code>xml</code> festgelegt werden muss (<code>&lt;xsl:output method=&quot;xml&quot;&gt;</code>), denn nur XML-Output kann anschlie&szlig;end kanonisiert werden. Das Attribut <code>dsig:Transform/@Algorithm</code> ist f&uuml;r die <a href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/#sec-c14nAlg" target="_blank"><span class="term">Canonical XML Transformation</span></a> auf den Wert http://www.w3.org/TR/2001/REC-xml-c14n-20010315 zu setzen. Die Transformation ben&ouml;tigt keine Transformationsparameter.</p>
+<p>Das Ergebnis der drei hintereinandergeschalteten Transformationen, welches der Hashwert-Berechnung zuflie&szlig;t, finden Sie <a href="../../clients/webservice/resources/requests/transformResults/CreateXMLSignatureRequest.Transforms.hashinput.ref2.txt" target="_blank">hier</a>. </p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Transforms.resp.xml" target="_blank">CreateXMLSignatureRequest.Transforms.resp.xml</a></code> ist eine typische Response des SS Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  die  dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;CreateXMLSignatureResponse
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;SignatureEnvironment&gt;
+    &lt;dsig:Signature Id=&quot;signature-1-1&quot; xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+      &lt;dsig:SignedInfo&gt;
+        &lt;dsig:CanonicalizationMethod Algorithm=&quot;http://www.w3.org/TR/2001/REC-xml-c14n-20010315&quot;/&gt;
+        &lt;dsig:SignatureMethod Algorithm=&quot;http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1&quot;/&gt;
+</pre>
+<p>Die Antwort enth&auml;lt in <code>SignatureEnvironment</code> das Ergebnis der Signaturerstellung. Nachdem die Signatur in kein bestehendes Dokument eingef&uuml;gt werden sollte, enh&auml;lt <code>SignatureEnvironment</code> direkt die erzeugte XML-Signatur (<code>dsig:Signature</code>).</p>
+<pre>
+        &lt;dsig:Reference Id=&quot;reference-1-1&quot; URI=&quot;http://localhost:8080/referencedData/Text.b64&quot;&gt;
+          &lt;dsig:Transforms&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#base64&quot;/&gt;
+          &lt;/dsig:Transforms&gt;
+          &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+          &lt;dsig:DigestValue&gt;a53jOsL7KbyltpByAK87FoMZphI=&lt;/dsig:DigestValue&gt;
+        &lt;/dsig:Reference&gt;
+</pre>
+<p>Die erste <code>dsig:Reference</code> wurde auf Grund des ersten <code>DataObjectInfo</code> im Request erstellt. Man erkennt dass die URL auf die Referenz-Eingangsdaten (Wert des Attributs <code>dsig:Reference/@URI</code>) aus <code>DataObject/@Reference</code> &uuml;bernommen und eine <span class="term">Base64 Decoding Transformation</span> eingef&uuml;gt w&uuml;rde. Die im Request spezifizierten Transformationen werden also eins zu eins in die XML-Signatur &uuml;bernommen.</p>
+<pre>
+        &lt;dsig:Reference Id=&quot;reference-1-2&quot; URI=&quot;http://localhost:8080/referencedData/XMLDocument.xml&quot;&gt;
+          &lt;dsig:Transforms&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2002/06/xmldsig-filter2&quot;&gt;
+              &lt;xp2:XPath Filter=&quot;subtract&quot; xmlns:doc=&quot;urn:document&quot;
+                xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;
+                xmlns:xf2=&quot;http://www.w3.org/2002/06/xmldsig-filter2&quot;
+                xmlns:xp2=&quot;http://www.w3.org/2002/06/xmldsig-filter2&quot;&gt;/doc:XMLDocument/doc:Paragraph[2]&lt;/xp2:XPath&gt;
+            &lt;/dsig:Transform&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/1999/REC-xslt-19991116&quot;&gt;
+              &lt;xsl:stylesheet version=&quot;1.0&quot;
+                xmlns:doc=&quot;urn:document&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+                &lt;xsl:output encoding=&quot;UTF-8&quot; indent=&quot;yes&quot; method=&quot;xml&quot;/&gt;
+                &lt;xsl:template match=&quot;/doc:XMLDocument&quot;&gt;...&lt;/xsl:template&gt;
+              &lt;/xsl:stylesheet&gt;
+            &lt;/dsig:Transform&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/2001/REC-xml-c14n-20010315&quot;/&gt;
+          &lt;/dsig:Transforms&gt;
+          &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+          &lt;dsig:DigestValue&gt;fIPwneCpjVqTXwHMN9DFfx6tJIU=&lt;/dsig:DigestValue&gt;
+        &lt;/dsig:Reference&gt;
+</pre>
+<p>Die zweite <code>dsig:Reference</code> wurde auf Grund des zweiten <code>DataObjectInfo</code> im Request erstellt. Man erkennt auch hier gut, dass die URL auf die Referenz-Eingangsdaten (Wert des Attributs <code>dsig:Reference/@URI</code>) aus <code>DataObject/@Reference</code> &uuml;bernommen und die drei Transformationen wie im Request angegeben eingef&uuml;gt wurden. </p>
+<h4><a name="webservice_xmlrequests_erstellungxml_ergaenzungsobjekte"></a>2.1.2.4 Erg&auml;nzungsobjekte </h4>
+<h5>Request</h5>
+<p>Dieses Beispiel (<a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Supplements.xml" target="_blank"><code>CreateXMLSignatureRequest.Supplements.xml</code></a>) stellt die Verwendung von Erg&auml;nzungsobjekten vor. Ein Erg&auml;nzungsobjekt betrifft entweder ein zu signierendes Datum (Zusammenhang mit einem <code>DataObject</code>) oder jenes Dokument, in das eine zu erzeugende Signatur eingef&uuml;gt werden soll (Zusammenhang mit <code>CreateSignatureEnvironment</code>). Es muss dann angegeben werden, wenn in einem zu signierenden Datum bzw. im Einf&uuml;gedokument auf Daten per Referenz verwiesen wird, diese referenzierten Daten aber von MOA SS nicht aufgel&ouml;st werden k&ouml;nnen. Das Erg&auml;nzungsobjekt enth&auml;lt dann genau diese Daten, die nicht von MOA SS aufgel&ouml;st werden k&ouml;nnen.</p>
+<pre>
+&lt;CreateXMLSignatureRequest
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;KeyIdentifier&gt;KG_allgemein&lt;/KeyIdentifier&gt;
+  &lt;SingleSignatureInfo SecurityLayerConformity=&quot;false&quot;&gt;
+</pre>
+<p>Die Signatur soll mit dem Schl&uuml;ssel <code>KG_allgemein</code> erstellt werden; jene Elemente, die speziell f&uuml;r eine Security-Layer V1.1 konforme Signatur notwendig sind (vergleiche <a href="#webservice_xmlrequests_erstellungxml_simple" class="term">Einfaches Beispiel</a>), brauchen nicht erstellt zu werden (<code>SecurityLayerConformity=&quot;false&quot;</code>).</p>
+<pre>
+    &lt;DataObjectInfo Structure=&quot;detached&quot;&gt;
+      &lt;DataObject Reference=&quot;#Para2&quot;/&gt;
+</pre>
+<p>Das zu signierende Datum in diesem Beispiel ist ein Teil des Dokuments, in das die zu erstellende Signatur eingef&uuml;gt werden soll. Der Wert des <code>Reference</code> Attributs ist <code>#Para2</code>, das bedeutet, dass jenes Element des Einf&uuml;gedokuments signiert werden soll, das ein ID-Attribut mit dem Wert <code>#Para2</code> aufweist. Damit MOA SS diesen Hinweis auswerten kann, muss es das Einf&uuml;gedokument validierend parsen, denn sonst w&uuml;sste es ja nicht, welche Attribute &uuml;berhaupt ID-Attribute sind. Das zum validierenden Parsen notwendige XML-Schema wird MOA SS in diesem Beispiel &uuml;ber ein Erg&auml;nzungsobjekt zum Einf&uuml;gedokument mitgeteilt (siehe weiter unten). </p>
+<pre>
+      &lt;CreateTransformsInfoProfile&gt;
+        &lt;CreateTransformsInfo&gt;
+          &lt;dsig:Transforms&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/1999/REC-xslt-19991116&quot;&gt;
+              &lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+  &lt;xsl:include href=&quot;XMLDocument.Para.xsl&quot;/&gt;
+&lt;/xsl:stylesheet&gt;
+            &lt;/dsig:Transform&gt;
+            &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2001/10/xml-exc-c14n#&quot;/&gt;
+          &lt;/dsig:Transforms&gt;
+          &lt;FinalDataMetaInfo&gt;
+            &lt;MimeType&gt;application/xhtml+xml&lt;/MimeType&gt;
+          &lt;/FinalDataMetaInfo&gt;
+</pre>
+<p>Das Beispiel enth&auml;lt als erste Transformation eine <span class="term">XSLT-Transformation</span>. Der als Kindelement von <code>dsig:Transform</code> angegebene Stylesheet verweist dabei mittels <code>xsl:include</code> auf einen weiteren Stylesheet. Dieser weitere Stylesheet kann jedoch von MOA nicht direkt aufgel&ouml;st werden, da er als relative Referenz angegeben wird. Deshalb ist es notwendig, diesen weiteren Stylesheet als Erg&auml;nzungsobjekt zu den signierenden Daten anzugeben:</p>
+<
+        &lt;/CreateTransformsInfo&gt;
+        &lt;Supplement&gt;
+          &lt;Content Reference=&quot;XMLDocument.Para.xsl&quot;&gt;
+            &lt;LocRefContent&gt;http://localhost:8080/referencedData/XMLDocument.Para.xsl&lt;/LocRefContent&gt;
+          &lt;/Content&gt;
+        &lt;/Supplement&gt;
+      &lt;/CreateTransformsInfoProfile&gt;
+    &lt;/DataObjectInfo&gt;
+</pre>
+<p>Ein Erg&auml;nzungsobjekt f&uuml;r zu signierende Daten wird im entsprechenden <code>DataObjectInfo</code> Element angegeben, und zwar als Inhalt des Elements <code>CreateTransformsInfoProfile/Supplement</code>. Das verpflichtend zu verwendende Attribut <code>Content/@Reference</code> enth&auml;lt dabei die Referenz auf das Erg&auml;nzungsobjekt in exakt jener Schreibweise, wie sie in der <code>xsl:include</code> Direktive vorkommt, hier also <code>XMLDocument.Para.xsl</code>. Das Element <code>Content</code> beinhaltet das Erg&auml;nzungsobjekt so, wie es MOA SS verwenden soll (Elemente <code>Base64Content</code> oder <code>XMLContent</code>, vergleiche <a href="#webservice_xmlrequests_erstellungxml_simple"><span class="term">Einfaches Beispiel</span></a>), bzw. enth&auml;lt eine von MOA SS aufl&ouml;sbare Referenz auf das Erg&auml;nzungsobjekt (Element <code>LocRefContent</code>, vergleiche <a href="#webservice_xmlrequests_erstellungxml_simple"><span class="term">Einfaches Beispiel</span></a>). Im konkreten Beispiel wird <code>LocRefContent</code> verwendet. </p>
+<pre>
+    &lt;CreateSignatureInfo&gt;
+      &lt;CreateSignatureEnvironment
+        Reference=&quot;http://localhost:8080/referencedData/XMLDocument.withSchemaHint.xml&quot;/&gt;
+      &lt;CreateSignatureEnvironmentProfile&gt;
+        &lt;CreateSignatureLocation
+          Index=&quot;4&quot; xmlns:doc=&quot;urn:document&quot;&gt;/doc:XMLDocument&lt;/CreateSignatureLocation&gt;
+</pre>
+<p>Eingef&uuml;gt werden soll die zu erzeugende Signatur in ein <a href="../../clients/referencedData/src/main/webapp/XMLDocument.withSchemaHint.xml" target="_blank">bestehendes Dokument</a>, das MOA SS durch Aufl&ouml;sen der in <code>CreateSignatureEnvironment/@Reference</code> angegebenen URL erh&auml;lt. Eingef&uuml;gt werden soll die Signatur als f&uuml;nfter Kindknoten des Wurzelelements <code>doc:XMLDocument</code>. Beachten Sie wiederum die <a href="#webservice_xmlrequests_erstellungxml_daten_hinweisCreateSignatureLocation">Hinweise</a> zur Z&auml;hlweise f&uuml;r das Attribut <code>Index</code> bzw. zur Deklaration der im XPath-Ausdruck verwendeten Namespace-Deklarationen (hier <code>doc</code>). </p>
+<pre>
+        &lt;Supplement&gt;
+          &lt;Content Reference=&quot;urn:XMLDocument.xsd&quot;&gt;
+            &lt;LocRefContent&gt;http://localhost:8080/referencedData/XMLDocument.xsd&lt;/LocRefContent&gt;
+          &lt;/Content&gt;
+        &lt;/Supplement&gt;
+      &lt;/CreateSignatureEnvironmentProfile&gt;
+    &lt;/CreateSignatureInfo&gt;
+</pre>
+<p>Wie oben bereits angemerkt, muss MOA SS zur Aufl&ouml;sung der ID-Referenz <code>#Para2</code> das Einf&uuml;gedokument validierend parsen. Im Einf&uuml;gedokument ist zwar nun ein Hinweis auf die dazu notwendige Grammatikinformation in Form eines XML-Schemas enthalten (Attribut <code>xsi:schemaLocation</code> enth&auml;lt den Wert <code>&quot;urn:document urn:XMLDocument.xsd&quot;</code>). Nachdem die darin angegebene URI <code>urn:XMLDocument.xsd</code> jedoch von MOA nicht direkt aufgel&ouml;st werden kann, wird im Request ein Erg&auml;nzungsobjekt zum Einf&uuml;gedokument angegeben (<code>CreateSignatureEnvironmentProfile/Supplement</code>). Das Attribut <code>Content/@Reference</code> enth&auml;lt  die Referenz auf das Erg&auml;nzungsobjekt in exakt jener Schreibweise, wie sie im Attribut <code>xsi:schemaLocation</code> angegeben wurde (<code>urn:XMLDocument.xsd</code>). Das Element <code>Content</code> beinhaltet das Erg&auml;nzungsobjekt so, wie es MOA SS verwenden soll (Elemente <code>Base64Content</code> oder <code>XMLContent</code>, vergleiche <a href="#webservice_xmlrequests_erstellungxml_simple"><span class="term">Einfaches Beispiel</span></a>), bzw. enth&auml;lt eine von MOA SS aufl&ouml;sbare Referenz auf das Erg&auml;nzungsobjekt (Element <code>LocRefContent</code>, vergleiche <a href="#webservice_xmlrequests_erstellungxml_simple"><span class="term">Einfaches Beispiel</span></a>). Im konkreten Beispiel wird <code>LocRefContent</code> verwendet. </p>
+<p>Beachten Sie bitte, dass die Verwendung von Erg&auml;nzungsobjekten f&uuml;r die Mitteilung von XML-Schemata nur dann funktioniert, wenn die Referenz auf das XML-Schema in der <code>xsi:schemaLocation</code> eine absolute URI ist (also z.B. wie hier <code>urn:XMLDocument.xsd</code> oder auch <code>http://example.org/XMLDocument.xsd</code>, nicht aber z.B. <code>XMLDocument.xsd</code> oder <code>../schemas/XMLDocument.xsd</code>).</p>
+<p>Auch f&uuml;r das Aufl&ouml;sen eines Verweises in einer DTD kann in analoger Weise von Erg&auml;nzungsobjekten Gebrauch gemacht werden. </p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/CreateXMLSignatureRequest.Supplements.resp.xml" target="_blank">CreateXMLSignatureRequest.Supplements.resp.xml</a></code> ist eine typische Response des SS Webservices auf den obigen Request. Er wird an dieser Stelle nicht n&auml;her analysiert, da er keine f&uuml;r das Thema des Beispiels relevanten Besonderheiten aufweist.</p>
+<h3><a name="webservice_xmlrequests_pruefungcms" id="webservice_xmlrequests_pruefungcms"></a>2.1.3 Pr&uuml;fung einer CMS bzw. CAdES-Signatur</h3>
+<h4><a name="webservice_xmlrequests_pruefungcms_einfach" id="webservice_xmlrequests_pruefungcms_einfach"></a>2.1.3.1 Einfaches Beispiel</h4>
+<h5>Request</h5>
+<p>Dieses Beispiel (<a href="../../clients/webservice/resources/requests/VerifyCMSSignatureRequest.Simple.xml" target="_blank"><code>VerifyCMSSignatureRequest.Simple.xml</code></a>) ist ein einfacher Request zur Pr&uuml;fung einer CMS-Signatur. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass der nachfolgende Ausschnitt aus dem Request aus Gr&uuml;nden der &Uuml;bersichtlichkeit gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyCMSSignatureRequest
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;&gt;
+  &lt;CMSSignature&gt;MIIHsAYJKo...4sLL6kpOPJaLg==&lt;/CMSSignature&gt;
+  &lt;TrustProfileID&gt;Test-Signaturdienste&lt;/TrustProfileID&gt;
+&lt;/VerifyCMSSignatureRequest&gt;
+</pre>
+<p>Der Request enth&auml;lt zun&auml;chst in <code>CMSSignature</code> die zu pr&uuml;fende CMS-Signatur, und zwar in base64 kodierter Form. In diesem Beispiel wird davon ausgegangen, dass es sich dabei um eine <span class="term">Enveloping</span> Signature handelt, d. h. dass die signierten Daten als Teil der CMS-Struktur vorhanden sind. F&uuml;r die Behandlung einer <span class="term">Detached</span> Signature sei auf das <a href="#webservice_xmlrequests_pruefungcms_detached">n&auml;chste Beispiel</a> verwiesen.</p>
+<p>Abschlie&szlig;end enth&auml;lt der Request in <code>TrustProfileID</code> die Angabe des Vertrauensprofils, gegen das die Vertrauenspr&uuml;fung des Zertifikats durchgef&uuml;hrt werden soll. Ein Vertrauensprofil mit dem angegebenen Namen muss in der f&uuml;r die Signaturpr&uuml;fung verwendeten Instanz von MOA SP eingerichtet sein. </p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyCMSSignatureRequest.Simple.resp.xml" target="_blank">VerifyCMSSignatureRequest.Simple.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  die  dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyCMSSignatureResponse
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;SignerInfo&gt;
+    &lt;dsig:X509Data&gt;
+      &lt;dsig:X509SubjectName&gt;serialNumber=615536615920,givenName=Gregor,SN=Karlinger,
+CN=Gregor Karlinger,C=AT&lt;/dsig:X509SubjectName&gt;
+      &lt;dsig:X509IssuerSerial&gt;
+        &lt;dsig:X509IssuerName&gt;CN=TrustSignTest-Sig-01,OU=TrustSignTest-Sig-01,
+O=A-Trust Ges. f&uuml;r Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT&lt;/dsig:X509IssuerName&gt;
+        &lt;dsig:X509SerialNumber&gt;2892&lt;/dsig:X509SerialNumber&gt;
+      &lt;/dsig:X509IssuerSerial&gt;
+      &lt;dsig:X509Certificate&gt;...&lt;/dsig:X509Certificate&gt;
+      &lt;QualifiedCertificate/&gt;
+    &lt;/dsig:X509Data&gt;
+  &lt;/SignerInfo&gt;
+</pre>
+<p>Die Response enth&auml;lt zun&auml;chst in <code>SignerInfo/dsig:X509Data</code> Informationen &uuml;ber den Signator, die aus dem in der CMS-Signatur enthaltenen Signatorzertifikat entnommen sind. </p>
+<p><code>dsig:X509SubjectName</code> ist immer vorhanden und enth&auml;lt den Namen des Signators. <code>dsig:X509IssuerSerial</code> ist ebenfalls immer vorhanden und enth&auml;lt den Namen des Austellers des Signatorzertifikats (<code>dsig:X509IssuerName</code>) sowie die Seriennummer des Zertifikats (<code>dsig:X509SerialNumber</code>). Auch <code>dsig:X509Certificate</code> ist immer vorhanden und enth&auml;lt das Signatorzertifikat in base64 kodierter Form. </p>
+<p>Optional vorhanden ist das inhaltslose Element <code>QualifiedCertificate</code>, und zwar dann, wenn es sich beim Signatorzertifikat um ein qualifiziertes Zertifikat handelt. Ebenfalls optional vorhanden ist schlie&szlig;lich - in diesem Beispiel nicht ersichtlich - das Element <code>PublicAuthority</code>, und zwar dann, wenn das Signatorzertifikat die &ouml;sterreichspezifische Zertifikatserweiterung <a href="http://www.digitales.oesterreich.gv.at/site/cob__28513/5580/default.aspx" target="_blank">Verwaltungseigenschaft</a> aufweist. Ist in dieser Zertifikatserweiterung das Verwaltungskennzeichen mitkodiert, wird dieses Kennzeichen als Textinhalt des optionalen Elements <code>PublicAuthority/Code</code> geliefert.</p>
+<pre>
+  &lt;SignatureCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/SignatureCheck&gt;
+</pre>
+<p> Anschlie&szlig;end an <code>SignerInfo</code> enth&auml;lt die Response mit <code>SignatureCheck/Code</code> das Resultat der kryptographischen Pr&uuml;fung der Signatur. In unserem Beispiel ist dort der Wert <code>0</code> enthalten, d. h. die Signatur konnte erfolgreich validiert werden. F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe <a href="#sl"> Security-Layer Spezifikation</a>.</p>
+<pre>
+  &lt;CertificateCheck&gt;
+    &lt;Code&gt;1&lt;/Code&gt;
+  &lt;/CertificateCheck&gt;
+</pre>
+<p>Abschlie&szlig;end enth&auml;lt die Response mit <code>CertificateCheck/Code</code> das Resultat der Pr&uuml;fung des Signatorzertifikats. Zun&auml;chst pr&uuml;ft MOA SP, ob ausgehend vom Signatorzertifikat eine Zertifikatskette zu einem im zugeh&ouml;rigen Vertrauensprofil konfigurierten sog. <span class="term">Trust Anchor</span> gebildet werden kann. Gelingt dies, wird die G&uuml;ltigkeit jedes Zertifikats dieser Kette &uuml;berpr&uuml;ft. In unserem Beispiel enth&auml;lt <code>Code</code> den Wert <code>1</code>, d. h. MOA SP konnte die oben erl&auml;uterte Zertifikatskette nicht bilden. F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe <a href="#sl"> Security-Layer Spezifikation</a>.</p>
+<h4><a name="webservice_xmlrequests_pruefungcms_erweitert" id="webservice_xmlrequests_pruefungcms_erweitert"></a>2.1.3.2 Erweitertes Beispiel</h4>
+<h5>Request</h5>
+<p>Dieses erweiterte Beispiel zur Pr&uuml;fung einer CMS-Signatur (<a href="../../clients/webservice/resources/requests/VerifyCMSSignatureRequest.Extended.xml" target="_blank"><code>VerifyCMSSignatureRequest.Extended.xml</code></a>) demonstriert die Pr&uuml;fung mehrerer Signatoren einer CMS-Signatur, die Angabe des Pr&uuml;fzeitpunkts sowie die Pr&uuml;fung einer <span class="term">Detached Signature</span>, d. h. einer Signatur, in der die signierten Daten nicht enthalten sind und daher extra angegeben werden m&uuml;ssen. </p>
+<pre>
+&lt;VerifyCMSSignatureRequest
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  Signatories=&quot;1&quot;&gt;
+  &lt;DateTime&gt;2004-08-17T08:00:00+02:00&lt;/DateTime&gt;
+  &lt;CMSSignature&gt;MIIHiwYJKoZI...kfiwsvqSk48lou&lt;/CMSSignature&gt;
+  &lt;DataObject&gt;
+    &lt;Content&gt;
+      &lt;Base64Content&gt;RGllc2UgRGF0ZW4gd2FyZW4gYmFzZTY0IGtvZGllcnQu&lt;/Base64Content&gt;
+    &lt;/Content&gt;
+  &lt;/DataObject&gt;
+  &lt;TrustProfileID&gt;Test-Signaturdienste&lt;/TrustProfileID&gt;
+&lt;/VerifyCMSSignatureRequest&gt;
+</pre>
+<p> Liegt eine zu pr&uuml;fende CMS-Signatur vor, die von mehreren Unterzeichnenden signiert worden ist, kann das Attribut <code>VerifyCMSSignatureRequest/@Signatories</code> verwendet werden, um jene Unterzeichnenden auszuw&auml;hlen, deren Unterschriften von MOA SP gepr&uuml;ft werden sollen. Der Default-Wert f&uuml;r dieses optionale Attribut ist <code>1</code>. Soll nicht die Unterschrift allein des ersten Unterzeichnenden gepr&uuml;ft werden, muss das Attribut explizit angegeben werden. Es enth&auml;lt dann eine oder mehrere Ganzzahlwerte, getrennt durch Leerzeichen. Jede Ganzzahl bezeichnet einen Unterzeichnenden, wobei die Reihenfolge der Auflistung der Unterzeichner in der CMS-Signatur entspricht. Der Wert <code>&quot;1 3&quot;</code> w&uuml;rde beispielsweise aussagen, dass MOA SP die Unterschrift des ersten sowie des dritten Unterzeichnenden pr&uuml;fen soll.</p>
+<p>Mit dem optionalen Element <code>DateTime</code> kann der Zeitpunkt der Signaturpr&uuml;fung explizit vorgegeben werden. Inhalt dieses Elements ist die Angabe von Datum und Uhrzeit entsprechend dem XML-Schema Datentyp <a href="http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#dateTime" target="_blank"><span class="term">dateTime</span></a>. Enth&auml;lt der angegebene Zeitpunkt keinen Zeitzonen-Offset zur UTC, wird der Zeitpunkt als lokale Zeit des Servers interpretiert, auf dem MOA SP l&auml;uft. Wird <code>DateTime</code> nicht angegeben, versucht MOA SP, den Zeitpunkt der Signaturerstellung aus der Signatur zu ermitteln (anhand des Signaturattributs <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20040514/core/Core.html#ref-etsicms" target="_blank" class="term">SigningTime</a>). Enth&auml;lt die Signatur keinen Zeitpunkt der Signaturerstellung, verwendet MOA SP die aktuelle Systemzeit des Servers, auf dem es l&auml;uft. </p>
+<p>Das optionale Element <code>DataObject</code> muss dann angegeben werden, wenn eine <span class="term">Detached Signature</span> gepr&uuml;ft werden soll, d. h. wenn in der CMS-Signatur die signierten Daten nicht mitkodiert sind. In <code>DataObject/Content/Base64Content</code> sind in einem solchen Fall diese Daten in base64 kodierter Form bereit zu stellen.</p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyCMSSignatureRequest.Extended.resp.xml" target="_blank">VerifyCMSSignatureRequest.Extended.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Er wird an dieser Stelle nicht n&auml;her analysiert, da er keine f&uuml;r das Thema des Beispiels relevanten Besonderheiten aufweist.</p>
+<h3><a name="webservice_xmlrequests_pruefungxml"></a>2.1.4 Pr&uuml;fen einer XML-Signatur</h3>
+<h4><a name="webservice_xmlrequests_pruefungxml_einfach"></a>2.1.4.1 Einfaches Beispiel</h4>
+<h5>Request</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.Simple.xml" target="_blank">VerifyXMLSignatureRequest.Simple.xml</a></code> ist ein einfacher XML-Request zur Pr&uuml;fung einer XML-Signatur. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  der  dargestellte Request zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureRequest xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;&gt;
+  &lt;VerifySignatureInfo&gt;
+    &lt;VerifySignatureEnvironment&gt;
+      &lt;XMLContent&gt;
+        &lt;dsig:Signature Id=&quot;signature-1-1&quot; xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+          &lt;dsig:SignedInfo&gt;
+            &lt;dsig:CanonicalizationMethod Algorithm=&quot;http://www.w3.org/TR/2001/REC-xml-c14n-20010315&quot;/&gt;
+            &lt;dsig:SignatureMethod
+              Algorithm=&quot;http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1&quot;/&gt;
+            &lt;dsig:Reference Id=&quot;reference-1-1&quot; URI=&quot;#xpointer(id(&apos;signed-data-1-1-1&apos;)/node())&quot;&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;tLODyeiWFbAkQKwhrR23jtcgu4k=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+          &lt;/dsig:SignedInfo&gt;
+          &lt;dsig:SignatureValue&gt;...&lt;/dsig:SignatureValue&gt;
+          &lt;dsig:KeyInfo&gt;...&lt;/dsig:KeyInfo&gt;
+          &lt;dsig:Object Id=&quot;signed-data-1-1-1&quot;&gt;Diese Daten werden signiert.&lt;/dsig:Object&gt;
+        &lt;/dsig:Signature&gt;
+      &lt;/XMLContent&gt;
+    &lt;/VerifySignatureEnvironment&gt;
+</pre>
+<p>Das Element <code>VerifySignatureEnvironment</code> enth&auml;lt jenes XML-Dokument, das die zu pr&uuml;fende XML-Signatur enth&auml;lt. Auch hier stehen eine Reihe von M&ouml;glichkeiten zur Verf&uuml;gung, dieses XML-Dokument anzugeben. Im Beispiel wurde das Element <code>XMLContent</code> verwendet; alternativ stehen die Elemente <code>Base64Content</code> und <code>LocRefContent</code> bzw. gleichwertig zu <code>LocRefContent</code> das Attribut <code>Reference</code> zur Verf&uuml;gung.</p>
+<p>Im konkreten Beispiel enth&auml;lt das angegebene XML-Dokument direkt als Root-Element die zu pr&uuml;fende Signatur (<code>dsig:Signature</code>). Es handelt sich dabei um eine <span class="term">Enveloping Signature</span>, d. h. die signierten Daten sind in einem <code>dsig:Object</code> als Teil der XML-Struktur der Signatur kodiert. Tats&auml;chlich signiert ist hier die Zeichenkette <code>Diese Daten werden signiert.</code></p>
+<pre>
+    &lt;VerifySignatureLocation
+      xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;/dsig:Signature&lt;/VerifySignatureLocation&gt;
+  &lt;/VerifySignatureInfo&gt;
+</pre>
+<p>Das Element <code>VerifySignatureLocation</code> enth&auml;lt als Text den XPath-Ausdruck zur Selektion der XML-Signatur innerhalb des zu pr&uuml;fenden XML-Dokuments. Die Auswertung des XPath-Ausdrucks muss genau ein Element <code>dsig:Signature</code> ergeben. Bitte beachten Sie, dass im Kontext des Elements <code>VerifySignatureLocation</code> alle im XPath-Ausdruck verwendeten Namespace-Pr&auml;fixe bekannt sein m&uuml;ssen (hier das Pr&auml;fix <code>dsig</code>). </p>
+<pre>
+  &lt;TrustProfileID&gt;Test-Signaturdienste&lt;/TrustProfileID&gt;
+&lt;/VerifyXMLSignatureRequest&gt;
+</pre>
+<p>Das Element <code>TrustProfileID</code> schlie&szlig;lich enth&auml;lt den Bezeichner des Vertrauensprofils, gegen das die Zertifikatspr&uuml;fung von MOA SP durchgef&uuml;hrt wird. Ein Vertrauensprofil enth&auml;lt die Zertifikate jene Zertifizierungsdiensteanbieter, denen als Aussteller von Signatorzertifikaten vertraut wird. Ein Vertrauensprofil mit dem gew&auml;hlten Namen (hier <code>Test-Signaturdienste</code>) muss in der Konfiguration von MOA SP hinterlegt sein. </p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.Simple.resp.xml" target="_blank">VerifyXMLSignatureRequest.Simple.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass die dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureResponse
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;SignerInfo&gt;
+    &lt;dsig:X509Data&gt;
+      &lt;dsig:X509SubjectName&gt;CN=Test: Signaturdienst aller Kunden: ECDSA (P192v1),OU=Technik und Standards,
+      O=Stabsstelle IKT-Strategie des Bundes,C=AT&lt;/dsig:X509SubjectName&gt;
+      &lt;dsig:X509IssuerSerial&gt;
+        &lt;dsig:X509IssuerName&gt;CN=Test CA - Signaturdienste,OU=Technik und Standards,
+        O=Stabstelle IKT-Strategie des Bundes,C=AT&lt;/dsig:X509IssuerName&gt;
+        &lt;dsig:X509SerialNumber&gt;9&lt;/dsig:X509SerialNumber&gt;
+      &lt;/dsig:X509IssuerSerial&gt;
+      &lt;dsig:X509Certificate&gt;...&lt;/dsig:X509Certificate&gt;
+      &lt;PublicAuthority&gt;
+        &lt;Code&gt;BKA-IKT&lt;/Code&gt;
+      &lt;/PublicAuthority&gt;
+    &lt;/dsig:X509Data&gt;
+  &lt;/SignerInfo&gt;
+</pre>
+<p>Die Response enth&auml;lt zun&auml;chst in <code>SignerInfo/dsig:X509Data</code> Informationen &uuml;ber den Signator, die aus dem in der XML-Signatur enthaltenen Signatorzertifikat entnommen sind. </p>
+<p><code>dsig:X509SubjectName</code> ist immer vorhanden und enth&auml;lt den Namen des Signators. <code>dsig:X509IssuerSerial</code> ist ebenfalls immer vorhanden und enth&auml;lt den Namen des Austellers des Signatorzertifikats (<code>dsig:X509IssuerName</code>) sowie die Seriennummer des Zertifikats (<code>dsig:X509SerialNumber</code>). Auch <code>dsig:X509Certificate</code> ist ist immer vorhanden und enth&auml;lt das Signatorzertifikat in base64 kodierter Form. </p>
+<p>Optional vorhanden  - in diesem Beispiel nicht ersichtlich - ist das inhaltslose Element <code>QualifiedCertificate</code>, und zwar dann, wenn es sich beim Signatorzertifikat um ein qualifiziertes Zertifikat handelt. Ebenfalls optional vorhanden ist schlie&szlig;lich das Element <code>PublicAuthority</code>, und zwar dann, wenn das Signatorzertifikat die &ouml;sterreichspezifische Zertifikatserweiterung <a href="http://www.digitales.oesterreich.gv.at/site/cob__28513/5580/default.aspx" target="_blank">Verwaltungseigenschaft</a> aufweist. Ist in dieser Zertifikatserweiterung das Verwaltungskennzeichen mitkodiert, wird dieses Kennzeichen als Textinhalt des optionalen Elements <code>PublicAuthority/Code</code> geliefert.</p>
+<pre>
+  &lt;SignatureCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/SignatureCheck&gt;
+</pre>
+<p> Anschlie&szlig;end an <code>SignerInfo</code> enth&auml;lt die Response mit <code>SignatureCheck/Code</code> das Resultat der kryptographischen Pr&uuml;fung der Signatur. In unserem Beispiel ist dort der Wert <code>0</code> enthalten, d. h. die Signatur konnte erfolgreich validiert werden. F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe <a href="#sl"> Security-Layer Spezifikation</a>.</p>
+<pre>
+  &lt;CertificateCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/CertificateCheck&gt;
+</pre>
+<p>Abschlie&szlig;end enth&auml;lt die Response mit <code>CertificateCheck/Code</code> das Resultat der Pr&uuml;fung des Signatorzertifikats. Zun&auml;chst pr&uuml;ft MOA SP, ob ausgehend vom Signatorzertifikat eine Zertifikatskette zu einem im zugeh&ouml;rigen Vertrauensprofil konfigurierten sog. <span class="term">Trust Anchor</span> gebildet werden kann. Gelingt dies, wird die G&uuml;ltigkeit jedes Zertifikats dieser Kette &uuml;berpr&uuml;ft. In unserem Beispiel enth&auml;lt <code>Code</code> den Wert <code>0</code>, d. h. MOA SP konnte die Kette bilden, und alle Zertifikate der Kette sind g&uuml;ltig. F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe <a href="#sl"> Security-Layer Spezifikation</a>.</p>
+<h4><a name="webservice_xmlrequests_pruefungxml_erweitert"></a>2.1.4.2 Erweitertes Beispiel </h4>
+<h5>Request</h5>
+<p>Dieses erweiterte Beispiel zur Pr&uuml;fung einer XML-Signatur (<a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.Enveloped.xml" target="_blank"><code>VerifyXMLSignatureRequest.Enveloped.xml</code></a>) demonstriert die Pr&uuml;fung einer <span class="term">Enveloped Signature</span>, d. h. einer Signatur, die in ein XML-Dokument integriert ist, die Angabe des Pr&uuml;fzeitpunkts sowie die Anweisung an MOA SP, in der Response die von der Signatur abgedeckten Daten zu retournieren.</p>
+<pre>
+&lt;VerifyXMLSignatureRequest xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;&gt;
+  &lt;DateTime&gt;2004-08-18T17:00:00+02:00&lt;/DateTime&gt;
+</pre>
+<p>Mit dem optionalen Element <code>DateTime</code> kann der Zeitpunkt der Signaturpr&uuml;fung explizit vorgegeben werden. Inhalt dieses Elements ist die Angabe von Datum und Uhrzeit entsprechend dem XML-Schema Datentyp <a href="http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#dateTime" target="_blank"><span class="term">dateTime</span></a>. Enth&auml;lt der angegebene Zeitpunkt keinen Zeitzonen-Offset zur UTC, wird der Zeitpunkt als lokale Zeit des Servers interpretiert, auf dem MOA SP l&auml;uft. Wird <code>DateTime</code> nicht angegeben, versucht MOA SP, den Zeitpunkt der Signaturerstellung aus der Signatur zu ermitteln (anhand des Signaturattributs <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20040514/core/Core.html#ref-etsicms" target="_blank" class="term">SigningTime</a>). Enth&auml;lt die Signatur keinen Zeitpunkt der Signaturerstellung, verwendet MOA SP die aktuelle Systemzeit des Servers, auf dem es l&auml;uft.</p>
+<pre>
+  &lt;VerifySignatureInfo&gt;
+    &lt;VerifySignatureEnvironment Reference=&quot;http://localhost:8080/referencedData/XMLDocument.signed.xml&quot;/&gt;
+    &lt;VerifySignatureLocation xmlns:doc=&quot;urn:document&quot;
+      xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;/doc:XMLDocument/dsig:Signature&lt;/VerifySignatureLocation&gt;
+  &lt;/VerifySignatureInfo&gt;
+</pre>
+<p>Das Element <code>VerifySignatureEnvironment</code> enth&auml;lt in diesem Fall mit dem Attribut <code>Reference</code> eine Referenz auf das XML-Dokument (<code><a href="../../clients/referencedData/src/main/webapp/XMLDocument.signed.xml" target="_blank">XMLDocument.signed.xml</a></code>), das die zu pr&uuml;fende Signatur beinhaltet. Als Textinhalt von <code>VerifySignatureLocation</code> ist ein XPath-Ausdruck angegeben, der die zu pr&uuml;fende Signatur innerhalb des XML-Dokuments ausw&auml;hlt. Bitte beachten Sie, dass im Kontext des Elements <code>VerifySignatureLocation</code> alle im XPath-Ausdruck verwendeten Namespace-Pr&auml;fixe bekannt sein m&uuml;ssen (hier die Pr&auml;fixe <code>doc</code> und <code>dsig</code>). </p>
+<pre>
+  &lt;ReturnHashInputData/&gt;
+  &lt;TrustProfileID&gt;Test-Signaturdienste&lt;/TrustProfileID&gt;
+&lt;/VerifyXMLSignatureRequest&gt;
+</pre>
+<p>Durch Angabe des optionalen, leeren Elements <code>ReturnHashInputData</code> wird MOA SP angewiesen, im Response jene Daten zur&uuml;ckzuliefern, die von der Signatur abgedeckt sind, d. h. tats&auml;chlich signiert wurden (siehe unten). Diese Information ist f&uuml;r die MOA SP verwendende Anwendung essentiell, da sie wissen muss, ob tats&auml;chlich die von ihr geforderten Daten signiert wurden. Wird <code>HashInputData</code> im Request nicht angegeben, muss die Anwendung selbst die Signatur analysieren, um diese Information zu erhalten. </p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.Enveloped.resp.xml" target="_blank">VerifyXMLSignatureRequest.Enveloped.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass die dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureResponse
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;SignerInfo&gt;
+    &lt;dsig:X509Data&gt;...&lt;/dsig:X509Data&gt;
+  &lt;/SignerInfo&gt;
+</pre>
+<p>Die Response enth&auml;lt zun&auml;chst in <code>SignerInfo/dsig:X509Data</code> Informationen &uuml;ber den Signator, die aus dem in der XML-Signatur enthaltenen Signatorzertifikat entnommen sind (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>).</p>
+<pre>
+  &lt;HashInputData PartOf=&quot;SignedInfo&quot;&gt;
+    &lt;Base64Content&gt;PGRvYzp...hNTERvY3VtZW50Pg==&lt;/Base64Content&gt;
+  &lt;/HashInputData&gt;
+</pre>
+<p>Wurde im Request - so wie in diesem Beispiel - das Element <code>ReturnHashInputData</code> angegeben, enth&auml;lt
+  die Response nach <code>SignerInfo</code> f&uuml;r jede <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> der
+  XML-Signatur (bzw. auch  f&uuml;r jede <code>dsig:Reference</code> aus einem <code>dsig:Manifest</code>, auf
+  das mittels des Attributs <code>Type=&quot;http://www.w3.org/2000/09/xmldsig#Manifest&quot;</code> in einer <code>dsig:Reference</code> aus <code>dsig:SignedInfo</code> verwiesen
+  wird; solche Manifeste kommen aber in diesem Beispiel nicht vor) ein Element <code>HashInputData</code>.</p>
+<p>Die Reihenfolge der <code>HashInputData</code>-Elemente
+    entspricht der Reihenfolge der <code>dsig:Reference</code>-Elemente in <code>dsig:SignedInfo</code> der
+    XML-Signatur (enth&auml;lt die XML-Signatur auch <code>dsig:Manifest</code>-Elemente, auf die jeweils in einer <code>dsig:Reference</code>  aus <code>dsig:SignedInfo</code> verwiesen wird, werden zuerst <code>HashInputData</code>-Elemente f&uuml;r alle <code>dsig:Reference</code>-Elemente
+    aus <code>dsig:SignedInfo</code> und anschlie&szlig;end <code>HashInputData</code>-Elemente f&uuml;r alle <code>dsig:Reference</code>-Elemente
+    aus den einzelnen <code>dsig:Manifest</code>-Elementen geliefert). </p>
+<p>Das Attribut PartOf weist mit dem Wert SignedInfo darauf hin,    dass die <code>dsig:Reference</code>,
+f&uuml;r welche die Hasheingangsdaten gelten, Teil von <code>dsig:SignedInfo</code> ist (f&uuml;r eine <code>dsig:Reference</code> aus
+einem <code>dsig:SignedInfo</code> w&uuml;rde der gelieferte Wert <code>XMLDSIGManifest</code> lauten; weiters
+w&uuml;rde<code> HashInputData</code> in einem solchen Fall ein weiteres Attribut
+
+
+<code>ReferringSigReference</code> aufweisen, dessen Wert die Nummer jener <code>dsig:Reference</code> aus <code>dsig:SignedInfo </code>als
+positive Ganzzahl repr&auml;sentiert, die auf das beinhaltende <code>dsig:Manifest</code> verweist.). </p>
+<p>Der Inhalt wird dabei stets mittels <code>Base64Content</code> in
+      base64-kodierter Form geliefert.</p>
+<pre>
+  &lt;SignatureCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/SignatureCheck&gt;
+  &lt;CertificateCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/CertificateCheck&gt;
+&lt;/VerifyXMLSignatureResponse&gt;
+</pre>
+<p>Die Elemente <code>SignatureCheck</code> und <code>CertificateCheck</code> enthalten die Resultate der kryptographischen Pr&uuml;fung der Signatur sowie der Zertifikatspr&uuml;fung (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>).</p>
+<h4><a name="webservice_xmlrequests_pruefungxml_xmldsigmanifest"></a>2.1.4.3 Pr&uuml;fung eines XMLDSIG-Manifests </h4>
+<h5>Request</h5>
+<p>Dieses  Beispiel zur Pr&uuml;fung einer XML-Signatur (<a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.XMLDSigManifest.xml" target="_blank"><code>VerifyXMLSignatureRequest.XMLDSigManifest.xml</code></a>) demonstriert die Pr&uuml;fung eines in der  XML-Signatur vorhandenden <a href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/#sec-Manifest" target="_blank">Manifests nach XMLDSig</a>. Bitte beachten Sie, dass  der  dargestellte Request zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureRequest
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;VerifySignatureInfo&gt;
+    &lt;VerifySignatureEnvironment&gt;
+      &lt;XMLContent&gt;
+        &lt;dsig:Signature xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot; Id=&quot;signature-1-1&quot;&gt;
+          &lt;dsig:SignedInfo&gt;
+            &lt;dsig:CanonicalizationMethod Algorithm=&quot;http://www.w3.org/TR/2001/REC-xml-c14n-20010315&quot;/&gt;
+            &lt;dsig:SignatureMethod
+              Algorithm=&quot;http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1&quot;/&gt;
+            &lt;dsig:Reference Type=&quot;http://www.w3.org/2000/09/xmldsig#Manifest&quot; URI=&quot;#dsig-manifest-1-1&quot;&gt;
+              &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+              &lt;dsig:DigestValue&gt;nUUaW6OtcsNvV/QhqmkU2QXT1Mw=&lt;/dsig:DigestValue&gt;
+            &lt;/dsig:Reference&gt;
+          &lt;/dsig:SignedInfo&gt;
+          &lt;dsig:SignatureValue&gt;315gCwZI...OXFwr+&lt;/dsig:SignatureValue&gt;
+          &lt;dsig:KeyInfo&gt;...&lt;/dsig:KeyInfo&gt;
+          &lt;dsig:Object Id=&quot;signed-data-1-1-1&quot;&gt;Diese Daten sind signiert.&lt;/dsig:Object&gt;
+          &lt;dsig:Object&gt;
+            &lt;dsig:Manifest Id=&quot;dsig-manifest-1-1&quot;&gt;
+              &lt;dsig:Reference Id=&quot;reference-1-1&quot; URI=&quot;#xpointer(id(&apos;signed-data-1-1-1&apos;)/node())&quot;&gt;
+                &lt;dsig:DigestMethod Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#sha1&quot;/&gt;
+                &lt;dsig:DigestValue&gt;EYxznGxNRAIcHQeUsj+zsK+uaHA=&lt;/dsig:DigestValue&gt;
+              &lt;/dsig:Reference&gt;
+            &lt;/dsig:Manifest&gt;
+          &lt;/dsig:Object&gt;
+        &lt;/dsig:Signature&gt;
+      &lt;/XMLContent&gt;
+    &lt;/VerifySignatureEnvironment&gt;
+</pre>
+<p>Das Element <code>VerifySignatureEnvironment</code> enth&auml;lt als <code>XMLContent</code> die zu pr&uuml;fende XML-Signatur. Man erkennt, dass sich die einzige <code>dsig:Reference</code> im <code>dsig:SignedInfo</code> der XML-Signatur auf ein Manifest nach XMLDSig bezieht (erkennbar am Attribut <code>Type</code>, das auf den Wert <code>http://www.w3.org/2000/09/xmldsig#Manifest</code> gesetzt ist). Im Response (siehe unten) werden wir deshalb ein eigenes Resultat f&uuml;r die Manifest-Pr&uuml;fung erhalten.</p>
+<p>Das Manifest selbst ist in einem <code>dsig:Object</code>, also innerhalb der XML-Struktur der XML-Signatur kodiert. Es enth&auml;lt eine <code>dsig:Reference</code>, welche sich auf die Zeichenkette <code>Diese Daten sind signiert.</code> bezieht.</p>
+<pre>
+    &lt;VerifySignatureLocation&gt;//dsig:Signature&lt;/VerifySignatureLocation&gt;
+  &lt;/VerifySignatureInfo&gt;
+  &lt;TrustProfileID&gt;Test-Signaturdienste&lt;/TrustProfileID&gt;
+&lt;/VerifyXMLSignatureRequest&gt;
+</pre>
+<p>Das Element <code>VerifySignatureLocation</code> w&auml;hlt die zu pr&uuml;fende Signatur innerhalb des in <code>VerifySignatureEnvironment</code> angegebenen XML-Dokuments aus. Das Element <code>TrustProfileID</code> w&auml;hlt das Vertrauensprofil aus, gegen das die Zertifikatspr&uuml;fung durchgef&uuml;hrt werden soll. </p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.XMLDSigManifest.resp.xml" target="_blank">VerifyXMLSignatureRequest.XMLDSigManifest.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass die dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureResponse
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;SignerInfo&gt;
+    &lt;dsig:X509Data&gt;...&lt;/dsig:X509Data&gt;
+  &lt;/SignerInfo&gt;
+  &lt;SignatureCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/SignatureCheck&gt;
+</pre>
+<p>Die Response enth&auml;lt zun&auml;chst in <code>SignerInfo/dsig:X509Data</code> Informationen &uuml;ber den Signator, die aus dem in der XML-Signatur enthaltenen Signatorzertifikat entnommen sind (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>). Das Element<code> SignatureCheck</code> enth&auml;lt das Resultat der kryptographischen Pr&uuml;fung der Signatur (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>).</p>
+<pre>
+  &lt;XMLDSIGManifestCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+    &lt;Info&gt;
+      &lt;ReferringSigReference&gt;1&lt;/ReferringSigReference&gt;
+    &lt;/Info&gt;
+  &lt;/XMLDSIGManifestCheck&gt;
+</pre>
+<p>Neu ist in dieser Response das an <code>SignatureCheck</code> anschlie&szlig;ende Element <code>XMLDSIGManifestCheck</code>. Ein oder mehrere solche Elemente werden immer dann zur&uuml;ckgeliefert, wenn in <code>dsig:SignedInfo</code> der XML-Signatur <code>dsig:Reference</code> Elemente existieren, die sich auf ein Manifest nach XMLDSIG beziehen (siehe oben). Je solcher <code>dsig:Reference</code> enth&auml;lt die Antwort ein korrespondierendes Element <code>XMLDSIGManifestCheck</code>, im konkreten Beispiel als eines.</p>
+<p>Das Element <code>Code</code> gibt das Ergebnis der durchgef&uuml;hrten Pr&uuml;fung des XMLDSIG-Manifests an. In diesem Fall bedeutet <code>0</code>, dass die Pr&uuml;fung jeder <code>dsig:Reference </code>im <code>dsig:Manifest</code> (im konkreten Beispiel also genau einer <code>dsig:Reference</code>) erfolgreich durchgef&uuml;hrt werden konnte.  F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe <a href="#sl"> Security-Layer Spezifikation</a>.</p>
+<p>Das Element <code>Info/ReferringSigReference</code> enth&auml;lt als Textinhalt die Nummer jenes <code>dsig:Reference</code> Elements in <code>dsig:SignedInfo</code> der XML-Signatur, welches auf das untersuchte Manifest nach XMLDSIG verweist, wobei mit <code>1</code> zu z&auml;hlen begonnen wird.</p>
+<pre>
+  &lt;CertificateCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/CertificateCheck&gt;
+&lt;/VerifyXMLSignatureResponse&gt;
+</pre>
+<p>Das Element<code> CertificateCheck</code> enth&auml;lt das Resultat der Zertifikatspr&uuml;fung (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>).</p>
+<h4><a name="webservice_xmlrequests_pruefungxml_ergaenzungsobjekte"></a>2.1.4.4 Erg&auml;nzungsobjekte </h4>
+<p>Dieses Beispiel zur Pr&uuml;fung einer XML-Signatur (<a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.Supplements.xml" target="_blank"><code>VerifyXMLSignatureRequest.Supplements.xml</code></a>) demonstriert die Verwendung von Erg&auml;nzungsobjekten. Ein Erg&auml;nzungsobjekt betrifft entweder ein signiertes Datum (Zusammenhang mit einem <code>dsig:Reference</code> der XML-Signatur) oder jenes Dokument, in dem sich die zu pr&uuml;fende XML-Signatur befindet (Zusammenhang mit <code>VerifySignatureEnvironment</code>). Es muss dann angegeben werden, wenn auf ein signiertes Datum bzw. in einem signierten Datum bzw. in dem die XML-Signatur enthaltenden XML-Dokument auf weitere Daten  per Referenz verwiesen wird, diese Referenz aber von MOA SP nicht aufgel&ouml;st werden kann. Das Erg&auml;nzungsobjekt enth&auml;lt dann genau diese Daten die nicht von MOA SS aufgel&ouml;st werden k&ouml;nnen.</p>
+<p>Bitte beachten Sie, dass der dargestellte Request zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureRequest xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;&gt;
+  &lt;VerifySignatureInfo&gt;
+    &lt;VerifySignatureEnvironment&gt;
+      &lt;XMLContent&gt;
+        &lt;doc:XMLDocument ... xsi:schemaLocation=&quot;urn:document urn:XMLDocument.xsd&quot;&gt;
+          &lt;doc:Paragraph&gt;Ich bin der erste Absatz in diesem Dokument.&lt;/doc:Paragraph&gt;
+          &lt;doc:Paragraph ParaId=&quot;Para2&quot;&gt;Und ich bin der zweite Absatz in diesem Dokument.
+Ich habe weiters ein eigenens ID-Attribut bekommen.&lt;/doc:Paragraph&gt;
+          &lt;dsig:Signature Id=&quot;signature-1-1&quot; xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+            &lt;dsig:SignedInfo&gt;
+              ...
+              &lt;dsig:Reference Id=&quot;reference-1-1&quot; URI=&quot;#Para2&quot;&gt;
+                &lt;dsig:Transforms&gt;
+                  &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/1999/REC-xslt-19991116&quot;&gt;
+                    &lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+                      &lt;xsl:include href=&quot;XMLDocument.Para.xsl&quot;/&gt;
+                    &lt;/xsl:stylesheet&gt;
+                  &lt;/dsig:Transform&gt;
+                  &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2001/10/xml-exc-c14n#&quot;/&gt;
+                &lt;/dsig:Transforms&gt;
+                ...
+              &lt;/dsig:Reference&gt;
+            &lt;/dsig:SignedInfo&gt;
+            &lt;dsig:SignatureValue&gt;5rXIIkbP/djWmTgQEICy...0Sf8jvnz+d&lt;/dsig:SignatureValue&gt;
+            &lt;dsig:KeyInfo&gt;...&lt;/dsig:KeyInfo&gt;
+          &lt;/dsig:Signature&gt;
+        &lt;/doc:XMLDocument&gt;
+      &lt;/XMLContent&gt;
+    &lt;/VerifySignatureEnvironment&gt;
+</pre>
+<p>Das Element <code>VerifySignatureEnvironment</code> enth&auml;lt das XML-Dokument mit der zu pr&uuml;fenden XML-Signatur. </p>
+<p>Man erkennt, dass das Attribut <code>dsig:Reference/@URI</code> das Element<code> doc:Paragraph</code> mit dem auf den Wert <code>Para2</code> gesetzten ID-Attribut <code>ParaId</code> referenziert. MOA kann jedoch den Umstand, dass es sich bei <code>doc:Paragraph/@ParaId</code> um ein ID-Attribut handelt, nur dann erkennen, wenn es das XML-Dokument validierend parst. Der dazu n&ouml;tige Verweis auf das passende XML-Schema ist zwar mit dem Attribut <code>xsi:schemaLocation</code> vorhanden, jedoch handelt es sich dabei mit <code>urn:XMLDocument.xsd</code> um eine nicht aufl&ouml;sbare Referenz. Deshalb wird im Request ein passendes Erg&auml;nzungsobjekt ben&ouml;tigt (siehe unten).</p>
+<p>Weiters erkennt man, dass <code>dsig:Reference</code> ein XSLT-Transformation enth&auml;lt. Im darin kodierten Stylesheet-Parameter (<code>dsig:Transform/xsl:stylesheet</code>) wird ein weiterer Stylesheet inkludiert (<code>XMLDocument.Para.xsl</code>). Diese Referenz ist aber wiederum f&uuml;r MOA SP nicht aufl&ouml;sbar. Auch hier wird also ein passendes Erg&auml;nzungsobjekt ben&ouml;tigt (siehe unten). </p>
+<pre>
+    &lt;VerifySignatureLocation xmlns:doc=&quot;urn:document&quot;
+      xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;/doc:XMLDocument/dsig:Signature&lt;/VerifySignatureLocation&gt;
+  &lt;/VerifySignatureInfo&gt;
+</pre>
+<p>Das Element <code>VerifySignatureLocation</code> w&auml;hlt die zu pr&uuml;fende Signatur innerhalb des in <code>VerifySignatureEnvironment</code> angegebenen XML-Dokuments aus.</p>
+<pre>
+  &lt;SupplementProfile&gt;
+    &lt;Content Reference=&quot;XMLDocument.Para.xsl&quot;&gt;
+      &lt;LocRefContent&gt;http://localhost:8080/referencedData/XMLDocument.Para.xsl&lt;/LocRefContent&gt;
+    &lt;/Content&gt;
+  &lt;/SupplementProfile&gt;
+</pre>
+<p>Das erste Element <code>SupplementProfile</code> enth&auml;lt nun das Erg&auml;nzungsobjekt f&uuml;r den oben beschriebenen inkludierten Stylesheet. <code>Content/@Reference</code> enth&auml;lt die Referenz genau so, wie sie oben im Attribut <code>xsl:stylesheet/@href</code> angegeben wurde. Im Inhalt von <code>Content</code> werden entweder explizit jene Daten angegeben, die von MOA statt des Aufl&ouml;sens der Referenz verwendet werden sollen (<code>Base64Content</code> oder<code> XMLContent</code>), oder aber es wird  - wie im konkreten Beispiel -  <code></code>mit <code>LocRefContent</code> eine aufl&ouml;sbare Referenz f&uuml;r diese Daten an MOA SP &uuml;bergeben. </p>
+<pre>
+  &lt;SupplementProfile&gt;
+    &lt;Content Reference=&quot;urn:XMLDocument.xsd&quot;&gt;
+      &lt;XMLContent&gt;
+        &lt;xs:schema targetNamespace=&quot;urn:document&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+          xmlns=&quot;urn:document&quot; elementFormDefault=&quot;qualified&quot; attributeFormDefault=&quot;unqualified&quot;&gt;
+          ...
+        &lt;/xs:schema&gt;
+      &lt;/XMLContent&gt;
+    &lt;/Content&gt;
+  &lt;/SupplementProfile&gt;
+  &lt;TrustProfileID&gt;Test-Signaturdienste&lt;/TrustProfileID&gt;
+&lt;/VerifyXMLSignatureRequest&gt;
+</pre>
+<p>Das zweite Element <code>SupplementProfile</code> enth&auml;lt analog das Erg&auml;nzungsobjekt f&uuml;r das oben beschriebene XML-Schema. <code>Content/@Reference</code> enth&auml;lt die Referenz genau so, wie sie oben im Attribut <code>xsi:schemaLocation</code> angegeben wurde. </p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.Supplements.resp.xml" target="_blank">VerifyXMLSignatureRequest.Supplements.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Er wird an dieser Stelle nicht n&auml;her analysiert, da er keine f&uuml;r das Thema des Beispiels relevanten Besonderheiten aufweist.</p>
+<h4><a name="webservice_xmlrequests_pruefungxml_signaturmanifest" id="webservice_xmlrequests_pruefungxml_signaturmanifest"></a>2.1.4.5 Signatur-Manifest des Security-Layers </h4>
+<h5>Request</h5>
+<p>Dieses Beispiel zur Pr&uuml;fung einer XML-Signatur (<a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.SigManifest.xml" target="_blank"><code>VerifyXMLSignatureRequest.SigManifest.xml</code></a>) demonstriert die &Uuml;berpr&uuml;fung des Zusammenhangs zwischen den <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20040514/core/Core.html#glossar_Referenz-Eingangsdaten" target="_blank">Referenz-Eingangsdaten</a> und den <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20040514/core/Core.html#glossar_Hash-Eingangsdaten" target="_blank">Hash-Eingangsdaten</a> f&uuml;r die <code>dsig:Reference</code>-Elemente einer XML-Signatur. Mit Hilfe dieser Pr&uuml;fung kann eine Anwendung feststellen, ob bei der Erstellung einer XML-Signatur jene Transformationen bzw. auch jene inkludierten Stylesheets (vgl. <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20040514/core/Core.html#signaturerstellungNachXMLDSIGAntwortImplTransParam" target="_blank">Implizite Transformationsparameter</a>) einer XSLT-Transformation angewendet wurden, welche die Anwendung vorgegeben hat. Bei erfolgreicher Pr&uuml;fung dieses Zusammenhangs kann die Anwendung die Referenz-Eingangsdaten einer <code>dsig:Reference</code> als gesichert ansehen, obwohl eigentlich die Hash-Eingangsdaten durch die Signatur gesichert sind. Dies ist jenen F&auml;llen sinnvoll, in denen die Anwendung grunds&auml;tzlich mit XML-Daten arbeitet, diese Daten jedoch f&uuml;r das Signieren durch eine Person in ein f&uuml;r diese Person verst&auml;ndliches Format wie z.B. HTML umgewandelt werden sollen.</p>
+<pre>
+&lt;VerifyXMLSignatureRequest
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;VerifySignatureInfo&gt;
+    &lt;VerifySignatureEnvironment&gt;
+      &lt;XMLContent&gt;
+        &lt;doc:XMLDocument xmlns:doc=&quot;urn:document&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+          xsi:schemaLocation=&quot;urn:document http://localhost:8080/referencedData/XMLDocument.xsd&quot;&gt;
+          &lt;doc:Paragraph&gt;Ich bin der erste Absatz in diesem Dokument.&lt;/doc:Paragraph&gt;
+          &lt;doc:Paragraph ParaId=&quot;Para2&quot;&gt;Und ich bin der zweite Absatz in diesem Dokument.
+Ich habe weiters ein eigenens ID-Attribut bekommen.&lt;/doc:Paragraph&gt;
+          &lt;dsig:Signature xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot; Id=&quot;signature-1-1&quot;&gt;
+            &lt;dsig:SignedInfo&gt;
+              ...
+              &lt;dsig:Reference Id=&quot;reference-1-1&quot; URI=&quot;#Para2&quot;&gt;
+                &lt;dsig:Transforms&gt;
+                  &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/1999/REC-xslt-19991116&quot;&gt;
+                    &lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+                      &lt;xsl:include href=&quot;http://localhost:8080/referencedData/XMLDocument.Para.xsl&quot;/&gt;
+                    &lt;/xsl:stylesheet&gt;
+                  &lt;/dsig:Transform&gt;
+                  &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2001/10/xml-exc-c14n#&quot;/&gt;
+                &lt;/dsig:Transforms&gt;
+                ...
+              &lt;/dsig:Reference&gt;
+              &lt;dsig:Reference
+                Type=&quot;http://www.buergerkarte.at/specifications/Security-Layer/20020225#SignatureManifest&quot;
+                URI=&quot;#manifest-1-1&quot;&gt;
+                ...
+              &lt;/dsig:Reference&gt;
+              &lt;dsig:Reference Type=&quot;http://uri.etsi.org/01903/v1.1.1#SignedProperties&quot; ...&gt;...&lt;/dsig:Reference&gt;
+            &lt;/dsig:SignedInfo&gt;
+            &lt;dsig:SignatureValue&gt;jnXc/X+hUY...uBxo9q&lt;/dsig:SignatureValue&gt;
+            &lt;dsig:KeyInfo&gt;...&lt;/dsig:KeyInfo&gt;
+            &lt;dsig:Object&gt;
+              &lt;dsig:Manifest Id=&quot;manifest-1-1&quot;&gt;
+                &lt;dsig:Reference URI=&quot;http://localhost:8080/referencedData/XMLDocument.Para.xsl&quot;&gt;
+                  ...
+                &lt;/dsig:Reference&gt;
+              &lt;/dsig:Manifest&gt;
+            &lt;/dsig:Object&gt;
+            &lt;dsig:Object Id=&quot;etsi-signed-1-1&quot;&gt;
+              &lt;etsi:QualifyingProperties Target=&quot;#signature-1-1&quot; xmlns:etsi=&quot;http://uri.etsi.org/01903/v1.1.1#&quot;&gt;
+              ...
+              &lt;/etsi:QualifyingProperties&gt;
+            &lt;/dsig:Object&gt;
+          &lt;/dsig:Signature&gt;
+        &lt;/doc:XMLDocument&gt;
+      &lt;/XMLContent&gt;
+    &lt;/VerifySignatureEnvironment&gt;
+</pre>
+<p>Das Element <code>VerifySignatureEnvironment</code> enth&auml;lt das XML-Dokument mit der zu pr&uuml;fenden XML-Signatur. Die XML-Signatur wurde von einer B&uuml;rgerkarten-Umgebung erstellt. Man erkennt, dass das Element <code>dsig:SignedInfo</code> der XML-Signatur drei <code>dsig:Reference</code>-Elemente enth&auml;lt. </p>
+<p>Die erste <code>dsig:Reference</code> bezieht sich auf die eigentlich signierten Nutzdaten. Das zweite <code>doc:Paragraph</code>-Element stellt die  Referenz-Eingangsdaten f&uuml;r diese <code>dsig:Reference</code> dar, welche mit Hilfe einer XSLT-Transformation in ein kleines HTML-Dokument &uuml;bergef&uuml;hrt wird, wor&uuml;ber dann der Hashwert der dsig:Reference gebildet wird (Hash-Eingangsdaten).</p>
+<p>Die zweite <code>dsig:Reference</code> bezieht sich auf das von der B&uuml;rgerkarten-Umgebung angefertigte Signaturmanifest. Das Signaturmanifest ist vorhanden, weil die XSLT-Transformation der ersten <code>dsig:Reference</code> einen weiteren Stylesheet inkludiert, und die Daten dieses weiteren Stylesheets ansonsten nicht von der XML-Signatur abgedeckt w&auml;ren (vgl. <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20040514/core/Core.html#signaturerstellungNachXMLDSIGAntwortImplTransParam" target="_blank">Implizite Transformationsparameter</a>). Das Signaturmanifest enth&auml;lt eine einzige <code>dsig:Reference</code>, die den inkludierten Stylesheet referenziert und so in die XML-Signatur einbindet.</p>
+<p>Die dritte <code>dsig:Reference</code> bezieht sich auf die von der B&uuml;rgerkarten-Umgebung angefertigten Signatureigenschaften, die hier nicht n&auml;her betrachtet werden. </p>
+<pre>
+    &lt;VerifySignatureLocation xmlns:doc=&quot;urn:document&quot;&gt;/doc:XMLDocument/dsig:Signature&lt;/VerifySignatureLocation&gt;
+  &lt;/VerifySignatureInfo&gt;
+</pre>
+<p>Das Element <code>VerifySignatureLocation</code> w&auml;hlt die zu pr&uuml;fende Signatur innerhalb des in <code>VerifySignatureEnvironment</code> angegebenen XML-Dokuments aus.</p>
+<pre>
+  &lt;SignatureManifestCheckParams ReturnReferenceInputData=&quot;true&quot;&gt;
+    &lt;ReferenceInfo&gt;
+      &lt;VerifyTransformsInfoProfile&gt;
+        &lt;dsig:Transforms&gt;
+          &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/TR/1999/REC-xslt-19991116&quot;&gt;
+            &lt;xsl:stylesheet version=&quot;1.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+              &lt;xsl:include href=&quot;http://localhost:8080/referencedData/XMLDocument.Para.xsl&quot;/&gt;
+            &lt;/xsl:stylesheet&gt;
+          &lt;/dsig:Transform&gt;
+          &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2001/10/xml-exc-c14n#&quot;/&gt;
+        &lt;/dsig:Transforms&gt;
+        &lt;TransformParameter URI=&quot;http://localhost:8080/referencedData/XMLDocument.Para.xsl&quot;/&gt;
+      &lt;/VerifyTransformsInfoProfile&gt;
+      &lt;VerifyTransformsInfoProfile&gt;
+        &lt;dsig:Transforms&gt;
+          &lt;dsig:Transform Algorithm=&quot;http://www.w3.org/2000/09/xmldsig#enveloped-signature&quot;/&gt;
+        &lt;/dsig:Transforms&gt;
+      &lt;/VerifyTransformsInfoProfile&gt;
+    &lt;/ReferenceInfo&gt;
+  &lt;/SignatureManifestCheckParams&gt;
+  &lt;TrustProfileID&gt;Test-Signaturdienste&lt;/TrustProfileID&gt;
+&lt;/VerifyXMLSignatureRequest&gt;
+</pre>
+<p>Mit Angabe des optionalen Elements <code>SignatureManifestCheckParams</code> wird MOA SP angewiesen, den oben skizzierten Zusammenhang zwischen Referenz-Eingangsdaten und Hash-Eingangsdaten zu &uuml;berpr&uuml;fen. Wird das Attribut <code>ReturnReferenceInputData</code> wie im Beispiel auf den Wert <code>true</code> gesetzt, liefert MOA SP in der Response die Hash-Eingangsdaten f&uuml;r alle Referenzen in <code>dsig:SignedInfo</code> der XML-Signatur an die Anwendung zur&uuml;ck, was in der Regel von der Anwendung wohl gew&uuml;nscht wird, wenn MOA SP schon den Zusammenhang zwischen Referenz-Eingangsdaten und Hash-Eingangsdaten pr&uuml;fen soll.</p>
+<p>Die Pr&uuml;fung des Zusammenhangs untergliedert sich in zwei Teilpr&uuml;fungen:</p>
+<ul>
+  <li>&Uuml;berpr&uuml;fung, ob jede <code>dsig:Reference</code> in <code>dsig:SignedInfo</code> der Signatur eine vorgegebene Transformationskette inkludiert;</li>
+  <li>&Uuml;berpr&uuml;fung, ob die in der vorgegebenen Transformationskette ggf. enthaltenen inkludierten Stylesheets (implizite Transformationsparameter) durch ein Signaturmanifest mitsigniert sind.</li>
+</ul>
+<p>Damit MOA SP die erste Teilpr&uuml;fung durchf&uuml;hren kann, muss in <code>SignatureManifestCheckParams</code> je <code>dsig:Reference</code> Element in <code>dsig:SignedInfo</code> der XML-Signatur ein Element <code>ReferenceInfo</code> angeben. Ausgenommen sind <code>dsig:Reference</code>-Elemente, die auf ein Signaturmanifest (Attribut <code>Type</code> ist gesetzt und hat den Wert <code>http://www.buergerkarte.at/specifications/Security-Layer/20020225#SignatureManifest</code>), auf ein XMLDSIG-Manifest (Attribut <code>Type</code> ist gesetzt und hat den Wert <code>http://www.w3.org/2000/09/xmldsig#Manifest</code>) oder auf Signatureigenschaften (Attribut <code>Type</code> ist gesetzt und hat den Wert <code>http://uri.etsi.org/01903/v1.1.1#SignedProperties</code>) verweisen. </p>
+<p>Das Element <code>ReferenceInfo</code> enth&auml;lt eine oder mehrere erlaubte Transformationsketten, die jeweils durch ein Element <code>VerifyTransformsInfoProfile/dsig:Transforms</code> repr&auml;sentiert werden. Im konkreten Beispiel werden f&uuml;r die einzige zu pr&uuml;fende <code>dsig:Reference</code> zwei erlaubte Transformationsketten angegeben. Die Transformationen in der <code>dsig:Reference</code> m&uuml;ssen einer dieser beiden Ketten entsprechen; im konkreten Beispiel entsprechen sie der ersten. </p>
+<p>Nachdem die erste erlaubte Transformationskette eine XSLT-Transformation mit einem inkludierten Stylesheet enth&auml;lt, muss MOA SP auch &uuml;berpr&uuml;fen, ob dieser inkludierte Stylesheet korrekt durch ein Signaturmanifest mitunterschrieben wurde. Nachdem wichtig ist, dass nicht irgendein beliebiger Stylesheet verwendet und mitunterschrieben wurde, sondern genau jener, den die Anwendung bei der Signaturerstellung vorgegeben hat, muss die Anwendung MOA SP mitteilen, welcher Stylesheet das sein muss. Die Anwendung verwendet dazu das Element <code>VerifyTransformsInfoProfile/TransformParameter</code>. Das Attribut <code>TransformParameter/@URI</code> enth&auml;lt die Referenz auf den Stylesheet genau so, wie er im Stylesheet-Parameter der zu pr&uuml;fenden Signatur verwendet wird (<code>dsig:Transform/xsl:stylesheet/xsl:inlcude/@href</code>). F&uuml;r den Inhalt dieses Elements hat die Anwendung drei M&ouml;glichkeiten: </p>
+<ul>
+  <li>Die Anwendung l&auml;sst den Inhalt leer. Dies wird sie dann machen, wenn sie darauf vertrauen kann, dass die Aufl&ouml;sung der in <code>TransformParameter/@URI</code> angegebenen Referenz bei der Signaturpr&uuml;fung zum gleichen Resultat f&uuml;hrt wie seinerzeit beim Erstellen der Signatur (z.B. weil die Referenz auf einen Webserver unter Kontrolle der Anwendung zeigt);</li>
+  <li>Die Anwendung gibt im Element <code>TransformParameter/Base64Content</code> explizit den inkludierten Stylesheet an. MOA SP verwendet dann diesen Stylesheet, um den Hashwert der <code>dsig:Reference</code> im Signaturmanifest zu kontrollieren;</li>
+  <li>Die Anwendung gibt im Element <code>TransformParameter/Hash </code>den Hashwert des inkludierten Stylesheets an. MOA SP l&ouml;st dann die Referenz in <code>dsig:Transform/xsl:stylesheet/xsl:inlcude/@href</code> auf und stellt sicher, dass der &uuml;ber das Aufl&ouml;sungsergebnis gebildete Hashwert jenem in <code>TransformParameter/Hash </code>entspricht. Diese M&ouml;glichkeit wird die Anwendung dann verwenden, wenn es sich um einen sehr umfangreichen Stylesheet handelt, der nicht im Request mit&uuml;bertragen werden soll.</li>
+</ul>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.SigManifest.resp.xml" target="_blank">VerifyXMLSignatureRequest.SigManifest.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass die dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde. </p>
+<pre>
+&lt;VerifyXMLSignatureResponse
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;SignerInfo&gt;...&lt;/SignerInfo&gt;
+</pre>
+<p>Die Response enth&auml;lt zun&auml;chst in <code>SignerInfo/dsig:X509Data</code> Informationen &uuml;ber den Signator, die aus dem in der XML-Signatur enthaltenen Signatorzertifikat entnommen sind (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>). </p>
+<pre>
+  &lt;ReferenceInputData PartOf=&quot;SignedInfo&quot;&gt;
+    &lt;XMLContent xml:space=&quot;preserve&quot;&gt;
+      &lt;doc:Paragraph ParaId=&quot;Para2&quot; xmlns:doc=&quot;urn:document&quot;
+        xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;...&lt;/doc:Paragraph&gt;
+    &lt;/XMLContent&gt;
+  &lt;/ReferenceInputData&gt;
+  &lt;ReferenceInputData PartOf=&quot;SignedInfo&quot;&gt;
+    &lt;XMLContent xml:space=&quot;preserve&quot;&gt;
+      &lt;dsig:Manifest Id=&quot;manifest-1-1&quot; xmlns:doc=&quot;urn:document&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+        ...
+      &lt;/dsig:Manifest&gt;
+    &lt;/XMLContent&gt;
+  &lt;/ReferenceInputData&gt;
+  &lt;ReferenceInputData PartOf=&quot;SignedInfo&quot;&gt;
+    &lt;XMLContent xml:space=&quot;preserve&quot;&gt;
+      &lt;etsi:SignedProperties xmlns:doc=&quot;urn:document&quot;
+        xmlns:etsi=&quot;http://uri.etsi.org/01903/v1.1.1#&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
+        ...
+      &lt;/etsi:SignedProperties&gt;
+    &lt;/XMLContent&gt;
+  &lt;/ReferenceInputData&gt;
+</pre>
+<p>Nachdem im Request spezifiziert wurde, dass in der Response die Referenzeingangsdaten f&uuml;r alle <code>dsig:Reference</code>-Elemente
+  von <code>dsig:SignedInfo</code> (bzw. auch  f&uuml;r jede <code>dsig:Reference</code> aus einem <code>dsig:Manifest</code>,
+  auf das mittels des Attributs <code>Type=&quot;http://www.w3.org/2000/09/xmldsig#Manifest&quot;</code> in einer <code>dsig:Reference</code>  aus <code>dsig:SignedInfo</code> verwiesen
+  wird; solche Manifeste kommen aber in diesem Beispiel nicht vor) der gepr&uuml;ften
+  XML-Signatur &uuml;bermittelt
+  werden sollen, enth&auml;lt
+  die Response nach <code>SignerInfo</code> drei <code>ReferenceInputData</code>-Elemente. Das erste <code>ReferenceInputData</code>-Element
+  enth&auml;lt das zuvor besprochene <code>doc:Paragraph</code> Element, das zweite das Signaturmanifest, das
+  dritte die Signatureigenschaften. Das Attribut <code>PartOf</code> jedes Elements weist mit dem Wert <code>SignedInfo</code> darauf hin,
+  dass die <code>dsig:Reference</code>, f&uuml;r welche die Referenzeingangsdaten gelten, Teil von <code>dsig:SignedInfo</code> ist. </p>
+<pre>
+  &lt;SignatureCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/SignatureCheck&gt;
+</pre>
+<p>Das Element<code> SignatureCheck</code> enth&auml;lt das Resultat der kryptographischen Pr&uuml;fung der Signatur (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>).</p>
+<pre>
+  &lt;SignatureManifestCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/SignatureManifestCheck&gt;
+</pre>
+<p>Das Element <code>SignatureManifestCheck</code> enh&auml;lt das Resultat der Pr&uuml;fung des Zusammenhangs  zwischen Referenz-Eingangsdaten und Hash-Eingangsdaten. Der Kode <code>0</code> im konkreten Beispiel bedeutet, dass alle Referenzen  die in der Anfrage zur &Uuml;berpr&uuml;fung der XML-Signatur gemachten Einschr&auml;nkungen bez&uuml;glich der erlaubten Transformationskette(n) einhalten, sowie dass die Anforderungen  hinsichtlich des Signaturmanifests werden eingehalten. F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe die <a href="../spec/MOA-SPSS-2.0.0.pdf" target="_blank">Spezifikation zu MOA SP/SS</a>, Abschnitt 5.1.3.1.4.</p>
+<pre>
+  &lt;CertificateCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/CertificateCheck&gt;
+&lt;/VerifyXMLSignatureResponse&gt;
+</pre>
+<p>Das Element<code> CertificateCheck</code> enth&auml;lt das Resultat der Zertifikatspr&uuml;fung (siehe <a href="#webservice_xmlrequests_pruefungxml_einfach">Einfaches Beispiel</a>).</p>
+<!-- TSL -->
+<h4><a name="webservice_xmlrequests_pruefungxml_tsl"></a>2.1.4.6 Pr&uuml;fung gegen Trustprofil mit TSL Unterst&uuml;tzung</h4>
+<h5>Request</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.TSL.xml" target="_blank">VerifyXMLSignatureRequest.TSL.xml</a></code> ist ein einfacher XML-Request zur Pr&uuml;fung einer XML-Signatur. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass  der  dargestellte Request zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureRequest xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;&gt;
+  &lt;VerifySignatureInfo&gt;
+    &lt;VerifySignatureEnvironment&gt;
+      &lt;XMLContent&gt;
+        &lt;dsig:Signature Id=&quot;signature-1-1&quot; xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+          [..]
+        &lt;/dsig:Signature&gt;
+      &lt;/XMLContent&gt;
+    &lt;/VerifySignatureEnvironment&gt;
+</pre>
+<p>Das Element <code>VerifySignatureEnvironment</code> enth&auml;lt jenes XML-Dokument, das die zu pr&uuml;fende XML-Signatur enth&auml;lt. </p>
+<pre>
+    &lt;VerifySignatureLocation
+      xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;//dsig:Signature&lt;/VerifySignatureLocation&gt;
+  &lt;/VerifySignatureInfo&gt;
+</pre>
+<p>Das Element <code>VerifySignatureLocation</code> enth&auml;lt als Text den XPath-Ausdruck zur Selektion der XML-Signatur innerhalb des zu pr&uuml;fenden XML-Dokuments. Die Auswertung des XPath-Ausdrucks muss genau ein Element <code>dsig:Signature</code> ergeben. Bitte beachten Sie, dass im Kontext des Elements <code>VerifySignatureLocation</code> alle im XPath-Ausdruck verwendeten Namespace-Pr&auml;fixe bekannt sein m&uuml;ssen (hier das Pr&auml;fix <code>dsig</code>). </p>
+<pre>
+  &lt;TrustProfileID&gt;Test-TSLProfil&lt;/TrustProfileID&gt;
+&lt;/VerifyXMLSignatureRequest&gt;
+</pre>
+<p>Das Element <code>TrustProfileID</code> schlie&szlig;lich enth&auml;lt den Bezeichner des Vertrauensprofils, gegen das die Zertifikatspr&uuml;fung von MOA SP durchgef&uuml;hrt wird. In diesem Falle muss f&uuml;r das Vertrauenprofil die TSL Unterst&uuml;tzung aktiviert sein. In der beispielhaften Konfiguration <a href="../../../conf/moa-spss/sp.minimum_with_tsl.config.xml" target="_blank">sp.minimum_with_tsl.config.xml</a> ist so eine Vertrauensprofile mit der ID Test-TSLProfil eingerichtet.</p>
+<h5>Response</h5>
+<p><code><a href="../../clients/webservice/resources/requests/VerifyXMLSignatureRequest.TSL.resp.xml" target="_blank">VerifyXMLSignatureRequest.TSL.resp.xml</a></code> ist eine typische Response des SP Webservices auf den obigen Request. Sein Aufbau wird nachfolgend analysiert. Bitte beachten Sie, dass die dargestellte Response zur bessernen Lesbarkeit einger&uuml;ckt und gek&uuml;rzt wurde.</p>
+<pre>
+&lt;VerifyXMLSignatureResponse
+  xmlns=&quot;http://reference.e-government.gv.at/namespace/moa/20020822#&quot;
+  xmlns:dsig=&quot;http://www.w3.org/2000/09/xmldsig#&quot;&gt;
+  &lt;SignerInfo&gt;
+    &lt;dsig:X509Data&gt;
+      &lt;dsig:X509SubjectName&gt;T=DI,serialNumber=847206943023,givenName=Klaus,SN=Stranacher,
+  CN=Klaus Stranacher,C=AT&lt;/dsig:X509SubjectName&gt;
+      &lt;dsig:X509IssuerSerial&gt;
+        &lt;dsig:X509IssuerName&gt;CN=a-sign-premium-mobile-03,OU=a-sign-premium-mobile-03,
+  O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT&lt;/dsig:X509IssuerName&gt;
+        &lt;dsig:X509SerialNumber&gt;685117&lt;/dsig:X509SerialNumber&gt;
+      &lt;/dsig:X509IssuerSerial&gt;
+      &lt;dsig:X509Certificate&gt;...&lt;/dsig:X509Certificate&gt;              
+        &lt;QualifiedCertificate/&gt;<br>        &lt;SecureSignatureCreationDevice Source=&quot;Certificate&quot;/&gt;<br>        &lt;IssuerCountryCode&gt;AT&lt;/IssuerCountryCode&gt;<br>    &lt;/dsig:X509Data&gt;
+  &lt;/SignerInfo&gt;
+</pre>
+<p>Die Response enth&auml;lt zun&auml;chst in <code>SignerInfo/dsig:X509Data</code> Informationen &uuml;ber den Signator, die aus dem in der XML-Signatur enthaltenen Signatorzertifikat entnommen sind. </p>
+<p><code>dsig:X509SubjectName</code> ist immer vorhanden und enth&auml;lt den Namen des Signators. <code>dsig:X509IssuerSerial</code> ist ebenfalls immer vorhanden und enth&auml;lt den Namen des Austellers des Signatorzertifikats (<code>dsig:X509IssuerName</code>) sowie die Seriennummer des Zertifikats (<code>dsig:X509SerialNumber</code>). Auch <code>dsig:X509Certificate</code> ist ist immer vorhanden und enth&auml;lt das Signatorzertifikat in base64 kodierter Form. </p>
+<p>Optional vorhanden  ist das inhaltslose Element <code>QualifiedCertificate</code>, und zwar dann, wenn es sich beim Signatorzertifikat um ein qualifiziertes Zertifikat handelt. Optional vorhanden ist das Element <code>SecureSignatureCreationDevice</code>, und zwar dann wenn die Signatur mittels einer sicheren Signaturerstellungseinheit erzeugt wurde. Das Attribut  <code>Source</code>, gibt dabei an ob diese Information &uuml;ber die entsprechende TSL (<code>Source=TSL</code>) oder &uuml;ber das Zertifikat ermittelt wurde (<code>Source=Certificate</code>). Das weitere optionale Element <code>IssuerCountryCode</code> gibt dabei den L&auml;ndercode des Zertifizierungsdiensteanbieters an, der das Signaturzertifikat ausgestellt hat. Ebenfalls optional vorhanden (nicht in diesem Beispiel) ist schlie&szlig;lich das Element <code>PublicAuthority</code>, und zwar dann, wenn das Signatorzertifikat die &ouml;sterreichspezifische Zertifikatserweiterung <a href="http://www.digitales.oesterreich.gv.at/site/cob__28513/5580/default.aspx" target="_blank">Verwaltungseigenschaft</a> aufweist. Ist in dieser Zertifikatserweiterung das Verwaltungskennzeichen mitkodiert, wird dieses Kennzeichen als Textinhalt des optionalen Elements <code>PublicAuthority/Code</code> geliefert.</p>
+<pre>
+  &lt;SignatureCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/SignatureCheck&gt;
+</pre>
+<p> Anschlie&szlig;end an <code>SignerInfo</code> enth&auml;lt die Response mit <code>SignatureCheck/Code</code> das Resultat der kryptographischen Pr&uuml;fung der Signatur. In unserem Beispiel ist dort der Wert <code>0</code> enthalten, d. h. die Signatur konnte erfolgreich validiert werden. F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe <a href="#sl"> Security-Layer Spezifikation</a>.</p>
+<pre>
+  &lt;CertificateCheck&gt;
+    &lt;Code&gt;0&lt;/Code&gt;
+  &lt;/CertificateCheck&gt;
+</pre>
+<p>Abschlie&szlig;end enth&auml;lt die Response mit <code>CertificateCheck/Code</code> das Resultat der Pr&uuml;fung des Signatorzertifikats. Zun&auml;chst pr&uuml;ft MOA SP, ob ausgehend vom Signatorzertifikat eine Zertifikatskette zu einem im zugeh&ouml;rigen Vertrauensprofil konfigurierten sog. <span class="term">Trust Anchor</span> gebildet werden kann. Gelingt dies, wird die G&uuml;ltigkeit jedes Zertifikats dieser Kette &uuml;berpr&uuml;ft. In unserem Beispiel enth&auml;lt <code>Code</code> den Wert <code>0</code>, d. h. MOA SP konnte die Kette bilden, und alle Zertifikate der Kette sind g&uuml;ltig. F&uuml;r eine &Uuml;bersicht der m&ouml;glichen Kodes siehe <a href="#sl"> Security-Layer Spezifikation</a>.</p>
+
+<!-- TSL -->
+<h2><a name="webservice_clients" id="webservice_clients"></a>2.2 Webservice-Clients</h2>
+<p><a href="#webservice_xmlrequests">Abschnitt 2.1</a> bespricht eine Reihe von typischen XML-Requests, die &uuml;ber die Webservice-Schnittstelle an MOA SP/SS gesendet werden k&ouml;nnen, um entweder Signaturen zu erstellen (MOA SS) oder Signaturen zu pr&uuml;fen (MOA SP). Dieser Abschnitt zeigt die Verwendung des prototypischen Webservice-Clients, der mit dieser Dokumentation zu MOA SP/SS ausgeliefert wird.</p>
+<h3><a name="webservice_clients_übersicht" id="webservice_clients_übersicht"></a>2.2.1 &Uuml;bersicht</h3>
+<p>Der Webservice-Client existiert in drei Varianten, wobei jede Variante in einer eigenen Java-Klasse implementiert ist:</p>
+<ul>
+  <li>Der einfache Client (<code><a href="../../clients/webservice/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/webservice/HTTP.java">HTTP.java</a></code>) arbeitet  ohne Authentifikation. Er pr&uuml;ft weder die Authentizit&auml;t des verwendeten MOA-Webservices, noch identifiziert er sich selbst gegen&uuml;ber dem MOA-Webservice.</li>
+  <li>Der Client mit Server-Authentisierung (<code><a href="../../clients/webservice/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/webservice/HTTPSServerAuth.java">HTTPSServerAuth.java</a></code>) pr&uuml;ft die Authentizit&auml;t des verwendeten MOA-Websservices an Hand dessen SSL-Serverzertifikats, identifiziert sich selbst jedoch nicht gegen&uuml;ber dem MOA-Webservice.</li>
+  <li>Der Client mit  Client- und Server-Authentisierung (<code><a href="../../clients/webservice/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/webservice/HTTPSClientAuth.java">HTTPSClientAuth.java</a></code>) pr&uuml;ft einerseits die Authentizit&auml;t des verwendeten MOA-Websservices an Hand dessen SSL-Serverzertifikats; andererseits weist er sich selbst mittels eines SSL-Client-Zertifikats gegen&uuml;ber dem MOA-Webservice aus. </li>
+</ul>
+<p>Welcher der drei Varianten des Webservice-Clients zum Einsatz kommen soll, h&auml;ngt von der Art ab, wie das MOA-Webservice betrieben wird, d.h. ob es Server- bzw. Client-Authentisierung unterst&uuml;tzt bzw. verlangt. Befinden sich sowohl MOA-Webservice als auch der Webservice-Client im gleichen, abgeschotteten Netzwerk, kann auch eine Kommunikation ohne Authenifikation in Betracht gezogen werden. Ansonsten wird der Standardfall wohl der Betrieb mit Server-Authentisierung (Verwendung von MOA SP) bzw. mit Server- und Client-Authentisierung (Verwendung von MOA SS) sein.</p>
+<p class="remark">Hinweis: Das <a href="../../">Wurzelverzeichnis</a> dieses Handbuchs stellt ein komplettes und sofort verwendbares Eclipse Projekt dar. </p>
+<h3><a name="webservice_clients_gemeinsamkeiten" id="webservice_clients_gemeinsamkeiten"></a>2.2.2 Gemeinsamkeiten</h3>
+<p>Dieser Abschnitt beschreibt die Gemeinsamkeiten aller drei Varianten des Webservice-Clients. </p>
+<p>Zun&auml;chst einmal ben&ouml;tigen alle drei Varianten die folgenden Java-Bibliotheken, die im Ordner <a href="../../clients/webservice/lib/">clients/webservice/lib/</a> dieses Handbuchs bereits enthalten sind:</p>
+<table class="fixedwidth" border="1" cellpadding="2">
+  <TBODY>
+    <TR>
+      <TH>Java-Bibliothek</TH>
+      <TH>Bemerkung</TH>
+    </TR>
+    <tr class="fixedWidth">
+      <td><a href="http://java.com/" target="_blank">Java SE</a></td>
+      <td>Java Standard Edition (Software Development Kit bzw. Java Runtime Environment) </td>
+    </tr>
+    <TR>
+      <TD><a href="#referenzierte_software">Apache Xerces</a></TD>
+      <TD>XML-Parser, Version 2.0.2 oder h&ouml;her</TD>
+    </TR>
+    <TR>
+      <TD><a href="#referenzierte_software">AXIS Framework</a></TD>
+      <TD>Webservice-Framework, ab Version 1.1.</TD>
+    </TR>
+  </TBODY>
+</TABLE>
+<p>Weiters ist allen drei Varianten der folgende Kern-Ablauf gemeinsam:</p>
+<ol>
+  <li>Der Webservice-Client liest einen vorbereiteten MOA-XML-Request (z. B. einen der in <a href="#webservice_xmlrequests">Abschnitt 2.1</a> gezeigten) vom Dateisystem ein.</li>
+  <li>Der Webservice-Client erstellt einen SOAP-Request mit dem vom Dateisystem gelesenen MOA-XML-Request als Nutzlast.</li>
+  <li>Der Webservice-Client sendet den erstellten SOAP-Request &uuml;ber HTTP an MOA SP/SS. </li>
+  <li>Der Webservice-Client empf&auml;ngt die SOAP-Response von MOA SP/SS.</li>
+  <li>Der Webservice-Client extrahiert die Nutzlast des SOAP-Responses (d. h. die zum MOA-XML-Request aus Schritt 1 passende MOA-XML-Response), gibt diese auf die Konsole aus und speichert sie im Dateisystem. </li>
+</ol>
+<p>Konfiguriert werden k&ouml;nnen alle drei Varianten mit Hilfe von zwei Kommandozeilen-Parametern:</p>
+<ol>
+  <li>Der erste Kommandozeilenparameter gibt an, ob MOA SS (Wert <code>sign</code>) oder MOA SP (Wert <code>verify</code>) kontaktiert werden soll. </li>
+  <li>Der zweite Kommandozeilenparameter enth&auml;lt Pfad und Dateiname einer Java-Properties-Datei, die die weiteren Konfigurationsparameter f&uuml;r den Webservice-Client enth&auml;lt. Ein relativer Pfad wird als relativ zum Arbeitsverzeichnis der Java Virtual Machine interpretiert. Genaue Infos zu den m&ouml;glichen Konfigurationsparametern entnehmen Sie bitte der Quellcodedokumentation der jeweiligen Variante des Webservice-Clients. <a href="../../clients/webservice/conf/http.properties"><code>http.properties</code></a> enth&auml;lt eine auf dieses Handbuch abgestimmte Konfiguration.</li>
+</ol>
+<h3><a name="webservice_clients_httpsserverauth" id="webservice_clients_httpsserverauth"></a>2.2.3 Besonderheiten von <code>HTTPSServerAuth.java</code></h3>
+<p>Diese Variante des Webservice-Clients baut im Schritt 3 des Kernablaufs aus <a href="#webservice_clients_gemeinsamkeiten">Abschnitt 2.2.2</a> eine SSL-Verbindung mit Server-Authentifizierung zum MOA SP/SS Server auf. In dieser SSL-Verbindung sendet der Webservice-Client dann den erstellten SOAP-Request &uuml;ber HTTPS.</p>
+<p>Die entsprechende Konfiguration (Speicher f&uuml;r die vertrauensw&uuml;rdigen Serverzertifikate, Typ dieses Speichers, Passwort f&uuml;r diesen Speicher) wird mittels zus&auml;tzlicher Parameter in der in <a href="#webservice_clients_gemeinsamkeiten">Abschnitt 2.2.2</a> besprochenen Java-Properties-Datei vorgenommen. Genaue Infos zu diesen Konfigurationsparametern entnehmen Sie bitte der Quellcodedokumentation von <code><a href="../../clients/webservice/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/webservice/HTTPSServerAuth.java">HTTPSServerAuth.java</a></code>. <a href="../../clients/webservice/conf/http.properties"><code>http.properties</code></a> enth&auml;lt eine auf dieses Handbuch abgestimmte Konfiguration.</p>
+<p>Falls Sie Probleme beim SSL-Verbindungsaufbau zwischen Webservice-Client und MOA SP/SS Webservice haben, empfiehlt sich die Aktivierung des SSL Loggings. Das Setzen der daf&uuml;r notwendigen Java System Property ist im Quellcode von <code><a href="../../clients/webservice/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/webservice/HTTPSServerAuth.java">HTTPSServerAuth.java</a></code> bereits enthalten, jedoch auskommentiert. Suchen Sie einfach nach dem String <code>javax.net.debug</code>, um zur entsprechenden Stelle im Quellcode zu gelangen. </p>
+<h3><a name="webservice_clients_httpsclientauth" id="webservice_clients_httpsclientauth"></a>2.2.4 Besonderheiten von <code>HTTPSClientAuth.java</code> </h3>
+<p>Diese Variante des Webservice-Clients baut im Schritt 3 des Kernablaufs aus <a href="#webservice_clients_gemeinsamkeiten">Abschnitt 2.2.2</a> eine SSL-Verbindung mit Server- und Client-Authentifizierung zum MOA SP/SS Server auf. In dieser SSL-Verbindung sendet der Webservice-Client dann den erstellten SOAP-Request &uuml;ber HTTPS.</p>
+<p>Die gegen&uuml;ber <a href="#webservice_clients_httpsserverauth">Abschnitt 2.2.3</a> zus&auml;tzlich notwendige Konfiguration (Speicher f&uuml;r das SSL-Client-Zertifikat sowie den dazugeh&ouml;rigen privaten Schl&uuml;ssel, Typ dieses Speichers, Passwort f&uuml;r diesen Speicher) wird mittels zus&auml;tzlicher Parameter in der in <a href="#webservice_clients_gemeinsamkeiten">Abschnitt 2.2.2</a> besprochenen Java-Properties-Datei vorgenommen. Genaue Infos zu diesen Konfigurationsparametern entnehmen Sie bitte der Quellcodedokumentation von <code><a href="../../clients/webservice/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/webservice/HTTPSClientAuth.java">HTTPSClientAuth.java</a></code>. <a href="../../clients/webservice/conf/http.properties"><code>http.properties</code></a> enth&auml;lt eine auf dieses Handbuch abgestimmte Konfiguration.</p>
+<p>Beachten Sie bitte auch den Hinweis zum SSL Logging aus <a href="#webservice_clients_httpsserverauth">Abschnitt 2.2.3</a>.</p>
+<h2><a name="readcert" id="webservice_clients_httpsclientauth2"></a>2.3 Zertifikat einer Schl&uuml;sselgruppe auslesen</h2>
+<p>Ab der Version 2.0.3 von MOA-SPSS kann das Zertifikat einer Schl&uuml;sselgruppe &uuml;ber ein Web Interface abgerufen werden. MOA-SPSS bietet hierf&uuml;r folgenden Endpunkt:</p>
+<pre>http(s)://......../moa-spss/Certificate?id=&lt;Name der Schl&uuml;sselgruppe&gt;</pre>
+<p>Mit dem http GET Parameter id kann die gew&uuml;nsche Schl&uuml;sselgruppe ausgew&auml;hlt werden.</p>
+<h1><a name="klassenbibliothek" id="klassenbibliothek"></a>3 Verwendung der Klassenbibliothek</h1>
+<p>Neben dem Betrieb von MOA SP/SS als Webservice ist als Alternative auch die Verwendung von MOA SP/SS als Klassenbibliothek m&ouml;glich, also die direkte Einbindung in ein Java-Programm unter Verwendung des Application Programmers Interface (API) von MOA SP/SS. </p>
+<h2><a name="klassenbibliothek_vorbereitung" id="klassenbibliothek_vorbereitung"></a>3.1 Vorbereitung</h2>
+<p>Um das API von MOA SP/SS verwenden zu k&ouml;nnen, m&uuml;ssen einerseits die MOA-Bibliotheken selbst, andererseits eine Reihe von unterst&uuml;tzenden Bibliotheken in den Klassenpfad aufgenommen werden. Eine &Uuml;bersicht dazu finden Sie im Installationshandbuch im <a href="../install/install.html#klassenbibliothek">Abschnitt 3</a>.
+<h2><a name="klassenbibliothek_allgemeines" id="klassenbibliothek_allgemeines"></a>3.2 Allgemeines </h2>
+<p>Der strukturelle Aufbau der API entspricht weitgehend der Struktur eines MOA-XML-Requests. Es werden daher in diesem Abschnitt nur zwei grundlegende Beispiele gebracht; f&uuml;r komplexere Aufgaben k&ouml;nnen die XML-Beispiele aus <a href="#webservice_xmlrequests">Abschnitt 2.1</a> als Vorlage verwendet und einfach in die &quot;API-Welt&quot; &uuml;bertragen werden.
+<h2><a name="klassenbibliothek_beispiele" id="klassenbibliothek_beispiele"></a>3.3 Beispiele </h2>
+<p>Dieses Handbuch enth&auml;lt zwei Beispiele f&uuml;r die Verwendung der API von MOA SP/SS:
+<ol>
+  <li><code><a href="../../clients/api/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/api/CreateXMLSignature.java">CreateXMLSignature.java</a></code>: Erstellung einer einfachen XML-Signatur; dieses Beispiel entspricht dem MOA-XML-Request aus <a href="#webservice_xmlrequests_erstellungxml_simple">Abschnitt 2.1.1.1</a>. <br>
+    Die Konfiguration der API erfolgt &uuml;ber Kommandozeilenparameter (Lage der Konfigurationsdatei f&uuml;r MOA SP/SS, Lage der Konfigurationsdatei f&uuml;r das Logging mit Log4j). Detaillierte Informationen dazu finden Sie in der Quellcodedokumentation des Beispiels. </li>
+  <li><code><a href="../../clients/api/src/main/java/at/gv/egovernment/moa/spss/handbook/clients/api/VerifyXMLSignature.java">VerifyXMLSignature.java</a></code>: Pr&uuml;fung einer einfachen XML-Signatur; dieses Beispiel entspricht dem MOA-XML-Request aus <a href="#webservice_xmlrequests_pruefungxml_einfach">Abschnitt 2.1.3.1</a>. <br>
+    Die Konfiguration der API erfolgt &uuml;ber Kommandozeilenparameter (Lage der Konfigurationsdatei f&uuml;r MOA SP/SS, Lage der Konfigurationsdatei f&uuml;r das Logging mit Log4j). Detaillierte Informationen dazu finden Sie in der Quellcodedokumentation des Beispiels. <br>
+    Die Auswahl der zu pr&uuml;fenden Signatur erfolgt ebenfalls per Kommandozeilenparameter. Detaillierte Informationen dazu finden Sie ebenfalls in der Quellcodedokumentation des Beispiels. </li>
+</ol>
+<h2><a name="klassenbibliothek_apidoc" id="klassenbibliothek_apidoc"></a>3.4 API-Dokumentation </h2>
+<p>F&uuml;r die vollst&auml;ndige Dokumentation des API von MOA SP/SS sei auf die <a href="../../api-doc/index.html">Java Doc der API</a> verwiesen.
+<p>
+<h1><a name="referenzierte_software" id="referenzierte_software"></a>A Referenzierte Software</h1>
+<p>Auf folgende Software-Pakete wird in diesem Handbuch verwiesen:</p>
+<table class="fixedWidth" border="1" cellpadding="2">
+  <tbody>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Beschreibung</th>
+    </tr>
+    <tr>
+      <td><a href="http://xml.apache.org/xerces2-j/">Apache Xerces 2</a> </td>
+      <td>XML-Parser aus dem Apache Project</td>
+    </tr>
+    <tr>
+      <td><a href="http://axis.apache.org/axis/">Apache Axis</a></td>
+      <td>Webservice-Framework  aus dem Apache Project</td>
+    </tr>
+    <tr>
+    <td><a href="http://java.com/" target="_blank">Java SE</a></td>
+    <td>Java Standard Edition (Software Development Kit bzw. Java Runtime Environment) </td>
+  </tr>
+  </tbody>
+</table>
+<h1><a name="referenzierte_spezifikation" id="referenzierte_spezifikation"></a>B Referenzierte Spezifikation</h1>
+<table class="fixedWidth" border="1" cellpadding="2">
+  <tbody>
+    <tr>
+      <th>Spezifikation</th>
+      <th>Link</th>
+    </tr>
+    <tr id="sl">    	
+      <td><p>Security Layer Spezifikation Version 1.2.7</p></td>
+      <td><a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20140114/core/core.html#core" target="_blank">http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20140114/core/core.html#core</a></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

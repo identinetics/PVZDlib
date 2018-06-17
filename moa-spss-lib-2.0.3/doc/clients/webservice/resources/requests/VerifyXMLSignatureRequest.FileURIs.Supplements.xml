@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<VerifyXMLSignatureRequest
+  xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#"
+  xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://reference.e-government.gv.at/namespace/moa/20020822# file:D:/_java/moa-idspss/trunk/common/src/main/resources/resources/schemas/MOA-SPSS-2.0.0.xsd
+                  http://www.w3.org/2000/09/xmldsig# http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd">
+	<VerifySignatureInfo>
+		<VerifySignatureEnvironment>
+			<XMLContent>
+				<dsig:Signature xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" Id="signature-1208432475-242867937-18096">
+					<dsig:SignedInfo>
+						<dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+						<dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/>
+						<dsig:Reference Id="signed-data-reference-0-1208432475-242867937-22960" URI="urn:Document">
+							<dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+							<dsig:DigestValue>te0YD8LFaK3JLQV8cL69DPnFRLc=</dsig:DigestValue>
+						</dsig:Reference>
+						<dsig:Reference Id="etsi-data-reference-0-1208432475-242867937-11431" Type="http://uri.etsi.org/01903/v1.1.1#SignedProperties" URI="#xmlns(etsi=http://uri.etsi.org/01903/v1.1.1%23)%20xpointer(id('etsi-data-object-0-1208432475-242867937-12332')/child::etsi:QualifyingProperties/child::etsi:SignedProperties)">
+							<dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+							<dsig:DigestValue>2M9g7DopnXtz86dkz+7yk5SHSHo=</dsig:DigestValue>
+						</dsig:Reference>
+					</dsig:SignedInfo>
+					<dsig:SignatureValue>Ti3ckR8eq4D0mUhb+ylUFhIYn7mfUHTc2AjTys4oaq4gFkXvQlQI41Iggp40c916</dsig:SignatureValue>
+					<dsig:KeyInfo>
+						<dsig:X509Data>
+							<dsig:X509Certificate>MIIDlzCCAf+gAwIBAgIRMrFTcaHacn5T5kRFML4Ck6swDQYJKoZIhvcNAQEFBQAwTTESMBAGA1UEAwwJVlNpZyBDQSAyMSowKAYDVQQKDCFIYXVwdHZlcmJhbmQgw7ZzdGVyci4gU296aWFsdmVycy4xCzAJBgNVBAYTAkFUMB4XDTA2MDEyMDA1MTExMVoXDTExMDEyMDA1MTExMVowXzEVMBMGA1UEAwwMRGF2aWQgRmVyYmFzMSowKAYDVQQKDCFIYXVwdHZlcmJhbmQgw7ZzdGVyci4gU296aWFsdmVycy4xDTALBgNVBAsMBFZTaWcxCzAJBgNVBAYTAkFUMEkwEwYHKoZIzj0CAQYIKoZIzj0DAQEDMgAEc7ESyZ4IdIM9UDtze29i0IqfCbwWSODfCF8bTiXxdJZLWZOE0eqwL2ybWVTEmCXDo4G6MIG3MBMGA1UdIwQMMAqACEhpdVw8ryMqMBEGA1UdDgQKBAhP473ttlxOBjAOBgNVHQ8BAf8EBAMCBsAwFgYDVR0gBA8wDTALBgkqKAAKAQQBZgAwQwYIKwYBBQUHAQEENzA1MDMGCCsGAQUFBzABhidodHRwOi8vb2NzcC5lY2FyZC5zb3ppYWx2ZXJzaWNoZXJ1bmcuYXQwIAYDVR0RBBkwF4EVZGF2aWQuZmVyYmFzQGlub2RlLmF0MA0GCSqGSIb3DQEBBQUAA4IBgQAu74FsENLTC9kqN4UVEX+pJz4ckOjAI8NbzCEvHgDqfpXmjZKA+8354fE6hsCd8uCJWCJ36ig2cMcOjGJrW+4YExYFRpiq1U2u9N1eKEj7j1oQzNZw4lotDxMFHnzd5WBjXjWekgy3uWkFhqE+NvQtauNtRiR3kg2jMt4MmcjZpck3WoTibrV9sMOzyM8L4y3HdDix97aWTefqxJ28IF9Anuk/uNGu74KcuJjYuIZx7q1ULsuXEs/HJMxU2/9lcT6lRhsp5VE0Z0/zOWdenQYUBscdbNrEDg3gmGU9T7SuxNQfHRLQ1OGzjolJL7kvhsRiK/l7pBtGAt2oPO6OKbLgWhW/6DEYJqnUrScQCli34EVDFC8W9yOBq3BHHZCQOzGgYtxtpI2QzCHLMGEwaxdFAYQp9pVBnX7HGbPqhq2r5osDlcyJDLO9uYW+63CTCVIeJ9018OxvOxNNvb6JzunW/oQAVMj+vTiR4GE74A0qVbuYd0fvEvc47J1q6++QlKc=</dsig:X509Certificate>
+						</dsig:X509Data>
+					</dsig:KeyInfo>
+					<dsig:Object Id="etsi-data-object-0-1208432475-242867937-12332">
+						<etsi:QualifyingProperties xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#" Target="#signature-1208432475-242867937-18096">
+							<etsi:SignedProperties xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.1.1#">
+								<etsi:SignedSignatureProperties>
+									<etsi:SigningTime>2008-04-17T11:41:15Z</etsi:SigningTime>
+									<etsi:SigningCertificate>
+										<etsi:Cert>
+											<etsi:CertDigest>
+												<etsi:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+												<etsi:DigestValue>RREWB1U7AWw/Xy+QkwfAiityVDs=</etsi:DigestValue>
+											</etsi:CertDigest>
+											<etsi:IssuerSerial>
+												<dsig:X509IssuerName>C=AT,O=Hauptverband Ã¶sterr. Sozialvers.,CN=VSig CA 2</dsig:X509IssuerName>
+												<dsig:X509SerialNumber>17249824966675737197051526866457224975275</dsig:X509SerialNumber>
+											</etsi:IssuerSerial>
+										</etsi:Cert>
+									</etsi:SigningCertificate>
+									<etsi:SignaturePolicyIdentifier>
+										<etsi:SignaturePolicyImplied/>
+									</etsi:SignaturePolicyIdentifier>
+								</etsi:SignedSignatureProperties>
+								<etsi:SignedDataObjectProperties>
+									<etsi:DataObjectFormat ObjectReference="#signed-data-reference-0-1208432475-242867937-22960">
+										<etsi:MimeType>text/plain</etsi:MimeType>
+									</etsi:DataObjectFormat>
+								</etsi:SignedDataObjectProperties>
+							</etsi:SignedProperties>
+						</etsi:QualifyingProperties>
+					</dsig:Object>
+				</dsig:Signature>
+			</XMLContent>
+		</VerifySignatureEnvironment>
+		<VerifySignatureLocation xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">/dsig:Signature</VerifySignatureLocation>
+	</VerifySignatureInfo>
+	<SupplementProfile>
+		<Content Reference="urn:Document">
+			<LocRefContent>file:D:/Programme/apache-tomcat-5.5.26/webapps/referencedData/enno-sp.pdf_bku_sign_out.pdf</LocRefContent>
+		</Content>
+	</SupplementProfile>
+	<TrustProfileID>certifiedSignature+Test</TrustProfileID>
+</VerifyXMLSignatureRequest>

@@ -1,0 +1,8 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:doc="urn:document">
+<head>
+<title>HTML-Dokument</title>
+</head>
+<body>
+<p>Ich bin der erste Absatz in diesem Dokument.</p>
+</body>
+</html>

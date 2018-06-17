@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CreateXMLSignatureRequest xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+  <KeyIdentifier>KG_allgemein</KeyIdentifier>
+  <SingleSignatureInfo SecurityLayerConformity="false">
+    <!--Enveloping Data, direkte Angabe der Daten in base64 kodierter Form; Manifest-Referenz-->
+    <DataObjectInfo Structure="enveloping" ChildOfManifest="true">
+      <DataObject>
+        <Base64Content>RGllc2UgRGF0ZW4gd2FyZW4gYmFzZTY0IGtvZGllcnQu</Base64Content>
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>text/plain</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Enveloping Data, direkte Angabe der Daten als XML-Fragment; SignedInfo-Referenz-->
+    <DataObjectInfo Structure="enveloping" ChildOfManifest="false">
+      <DataObject>
+        <XMLContent><doc:XMLDocument xmlns:doc="urn:document">
+  <doc:Paragraph>Ich bin der erste Absatz in diesem Dokument.</doc:Paragraph>
+  <doc:Paragraph ParaId="Para2">Und ich bin der zweite Absatz in diesem Dokument.
+Ich habe weiters ein eigenens ID-Attribut bekommen.</doc:Paragraph>
+</doc:XMLDocument></XMLContent>
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>application/xml</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Enveloping Data,  Angabe der Daten als Referenz mittels Reference-Attribut, die von MOA aufgelöst wird; SignedInfo-Referenz-->
+    <DataObjectInfo Structure="enveloping" ChildOfManifest="false">
+      <DataObject Reference="http://localhost:8080/referencedData/Text.txt"/>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>text/plain</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Enveloping Data,  Angabe der Daten als Referenz mittels LocRefContent, die von MOA aufgelöst wird; SignedInfo-Referenz-->
+    <DataObjectInfo Structure="enveloping" ChildOfManifest="false">
+      <DataObject>
+        <LocRefContent>http://localhost:8080/referencedData/Text.txt</LocRefContent>
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>text/plain</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Detached Daten; direkte Angabe der Daten in base64 kodierter Form; Referenzierung für die Signatur muss durch Reference-Attribut angegeben werden; Manifest-Referenz-->
+    <DataObjectInfo Structure="detached" ChildOfManifest="true">
+      <DataObject Reference="http://localhost:8080/referencedData/Text.b64">
+        <Base64Content>RGllc2UgRGF0ZW4gd2FyZW4gYmFzZTY0IGtvZGllcnQu</Base64Content>
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>text/plain</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Detached Daten; direkte Angabe der Daten als XML-Fragment; Referenzierung in der Signatur muss durch Reference-Attribut angegeben werden; SignedInfo-Referenz-->
+    <DataObjectInfo Structure="detached" ChildOfManifest="false">
+      <DataObject Reference="NichtAufloesbareReferenz1">
+        <XMLContent><doc:XMLDocument xmlns:doc="urn:document">
+  <doc:Paragraph>Ich bin der erste Absatz in diesem Dokument.</doc:Paragraph>
+  <doc:Paragraph ParaId="Para2">Und ich bin der zweite Absatz in diesem Dokument.
+Ich habe weiters ein eigenens ID-Attribut bekommen.</doc:Paragraph>
+</doc:XMLDocument></XMLContent>
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>application/xml</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Detached Daten;Angabe der Daten als Referenz über das Reference-Attribut, die von MOA aufgelöst wird; Referenzierung für die Signatur muss durch Reference-Attribut angegeben werden; SignedInfo-Referenz-->
+    <DataObjectInfo Structure="detached" ChildOfManifest="false">
+      <DataObject Reference="http://localhost:8080/referencedData/Text.txt">
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>text/plain</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Detached Daten;Angabe der Daten als Referenz mittels LocRefContent, die von MOA aufgelöst wird; Referenzierung für die Signatur muss durch Reference-Attribut angegeben werden; SignedInfo-Referenz-->
+    <DataObjectInfo Structure="detached" ChildOfManifest="false">
+      <DataObject Reference="NichtAufloesbareReferenz2">
+        <LocRefContent>http://localhost:8080/referencedData/Text.txt</LocRefContent>
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>text/plain</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <!--Detached Daten, Verweis auf jenes Dokument, das die Signatur beinhalten wird; Angabe der Daten als Referenz über das Reference-Attribut, die von MOA aufgelöst wird; Referenzierung für die Signatur muss durch Reference-Attribut angegeben werden; SignedInfo-Referenz-->
+    <DataObjectInfo Structure="detached">
+      <DataObject Reference=""/>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <dsig:Transforms>
+            <dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+          </dsig:Transforms>
+          <FinalDataMetaInfo>
+            <MimeType>application/xml</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <CreateSignatureInfo>
+      <CreateSignatureEnvironment>
+        <LocRefContent>http://localhost:8080/referencedData/XMLDocument.xml</LocRefContent>
+      </CreateSignatureEnvironment>
+      <CreateSignatureEnvironmentProfile>
+        <CreateSignatureLocation Index="4" xmlns:doc="urn:document">/doc:XMLDocument</CreateSignatureLocation>
+      </CreateSignatureEnvironmentProfile>
+    </CreateSignatureInfo>
+  </SingleSignatureInfo>
+</CreateXMLSignatureRequest>

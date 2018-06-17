@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VerifyXMLSignatureRequest xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#">
+  <VerifySignatureInfo>
+    <VerifySignatureEnvironment>
+      <XMLContent><dsig:Signature Id="signature-1-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/><dsig:Reference Id="reference-1-1" URI="#xpointer(id(&apos;signed-data-1-1-1&apos;)/node())"><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>tLODyeiWFbAkQKwhrR23jtcgu4k=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>VEjXB6+geUL16oTPDVx5lcQliGl/oyVobug3BVxVwhu8CU7WK65moTcTuo/CL2hQ</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIID+DCCA2WgAwIBAgIBCTAJBgUrDgMCHQUAMH8xCzAJBgNVBAYTAkFUMSwwKgYD
+VQQKEyNTdGFic3RlbGxlIElLVC1TdHJhdGVnaWUgZGVzIEJ1bmRlczEeMBwGA1UE
+CxMVVGVjaG5payB1bmQgU3RhbmRhcmRzMSIwIAYDVQQDExlUZXN0IENBIC0gU2ln
+bmF0dXJkaWVuc3RlMB4XDTA0MDgwNDA4MjM0OFoXDTA3MDgwNDA4MjM0OFowgZgx
+CzAJBgNVBAYTAkFUMS0wKwYDVQQKEyRTdGFic3N0ZWxsZSBJS1QtU3RyYXRlZ2ll
+IGRlcyBCdW5kZXMxHjAcBgNVBAsTFVRlY2huaWsgdW5kIFN0YW5kYXJkczE6MDgG
+A1UEAxMxVGVzdDogU2lnbmF0dXJkaWVuc3QgYWxsZXIgS3VuZGVuOiBFQ0RTQSAo
+UDE5MnYxKTCB8zCBvAYHKoZIzj0CATCBsAIBATAkBgcqhkjOPQEBAhkA////////
+/////////////v//////////MDQEGP////////////////////7//////////AQY
+ZCEFGeWcgOcPp+mrciQwSf643uzBRrmxBDEEGI2oDrAwkPZ8vyDrQ6GIAPT/Cv2C
+/xASBxkrlf/I2nhjEBHtayTN1XP5d6EeeUgRAhkA////////////////md74NhRr
+ybG00igxAgEBAzIABNHWY9lQOE1zgmpcpjTg2WIg6qgEsGhpXELPinJoMPDVheTv
+2BZPG42YJsNfvWgC06OCARwwggEYMA4GA1UdDwEB/wQEAwIGwDAMBgNVHRMBAf8E
+AjAAMB0GA1UdDgQWBBRHH5EXnrWosCmIa+JyEM5seMxFVzBdBgNVHSAEVjBUMFIG
+DCsGAQQBlRIBAgMBATBCMEAGCCsGAQUFBwICMDQaMkRpZXNlcyBaZXJ0aWZpa2F0
+IGlzdCBudXIgZvxyIFRlc3R6d2Vja2UgZ2VlaWduZXQuMEMGA1UdHwQ8MDowOKA2
+oDSGMmh0dHA6Ly9sYWJzLmNpby5ndi5hdC90ZW1wL2NybHMvc2lnbmF0dXJkaWVu
+c3QuY3JsMBQGByooAAoBAQEECQwHQktBLUlLVDAfBgNVHSMEGDAWgBRAl0P5fWaw
+vf59+uxGcYY9wffZPTAJBgUrDgMCHQUAA4GBAIMKUsnajgfBtpHeDdMdQMLA8fdt
+lluezDOM78WYYSFURP04QZk5iHkShzptgZCF5Y/T4an3dC3SnytL67LJvEoKUyja
+iTMLo7650xRTvAjTaMJ+nly/wTRYJKplOLXKWj3WwfObMHXdsDE8NJmpJSRE7Sw7
++tj+UiTiNNSaXirq</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="signed-data-1-1-1">Diese Daten werden signiert.</dsig:Object></dsig:Signature></XMLContent></VerifySignatureEnvironment>
+    <VerifySignatureLocation xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">/dsig:Signature</VerifySignatureLocation>
+  </VerifySignatureInfo>
+  <TrustProfileID>Test-Signaturdienste</TrustProfileID>
+</VerifyXMLSignatureRequest>

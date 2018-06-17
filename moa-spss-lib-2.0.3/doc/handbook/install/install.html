@@ -1,0 +1,492 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>MOA SS und SP - Installation</title>
+  <link rel="stylesheet" href="../common/MOA.css" type="text/css">
+</head>
+<<body link="#990000"> 
+  <table class="logoTable" width="100%" border="0" cellspacing="0" cellpadding="10">
+    <tr>
+      <td align="center" class="logoTitle" width="267"><img src="../common/LogoBKA.png" alt="Logo BKA" width="267" height="37" align="left"></td>
+      <td align="center" class="logoTitle">Dokumentation</td>
+      <td align="center" class="logoTitle" width="123"><img src="../common/LogoEGIZ.png" alt="Logo EGIZ" width="230" height="81" align="right"></td>
+    </tr>
+  </table>
+  <hr/> 
+  <p class="title"><a href="../index.html">MOA: Serversignatur (SS) und Signaturpr&uuml;fung (SP)</a></p> 
+  <p class="subtitle">Installation</p> 
+  <hr/>
+  <h1>Inhalt</h1>
+  <ol> 
+    <li> 
+      <p><a href="#uebersicht">&Uuml;bersicht</a></p> 
+    </li> 
+    <li> 
+      <p><a href="#webservice">Webservice</a></p> 
+      <ol> 
+        <li><a href="#webservice_basisinstallation">Basisinstallation</a> 
+          <ol> 
+            <li><a href="#webservice_basisinstallation_einfuehrung">Einf&uuml;hrung</a></li> 
+            <li><a href="#webservice_basisinstallation_installation">Installation</a> 
+              <ol> 
+                <li><a href="#webservice_basisinstallation_installation_vorbereitung">Vorbereitung</a></li> 
+                <li><a href="#webservice_basisinstallation_installation_tomcatconfig">Konfiguration von Apache Tomcat</a> 
+                  <ol> 
+                    <li><a href="#webservice_basisinstallation_installation_tomcatconfig_httpconn">Konfiguration des HTTP Connectors</a></li> 
+                    <li><a href="#webservice_basisinstallation_installation_tomcatconfig_httpsconn">Konfiguration des HTTPS Connectors</a></li> 
+                    <li><a href="#webservice_basisinstallation_installation_tomcatconfig_moaadmin">Einrichten des MOA SP/SS Administrators</a></li> 
+                  </ol> 
+                </li> 
+                <li><a href="#webservice_basisinstallation_installation_spssdeploy">Einsatz des MOA SP/SS Webservices in Tomcat</a></li> 
+                <li><a href="#webservice_basisinstallation_installation_tomcatstartstop">Starten und Stoppen von Tomcat</a> 
+                  <ol> 
+                    <li><a href="#webservice_basisinstallation_installation_tomcatstartstop_windows">Unter Windows</a></li> 
+                    <li><a href="#webservice_basisinstallation_installation_tomcatstartstop_unix">Unter Unix</a></li> 
+                    <li><a href="#webservice_basisinstallation_installation_tomcatstartstop_verify">Pr&uuml;fen des erfolgreichen Starts</a> </li> 
+                  </ol> 
+                </li> 
+                <li><a href="#webservice_basisinstallation_installation_changeonthefly">&Auml;nderung der Konfiguration im laufenden Betrieb</a></li> 
+              </ol> 
+            </li> 
+            <li><a href="#webservice_basisinstallation_logging">Logging</a> 
+              <ol> 
+                <li><a href="#webservice_basisinstallation_logging_format">Format der Log-Meldungen</a></li> 
+                <li><a href="#webservice_basisinstallation_logging_messages">Wichtige Log-Meldungen</a></li> 
+              </ol> 
+            </li> 
+          </ol> 
+        </li> 
+        <li><a href="#webservice_erweiterungsmoeglichkeiten">Erweiterungsm&ouml;glichkeiten</a>          <ol> 
+            <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver">Vorgeschalteter Webserver</a>              <ol> 
+                <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_iis">Microsoft Internet Information Server (MS IIS)</a>                  <ol> 
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_iis_jk">Konfiguration von <span class="term"> mod_jk</span> im MS IIS</a></li> 
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_iis_tomcat">Konfiguration von Tomcat</a></li> 
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_iis_ssl">Konfiguration von SSL</a></li> 
+                  </ol> 
+                </li> 
+                <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_apache">Apache</a>                  <ol> 
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_apache_jk">Konfiguration von <span class="term"> mod_jk</span> im Apache </a></li> 
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_apache_tomcat">Konfiguration von Tomcat</a></li> 
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_webserver_apache_ssl">Konfiguration von SSL mit <span class="term">mod_SSL</span></a></li> 
+                    </ol> 
+                </li> 
+                </ol> 
+            </li> 
+            <li><a href="#webservice_erweiterungsmoeglichkeiten_datenbank">Datenbank</a>              <ol>
+                <li><a href="#webservice_erweiterungsmoeglichkeiten_datenbank_postgresql">PostgreSQL</a>                  <ol>
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_benutzer">Anlegen eines Benutzers und einer Datenbank f&uuml;r MOA SP/SS</a></li>
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_crls">Archivierung von CRLs</a> </li>
+                    <li><a href="#webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_logging">Logging</a></li>
+                  </ol>
+                </li>
+                <li><a href="#webservice_erweiterungsmoeglichkeiten_datenbank_andere">Andere Datenbanken</a> </li>
+              </ol>
+            </li>
+            </ol> 
+        </li> 
+      </ol> 
+    <li><a href="#klassenbibliothek">Klassenbibliothek</a> 
+      <ol> 
+        <li><a href="#klassenbibliothek_basisinstallation">Basisinstallation</a> 
+          <ol> 
+            <li><a href="#klassenbibliothek_basisinstallation_einfuehrung">Einf&uuml;hrung</a></li> 
+            <li><a href="#klassenbibliothek_basisinstallation_vorbereitung">Vorbereitung</a></li> 
+            <li><a href="#klassenbibliothek_basisinstallation_verwendung">Verwendung</a></li> 
+            <li><a href="#klassenbibliothek_basisinstallation_logging">Logging</a></li> 
+          </ol> 
+        </li> 
+        <li><a href="#klassenbibliothek_erweiterungsmoeglichkeiten">Erweiterungsm&ouml;glichkeiten</a></li>
+      </ol> 
+    </li> 
+  </ol>
+  <ol type="A">	
+    <li><a href="#referenzierte_software">Referenzierte Software</a></li>
+  </ol>
+  <hr/>
+  <h1><a name="uebersicht" id="uebersicht"></a>1 &Uuml;bersicht</h1>
+  <p>   Die Module Signaturpr&uuml;fung (SP) und Serversignatur (SS) sind als plattformunabh&auml;ngige Module ausgelegt, die entweder als Webservice &uuml;ber HTTP bzw. HTTPS oder als Klassenbibliothek &uuml;ber ein API angesprochen werden k&ouml;nnen. Dieses Handbuch beschreibt die Installation  der beiden Module als Webservice oder als Klassenbibliothek, sowie die Einrichtung der Systemumgebung.</p>
+  <h1><a name="webservice"></a>2 Webservice </h1>
+  <p>Dieser Abschnitt beschreibt die Installation von MOA SP/SS als Webservice. Im ersten Unterkapitel wird eine minimale Basisinstallation beschrieben. Das zweite Unterkapitel zeigt eine Reihe von optionalen Erweiterungsm&ouml;glichkeiten auf.</p>
+  <h2><a name="webservice_basisinstallation" id="webservice_basisinstallation"></a>2.1 Basisinstallation</h2>
+  <h3><a name="webservice_basisinstallation_einfuehrung" id="webservice_basisinstallation_einfuehrung"></a>2.1.1 Einf&uuml;hrung </h3>
+  <p> Die Basisinstallation des Webservices stellt einerseits die minimalen Anforderungen f&uuml;r den Betrieb von MOA SP/SS als Webservices dar, andererseits dient sie als Ausgangspunkt f&uuml;r optionale <a href="#webservice_erweiterungsmoeglichkeiten">Erweiterungsm&ouml;glichkeiten</a>.</p>
+  <p>Die <strong>Mindestanforderungen</strong> f&uuml;r die Basisinstallation sind: </p>
+  <ul>
+    <li><a href="#referenziertesoftware">Java SE 5 oder h&ouml;her</a></li>
+    <li><a href="#referenziertesoftware">Apache Tomcat 4.1.18 oder h&ouml;her </a></li>
+  </ul>
+  <p>Wir <strong>empfehlen</strong> jedoch jeweils aktuelle Version zu verwenden:</p>
+  <ul>
+    <li><a href="#referenziertesoftware">Java SE 6 (neuestes Update) bzw. Java SE Update SE 7 (neuestes Update)</a></li>
+    <li><a href="#referenziertesoftware">Apache Tomcat 6.0.36 bzw. Apache Tomcat 7.0.39</a></li>
+</ul>
+  <p>In diesem Betriebs-Szenario wird das MOA SP/SS Webservice in Tomcat zum Einsatz gebracht. Tomcat fungiert gleichzeitig als HTTP- und HTTPS-Endpunkt f&uuml;r das MOA SP/SS Webservice. Beide Protokolle werden direkt in Tomcat konfiguriert. Das MOA SP/SS Webservice verwendet Log4j als Logging Toolkit.</p>
+<h3><a name="webservice_basisinstallation_installation" id="webservice_basisinstallation_installation"></a>2.1.2 Installation</h3>
+<h4><a name="webservice_basisinstallation_installation_vorbereitung" id="webservice_basisinstallation_installation_vorbereitung"></a>2.1.2.1 Vorbereitung</h4>
+<p>Die folgenden Schritte dienen der Vorbereitung der Installation.</p>
+  <dl>
+  <dt>Installation von Java SE</dt>
+  <dd>Installieren Sie Java SE in ein beliebiges Verzeichnis.  Das Wurzelverzeichnis der Java SE Installation wird im weiteren Verlauf als <code>$JAVA_HOME</code> bezeichnet. </dd>
+  <dt>Installation von Apache Tomcat</dt>
+  <dd> Installieren Sie Apache Tomcat in ein Verzeichnis, das keine Leerzeichen im Pfadnamen enth&auml;lt. Verwenden Sie bitte die zu Ihrer Java SE passende Distribution von Tomcat. Das Wurzelverzeichnis der Tomcat-Installation wird im weiteren Verlauf als <code>$CATALINA_HOME</code> bezeichnet.</dd>
+  <dt>Entpacken der MOA SP/SS Webservice Distribution</dt>
+  <dd> Entpacken Sie die Datei <code>moa-spss-2.0.0.zip</code> in ein beliebiges Verzeichnis. Dieses Verzeichnis wird im weiteren Verlauf als <code>$MOA_SPSS_INST</code> bezeichnet. </dd>
+  <dt>Installation der  Kryptographiebibliotheken von SIC/IAIK</dt>
+  <dd>
+    <p>Kopieren Sie alle Dateien aus dem Verzeichnis <code>$MOA_SPSS_INST/ext</code> in das Verzeichnis <code>$JAVA_HOME/jre/lib/ext</code>. Zus&auml;tzlich m&uuml;ssen Sie die Rechtedateien Ihrer Java SE austauschen. Laden Sie dazu die passenden <span class="term">Unlimited Strength 
+	  
+	  
+    Jurisdiction Policy Files</span> von der <a href="http://java.com/download" target="_blank">Java SE Downloadseite </a>und achten Sie darauf die f&uuml;r ihre verwendete Java SE Installation richtige Version zu nehmen. Anschlie&szlig;end folgen Sie der darin enthaltenen Installationsanweisung. </p>
+  </dd>
+  </dl>
+<h4><a name="webservice_basisinstallation_installation_tomcatconfig" id="webservice_basisinstallation_installation_tomcatconfig"></a>2.1.2.2 Konfiguration von Apache Tomcat</h4>
+  <p>Die zentrale Konfigurations-Datei von Tomcat ist <code>$CATALINA_HOME/conf/server.xml</code>. Tomcat wird grunds&auml;tzlich mit einer funktionierenden Default-Konfiguration ausgeliefert. </p>
+<h5><a name="webservice_basisinstallation_installation_tomcatconfig_httpconn" id="webservice_basisinstallation_installation_tomcatconfig_httpconn"></a>2.1.2.2.1 Konfiguration des HTTP Connectors</h5>
+<p>Die Tomcat Default-Konfiguration schaltet ausschlie&szlig;lich den Connector f&uuml;r HTTP auf Port 8080 frei.  Wir empfehlen diese Konfiguration nur f&uuml;r F&auml;lle, in denen das MOA SP/SS Webservice in einer abgeschlossenen Netzwerkumgebung betrieben wird. </p>
+<h5><a name="webservice_basisinstallation_installation_tomcatconfig_httpsconn" id="webservice_basisinstallation_installation_tomcatconfig_httpsconn"></a>2.1.2.2.2 Konfiguration des HTTPS Connectors</h5>
+  <p>Wird das MOA SP/SS Webservice in einer nicht abgeschlossenen Umgebung (z.B. Erreichbarkeit &uuml;ber das Internet) betrieben, ist die gegenseitige Identit&auml;tsfeststellung von Kunde und Webservice essentiell: </p>
+  <ul>
+    <li> Nutzt ein Kunde MOA SP, ist es f&uuml;r ihn wichtig, die Identit&auml;t des Webservice eindeutig feststellen zu k&ouml;nnen, denn er vertraut dem Webservice ja die Pr&uuml;fung einer elektronischen Signatur an.</li>
+    <li>Nutzt ein Kunde MOA SS, ist es f&uuml;r ihn wesentlich, dass nur er Zugriff auf die f&uuml;r ihn vom Webservice verwalteten privaten Schl&uuml;ssel hat, um elektronische Signaturen zu erstellen. Das Webservice muss also die Identit&auml;t des Kunden pr&uuml;fen. </li>
+  </ul>
+  <p>Beide Identit&auml;tspr&uuml;fungen k&ouml;nnen mit hoher Qualit&auml;t vorgenommen werden, wenn die Erreichbarkeit des Webservice auf SSL mit Server- (f&uuml;r MOA SP) bzw. Client- und Serverauthentisierung (f&uuml;r MOA SS) eingeschr&auml;nkt wird. </p>
+  <p>F&uuml;r die dazu notwendige Konfiguration kann die im vorigen Abschnitt besprochene minimale Tomcat-Konfiguration als Ausgangspunkt verwendet werden: Zun&auml;chst ist der HTTP Connector abzuschalten (auszukommentieren). Anschlie&szlig;end ist der HTTPS Connector zu konfigurieren. Das Dokument <a href="http://tomcat.apache.org/tomcat-7.0-doc/ssl-howto.html">Tomcat SSL Configuration HOW-TO </a> gibt einen guten &Uuml;berblick dazu. Grob zusammengefasst sind folgende Schritte durchzuf&uuml;hren: </p>
+  <ul>
+    <li>Erstellung eines <span class="term">Server-Keystores</span>, der den privaten Schl&uuml;ssel sowie das zugeh&ouml;rige Zertifikat des Webservices enth&auml;lt, mit dem es sich bei Aufbau einer SSL-Verbindung gegen&uuml;ber dem Kunden ausweist sowie das dazugeh&ouml;rige Server-Zertifikat enth&auml;lt. Sie k&ouml;nnen diesen Keystore z.B. mit <code>keytool</code> erstellen, einem Programm, das Ihrer Java SE beiliegt.</li>
+    <li>Erstellung eines <span class="term">Client-Keystores</span>, der die Zertifikate aller Kunden des Webservices enth&auml;lt. Nur Kunden des Webservices, die sich beim Aufbau einer SSL-Verbindung gegen&uuml;ber dem Webservice mit einem im <span class="term">Client-Keystore</span> enthaltenen Zertifikat ausweisen, erhalten grunds&auml;tzlich Zugriff zu den  Diensten des Webservices (f&uuml;r die Konfiguration, welcher Kunde welche Schl&uuml;ssel von MOA SS verwenden darf, siehe <a href="../config/config.html#konfigurationsparameter_ss_keygroupmapping">Abschnitt 2.2.3 des Konfigurationshandbuchs</a>). Auch dieser Keystore kann z.B. mit <code>keytool</code> erstellt werden. Dieser Keystore ist optional und braucht nur erstellt zu werden, wenn sich die Kunden  gegen&uuml;ber dem Webservice authentisieren m&uuml;ssen. </li>
+    <li>Konfiguration des HTTPS Connectors in <code>$CATALINA_HOME/conf/server.xml</code>.</li>
+  </ul>
+  <p>Die Konfiguration des HTTPS Connectors kann entfallen, wenn Tomcat ein Webserver vorgeschaltet ist, und dieser die SSL-Kommunikation mit dem Kunden &uuml;bernimmt (siehe <a href="#webservice_erweiterungsmoeglichkeiten_webserver">Abschnitt 2.2.1</a>).</p>
+  <h5><a name="webservice_basisinstallation_installation_tomcatconfig_moaadmin" id="webservice_basisinstallation_installation_tomcatconfig_moaadmin"></a>2.1.2.2.3 Einrichten des MOA SP/SS Administrators </h5>
+  <p>Das MOA SP/SS Webservice kann <span class="term">remote</span> durch den Aufruf einer speziellen URL des Webservices dazu veranlasst werden, seine Konfiguration neu einzulesen (vergleiche Abschnitt <a href="#webservice_basisinstallation_installation_changeonthefly">2.1.2.5</a>). Der Zugriff auf diese URL ist durch eine Passwort-Abfrage gesch&uuml;tzt, und kann nur von Tomcat-Benutzern aufgerufen werden, denen die Tomcat-Benutzer-Rolle <code>moa-admin</code> zugeordnet wurde.</p>
+  <p>    Um diese Benutzer-Rolle und einen oder mehrere Benutzer einzurichten, m&uuml;ssen in der Datei <code>$CATALINA_HOME/conf/tomcat-users.xml </code>unter dem Element <code>&lt;tomcat-users&gt;</code> sinngem&auml;&szlig; folgende Eintr&auml;ge hinzugef&uuml;gt werden: </p>
+  <p>
+  <pre>&lt;role rolename="moa-admin"/&gt; 
+&lt;user username="moa-chief" password="openSesam" roles="moa-admin"/&gt; </pre>
+<p>Soll der Aufruf dieser URL niemandem erm&ouml;glicht werden, sind die oben beschriebenen Eintr&auml;ge einfach nicht vorzunehmen.</p>
+
+<h4><a name="webservice_basisinstallation_installation_spssdeploy" id="webservice_basisinstallation_installation_spssdeploy"></a>2.1.2.3 Einsatz des MOA SP/SS Webservices in Tomcat</h4>
+<p> Um das MOA SP/SS Webservice in Tomcat f&uuml;r den Einsatz vorzubereiten, sind folgende Schritte notwendig:</p>
+<ul>
+  <li>Die Datei <code>$MOA_SPSS_INST/moa-spss.war</code> enth&auml;lt das einsatzfertige MOA SP/SS Webarchiv und muss ins Verzeichnis  <code>$CATALINA_HOME/webapps</code> kopiert werden. Dort wird sie beim ersten Start von Tomcat automatisch ins Verzeichnis <code>$CATALINA_HOME/webapps/moa-spss</code> entpackt. </li>
+  <li>Die zentrale Konfigurationsdatei f&uuml;r MOA SP/SS  und die zugeh&ouml;rigen Profil-Verzeichnisse m&uuml;ssen in ein beliebiges Verzeichnis im Dateisystem kopiert werden (z.B. <code>$CATALINA_HOME/conf/moa-spss</code>). Eine funktionsf&auml;hige Konfiguration, die als Ausgangspunkt f&uuml;r die Konfiguration des MOA SP/SS Webservices dienen kann, finden Sie <a href="../../conf/moa-spss/spss.config.xml">hier</a>. <br>
+  </li>
+  <li>  Die Dateien <code>xalan.jar</code>, <code>xercesImpl.jar, serializer.jar </code> und <code>xml-apis.jar</code> aus dem Verzeichnis <code>$MOA_SPSS_INST/endorsed</code> m&uuml;ssen in das Tomcat-Verzeichnis <code>$CATALINA_HOME/endorsed</code> (bzw.  <code>$CATALINA_HOME/common/endorsed</code> bis Apache Tomcat Version 5.5) kopiert werden. Sind gleichnamige Dateien dort bereits vorhanden, m&uuml;ssen sie &uuml;berschrieben werden. Die ggf. in diesem Verzeichnis vorhandene Datei <code>xmlParserAPIs.jar</code> muss gel&ouml;scht werden. Sollte das Verzeichnis <code>endorsed</code> nicht vorhanden sein, dann muss dieses zuerst erstellt werden.</li>
+  <li>Folgende <span class="term">System Properties</span> k&ouml;nnen gesetzt werden (wird beim Starten von Tomcat der <span class="term">Java Virtual Machine</span> in der Umgebungsvariablen <code>CATALINA_OPTS</code> in der Form <code>-D&lt;name&gt;=&lt;wert&gt;</code> &uuml;bergeben):
+      <ul>
+        <li id="klein"><code>moa.spss.server.configuration</code>: Pfad und Name der zentralen Konfigurationsdatei f&uuml;r MOA SP/SS. Eine beispielhafte Konfigurationsdatei finden Sie <a href="../../../conf/moa-spss/spss.config.xml">hier</a>. Wird ein relativer Pfad angegeben, wird dieser relativ zum Startverzeichnis der <span class="term">Java Virtual Machine</span> interpretiert. Ist diese <span class="term">System Property</span> nicht gesetzt, wird automatisch eine im Webarchiv unter <code>WEB-INF/conf</code> enthaltene Default-Konfiguration herangezogen.</li>
+        <li id="klein"><code>log4j.configuration</code>: URL der Log4j Konfigurationsdatei. Eine beispielhafte Log4j-Konfiguration finden Sie <a href="../../../conf/moa-spss/log4j.properties">hier</a>. Wird eine relative URL angegeben, wird diese als File-URL relativ zum Startverzeichnis der <span class="term">Java Virtual Machine</span> interpretiert. Ist diese <span class="term">System Property</span> nicht gesetzt, wird automatisch eine im Webarchiv unter <code>WEB-INF/classes</code> enthaltene Default-Konfiguration herangezogen.</li>
+        <li id="klein"><code>moa.node.id</code>: Frei w&auml;hlbarer Name des Rechner-Knotens, auf dem MOA SP/SS l&auml;uft. Der Name des Knotens wird bei Log-Ausgaben von MOA SP/SS angef&uuml;hrt und dient zur Unterscheidung mehrerer gleichzeitig betriebener MOA SP/SS Webservice-Instanzen. </li>
+        <li id="klein"><code>javax.net.ssl.trustStore</code>: Pfad und Dateiname des <span class="term">Truststores</span> f&uuml;r vertrauensw&uuml;rdige SSL Client-Zertifikate (optional; nur, wenn SSL Client-Authentisierung durchgef&uuml;hrt werden soll). Ein relativer Pfad werden relativ zum Startverzeichnis der <span class="term">Java Virtual Machine</span> interpretiert.</li>
+        <li id="klein"><code>javax.net.ssl.trustStorePassword</code>: Passwort f&uuml;r den <span class="term">Truststore</span> (optional; nur, wenn SSL Client-Authentisierung durchgef&uuml;hrt werden soll). </li>
+        <li id="klein"><code>javax.net.ssl.trustStoreType</code>: Truststore-Typ (optional; nur, wenn SSL Client-Authentisierung durchgef&uuml;hrt werden soll). Je nach verwendetem Keystore-Typ muss <code>jks</code> (<span class="term">Java Key Store</span>) oder <code>pkcs12</code> (PKCS#12-Datei) angegeben werden.</li>
+      </ul>
+  </li>
+</ul>
+<h4><a name="webservice_basisinstallation_installation_tomcatstartstop" id="webservice_basisinstallation_installation_tomcatstartstop"></a>2.1.2.4 Starten und Stoppen von Tomcat</h4>
+<h5><a name="webservice_basisinstallation_installation_tomcatstartstop_windows" id="webservice_basisinstallation_installation_tomcatstartstop_windows"></a>2.1.2.4.1 Unter Windows</h5>
+<div id="block">
+  <p>Das Verzeichnis <code>$MOA_SPSS_INST/tomcat/win32</code> enth&auml;lt Script-Dateien zum Starten und Stoppen von Tomcat. Vor der erstmaligen Verwendung der Scripts m&uuml;ssen in den ersten Zeilen die Umgebungsvariablen <code>JAVA_HOME</code> (Basisverzeichnis der eingesetzten Java SE) und <code>CATALINA_HOME</code> (Basisverzeichnis der eingesetzten Tomcat-Installation) angepasst werden. Evtl. m&uuml;ssen Sie auch noch die in den Script-Dateien gesetzten, in Abschnitt 2.1.2.3 besprochenen <span class="term">System Properties</span> anpassen. </p>
+</div>
+<h5><a name="webservice_basisinstallation_installation_tomcatstartstop_unix" id="webservice_basisinstallation_installation_tomcatstartstop_unix"></a>2.1.2.4.2 Unter Unix</h5>
+<p>Zun&auml;chst m&uuml;ssen die  in Abschnitt 2.1.2.3 besprochenen <span class="term">System Properties</span> mit Hilfe der Umgebungsvariablen <code>CATALINA_OPTS</code> gesetzt sein. Die Datei <code>$MOA_SPSS_INST/tomcat/unix/moa-env.sh</code> enth&auml;lt ein Beispiel daf&uuml;r. Weiters m&uuml;ssen noch die Umgebungsvariablen <code>JAVA_HOME</code> (Basisverzeichnis der eingesetzten Java SE) und <code>CATALINA_HOME</code> (Basisverzeichnis der eingesetzten Tomcat-Installation) angepasst werden.</p>
+<p>Nun kann Tomcat aus seinem Basisverzeichnis mit </p>
+<pre>bin/catalina.sh start</pre>
+gestartet werden. Das Stoppen von Tomcat erfolgt analog mit
+<pre>bin/catalina.sh stop</pre>
+<h5><a name="webservice_basisinstallation_installation_tomcatstartstop_verify" id="webservice_basisinstallation_installation_tomcatstartstop_verify"></a>2.1.2.4.3 Pr&uuml;fen des erfolgreichen Starts </h5>
+<div id="block">
+  <p>Ein erfolgreicher Start des MOA SP/SS Webservices ist an folgender Log-Meldung ersichtlich: <br>
+  </p>
+</div>
+<pre>INFO | 18 10:09:45,155 | main | TID=startup NID=&lt;null&gt; MSG=MOA Konfiguration erfolgreich geladen
+</pre>
+<p>Bei leichten Fehlern in der Konfiguration geben <code>WARN</code> Log-Meldungen unmittelbar davor Aufschluss &uuml;ber fehlerhafte Konfigurations-Eintr&auml;ge.
+  Nach dem Starten von Tomcat steht das MOA SP/SS Webservice f&uuml;r die Server-Signatur und Signatur-Pr&uuml;fung unter den Endpunkten </p>
+<pre>http://&lt;host&gt;:&lt;port&gt;/moa-spss/services/SignatureCreation
+</pre>
+<p>bzw.
+</p>
+<pre>http://&lt;host&gt;:&lt;port&gt;/moa-spss/services/SignatureVerification
+</pre>
+<p>zur Verf&uuml;gung. Die Verf&uuml;gbarkeit des Services k&ouml;nnen Sie einfach &uuml;berpr&uuml;fen, indem Sie die Endpunkte mit einem Web-Browser aufgerufen; dies sollte nach erfolgreichem Start zur Anzeige einer Informationsseite f&uuml;hren. </p>
+<p>Konnte das MOA SP/SS Webservice nicht ordnungsgem&auml;&szlig;  gestartet werden, f&uuml;hrt das zu folgender Log-Meldung:</p>
+<pre>FATAL | 18 10:17:03,475 | main | TID=startup NID=&lt;null&gt; <br>  MSG=Fehler beim Lesen der MOA Konfiguration: das Service steht nicht zur Verf&uuml;gung
+</pre>
+In diesem Fall geben die <code>WARN</code> bzw. <code>ERROR</code> Log-Meldungen unmittelbar davor Aufschluss &uuml;ber den genaueren Grund.
+<h4><a name="webservice_basisinstallation_installation_changeonthefly" id="webservice_basisinstallation_installation_changeonthefly"></a>2.1.2.5 &Auml;nderung der Konfiguration im laufenden Betrieb </h4>
+<p> Sie k&ouml;nnen die Konfiguration f&uuml;r MOA SP/SS im laufenden Betrieb aktualisieren, in dem Sie mittels eines Web-Browsers folgende URL aufrufen:</p>
+<pre> http://&lt;host&gt;:&lt;port&gt;/moa-spss/ConfigurationUpdate </pre>
+<p>Damit dies funktioniert, muss in der Konfiguration von Tomcat ein spezieller Benutzer sowie eine spezielle Benutzerrolle eingerichtet werden (vergleiche Abschnitt <a href="#webservice_basisinstallation_installation_tomcatconfig_moaadmin">2.1.2.2.3</a>). </p>
+<h3><a name="webservice_basisinstallation_logging" id="webservice_basisinstallation_logging"></a>2.1.3 Logging </h3>
+<p>Das MOA SP/SS Webservice verwendet <a href="#referenziertesoftware">Log4j</a> f&uuml;r die Ausgabe von Log-Meldungen am Bildschirm bzw. in Log-Dateien. Log4j bietet zahlreiche Konfigurationsm&ouml;glichkeiten, die ausf&uuml;hrlich im Log4j Handbuch  beschrieben sind. Unter anderem gibt es die M&ouml;glichkeit, folgende Einstellungen vorzunehmen:
+<ul>
+      <li id="klein">
+        <p>Das verwendete Log-Level (<code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>);</p>
+      </li>
+      <li id="klein">
+        <p>Name und maximale Gr&ouml;&szlig;e der Log-Datei(en);</p>
+      </li>
+      <li id="klein">
+        <p>Das Aussehen der Log-Eintr&auml;ge.</p>
+      </li>
+</ul>
+    <p>Das MOA SP/SS Webservice verwendet folgende Log-Hierarchien: </p>
+<ul>
+    <li>
+      <p><code>moa.spss.server</code> f&uuml;r alle Log-Meldungen aus dem MOA/SPSS Webservice; </p>
+    </li>
+    <li>
+      <p><code>iaik.server</code> f&uuml;r alle Log-Meldungen aus den SIC/IAIK Kryptographie-Modulen. </p>
+    </li>
+</ul>
+    <p>Eine f&uuml;r MOA SP/SS passende Konfigurationsdatei f&uuml;r Log4j finden Sie <a href="../../../conf/moa-spss/log4j.properties">hier</a>. Wird diese Datei als Logging-Konfiguration verwendet, so werden alle Log-Meldungen sowohl in die Konsole, als auch in die Datei <code>moa-spss.log</code> geschrieben. </p>
+  <h4><a name="webservice_basisinstallation_logging_format" id="webservice_basisinstallation_logging_format"></a>2.1.3.1 Format der Log-Meldungen</h4>
+      <p> Anhand einer konkreten Log-Meldung wird das Format der MOA SP/SS Log-Meldungen erl&auml;utert: </p>
+      <pre>INFO | 01 21:25:26,540 | Thread-3 | TID=1049225059594-100 NID=node1 
+  MSG=Starte neue Transaktion: TID=1049225059594-100, Service=SignatureVerification
+</pre>
+<p>    Der Wert <code>INFO</code> besagt, dass die Log-Meldung im Log-Level <code>INFO</code> entstanden ist. Folgende Log-Levels existieren:</p>
+    <ul>
+      <li>
+        <p><code>DEBUG</code>: Log-Meldungen im Log-Level <code>DEBUG</code> geben Auskunft &uuml;ber die innere Arbeitsweise des Systems. Sie sind haupts&auml;chlich f&uuml;r Entwickler interessant.</p>
+      </li>
+      <li>
+        <p><code>INFO</code>: Diese Log-Meldungen geben Status-Informationen &uuml;ber den Ablauf des Webservices, wie z.B. &uuml;ber das Einlangen einer neuen Anfrage.</p>
+      </li>
+      <li>
+        <p><code>WARN</code>: Bei der Ausf&uuml;hrung einer Anfrage sind leichte Fehler aufgetreten. Der Ablauf des Webservices ist nicht weiter beeintr&auml;chtigt.</p>
+      </li>
+      <li>
+        <p><code>ERROR</code>: Die Ausf&uuml;hrung einer Anfrage musste abgebrochen werden. Das Webservice ist davon nicht beeintr&auml;chtigt. </p>
+      </li>
+      <li>
+        <p><code>FATAL</code>: Es ist ein Fehler aufgetreten, der den weiteren Betrieb des Webservices nicht mehr erlaubt.</p>
+      </li>
+    </ul>
+    <p>Der n&auml;chste Wert <code>01 21:25:26,540</code> gibt den Zeitpunkt an, zu dem die Log-Meldung generiert wurde (in diesem Fall den 1. Tag im aktuellen Monat, sowie die genaue Uhrzeit). </p>
+    <p>      Der Wert <code>Thread-3</code> bezeichnet den Thread, von dem die Anfrage bearbeitet wird.</p>
+    <p>      Der Wert von <code>TID</code> gibt die f&uuml;r jede Anfrage eindeutige Transaktions-ID an. Log-Meldungen, die bei der Abarbeitung dieser Anfrage geschrieben werden, enthalten alle einen Hinweis auf die entsprechende Transaktions-ID.</p>
+    <p>      Der Wert von <code>NID</code> gibt den Rechner-Knoten an, auf dem das MOA SP/SS Webservice l&auml;uft (bei <code>NID=&lt;null&gt;</code> ist dieser Wert nicht konfiguriert, vergleiche Abschnitt <a href="#webservice_basisinstallation_installation_spssdeploy">2.1.2.3</a>).</p>
+    <p>      Der Rest der Zeile einer Log-Meldung ist der eigentliche Text, mit dem das System bestimmte Informationen anzeigt. Im Fehlerfall ist h&auml;ufig ein Java Stack-Trace angef&uuml;gt, der eine genauere Ursachen-Forschung erm&ouml;glicht.</p>
+    <h4>      <a name="webservice_basisinstallation_logging_messages" id="webservice_basisinstallation_logging_messages"></a>2.1.3.2 Wichtige Log-Meldungen</h4>
+    <p>      Neben den im Abschnitt <a href="#webservice_basisinstallation_installation_tomcatstartstop_verify">2.1.2.4.3</a> beschriebenen Log-Meldungen, die anzeigen, ob das Service ordnungsgem&auml;&szlig; gestartet wurde, geben nachfolgenden Log-Meldungen Aufschluss &uuml;ber die Abarbeitung von Anfragen. </p>
+    <p>Die Entgegennahme einer Anfrage wird angezeigt durch:
+      
+  </p>
+    <pre>INFO | 01 21:25:26,540 | Thread-3 | TID=1049225059594-100 NID=&lt;null&gt; 
+  MSG=Starte neue Transaktion: TID=1049225059594-100, Service=SignatureVerification
+INFO | 01 21:25:26,540 | Thread-3 | TID=1049225059594-100 NID=&lt;null&gt; 
+  MSG=Aufruf von Adresse=127.0.0.1
+INFO | 01 21:25:26,540 | Thread-3 | TID=1049225059594-100 NID=&lt;null&gt; 
+  MSG=Client-Zertifikat nicht verf&uuml;gbar</pre>
+    <p> Die dritte Log-Meldung besagt, dass f&uuml;r die Abarbeitung dieser Anfrage kein Client-Zertifikat verf&uuml;gbar ist (entweder, weil die Anfrage &uuml;ber HTTP eingelangt ist, oder weil die SSL Client-Authentisierung nicht eingeschaltet ist). Bei erfolgreicher SSL Client-Authentisierung, gibt beispielsweise folgende Log-Meldung Informationen &uuml;ber das Client-Zertifikat aus: 
+  <pre>INFO | 12 13:58:08,772 | Thread-10 | TID=1045054687159-2 NID=&lt;null&gt; 
+  MSG=Client-Zertifikat: Subject=CN=Testuser, OU=MOA, O=BRZ, L=Vienna, ST=Vienna, C=AT, 
+  Serial=1.039.104.204, Issuer=CN=TestCA, OU=MOA, O=BRZ, L=Vienna, ST=Vienna, C=AT</pre>
+  <p>Eine erfolgreich abgearbeitete Anfrage wird angezeigt durch:
+  </p>
+  <pre>INFO | 01 21:25:53,168 | Thread-3 | TID=1049225059594-106 NID=&lt;null&gt; 
+  MSG=Anfrage erfolgreich abgearbeitet</pre>
+  <p>Ein Fehler beim Abarbeiten der Anfrage wird angezeigt durch:  </p>
+  <pre>INFO | 01 21:25:27,642 | Thread-3 | TID=1049225059594-100 NID=&lt;null&gt; 
+  MSG=Fehler beim Abarbeiten der Anfrage</pre>
+  <div id="block">
+    <p>In diesem Fall gibt der mitgeloggte Stacktrace Auskunft &uuml;ber die Art des Fehlers. Der Aufrufer des MOA SP/SS Webservices bekommt einen Fehlercode sowie eine kurze Beschreibung des Fehlers als Antwort zur&uuml;ck. </p>
+    <p> Die tats&auml;chlich &uuml;bertragenen Anfragen bzw. Antworten werden aus Effizienzgr&uuml;nden nur im Log-Level <code>DEBUG</code> angezeigt. </p>
+  </div>
+  <h2><a name="webservice_erweiterungsmoeglichkeiten" id="webservice_erweiterungsmoeglichkeiten"></a>2.2 Erweiterungsm&ouml;glichkeiten</h2>
+<p>Ausgehend von der <a href="#webservice_basisinstallation">Basisinstallation</a> k&ouml;nnen die optionalen Erweiterungen, die in den nachfolgenden Abschnitten beschrieben werden, unabh&auml;ngig und in beliebiger Kombination aufgesetzt werden.</p>
+<h3><a name="webservice_erweiterungsmoeglichkeiten_webserver" id="webservice_erweiterungsmoeglichkeiten_webserver"></a>2.2.1 Vorgeschalteter Webserver</h3>
+<h4><a name="webservice_erweiterungsmoeglichkeiten_webserver_iis" id="webservice_erweiterungsmoeglichkeiten_webserver_iis"></a>2.2.1.1 Microsoft Internet Information Server (MS IIS) </h4>
+  <p>Den MOA SP/SS Webservices kann optional ein MS IIS vorgeschaltet sein. In diesem Fall &uuml;bernimmt der MS IIS die HTTP- bzw. HTTPS-Kommunikation mit dem Aufrufer des Webservices. Die Kommunikation zwischen MS IIS und dem in Tomcat eingerichteten MOA SP/SS Webservice wird durch <span class="term">mod_jk</span> durchgef&uuml;hrt. Die angef&uuml;hrten Konfigurationsschritte gehen von einer MS IIS Standard-Installation aus.</p>
+  <h5><a name="webservice_erweiterungsmoeglichkeiten_webserver_iis_jk" id="webservice_erweiterungsmoeglichkeiten_webserver_iis_jk"></a>2.2.1.1.1 Konfiguration von <span class="term">mod_jk</span> im MS IIS</h5>
+  <p>    F&uuml;r die Kommunikation des MS IIS mit dem im Tomcat eingerichteten MOA SP/SS Webservice wird das <span class="term">ISAPI</span>-Modul von <span class="term">mod_jk</span> im MS IIS installiert und konfiguriert. Eine detaillierte Installations- und Konfigurationsanleitung gibt das <span class="term"><a href="http://tomcat.apache.org/connectors-doc/webserver_howto/iis.html" target="_blank">mod_jk</a></span><a href="http://tomcat.apache.org/connectors-doc/webserver_howto/iis.html" target="_blank"> IIS HowTo</a>. Beispiele f&uuml;r <code>workers.properties</code> und <code>uriworkermap.properties</code> Dateien liegen im Verzeichnis <code>$MOA_SPSS_INST/tomcat</code> bei.</p>
+  <h5><a name="webservice_erweiterungsmoeglichkeiten_webserver_iis_tomcat" id="webservice_erweiterungsmoeglichkeiten_webserver_iis_tomcat"></a>2.2.1.1.2 Konfiguration von Tomcat</h5>
+  <p>Damit Tomcat die Aufrufe entgegennehmen kann, die von MS IIS mittels <span class="term"> mod_jk</span> weiterleitet werden,  muss in <code>$CATALINA_HOME/conf/server.xml</code> der <span class="term">AJP  Connector</span> aktiviert werden. Im Gegenzug k&ouml;nnen die Konnektoren f&uuml;r HTTP und HTTPS deaktiviert werden. Das geschieht am einfachsten durch Ein- bzw. Auskommentieren der entsprechenden <code>Connector</code> Konfigurations-Elemente in dieser Datei.</p>
+<h5><a name="webservice_erweiterungsmoeglichkeiten_webserver_iis_ssl" id="webservice_erweiterungsmoeglichkeiten_webserver_iis_ssl"></a>2.2.1.1.3 Konfiguration von SSL</h5>
+  <p>    Die Dokumentation zum Einrichten von SSL auf dem MS IIS steht nach Installation des IIS unter http://localhost/iisHelp/ oder aber auch auf den Webseiten von Mircrosoft zur Verf&uuml;gung. </p>
+  <h4><a name="webservice_erweiterungsmoeglichkeiten_webserver_apache" id="webservice_erweiterungsmoeglichkeiten_webserver_apache"></a>2.2.1.2 Apache</h4>
+  <p>Den MOA SP/SS Webservices kann ein Apache Webserver vorgeschaltet sein. Das Prinzip funktioniert wie bei MS IIS, auch hier wird <span class="term"> mod_jk</span> f&uuml;r die Kommunikation zwischen Webserver und Tomcat eingesetzt. Die angef&uuml;hrten Konfigurationsschritte gehen von einer Standard-Installation des Apache Webservers aus.</p>
+  <h5><a name="webservice_erweiterungsmoeglichkeiten_webserver_apache_jk" id="webservice_erweiterungsmoeglichkeiten_webserver_apache_jk"></a>2.2.1.2.1 Konfiguration von <span class="term"> mod_jk</span> im Apache </h5>
+  <p>Um das MOA-SPSS Webservice hinter einem Apache Webserver zu betreiben, ist die Konfiguration des Apache-Moduls <span class="term">mod_jk</span> erforderlich. Eine detaillierte Installations- und Konfigurationsanleitung gibt das <span class="term"><a href="http://tomcat.apache.org/connectors-doc/webserver_howto/apache.html" target="_blank">mod_jk</a></span><a href="http://tomcat.apache.org/connectors-doc/webserver_howto/apache.html" target="_blank"> Apache HowTo</a>. Ein Beispiel f&uuml;r eine <code>workers.properties</code> Datei liegt im Verzeichnis <code>$MOA_SPSS_INST/tomcat</code> bei.</p>
+  <p>Um das MOA SP/SS Webservice dem Apache Webserver bekannt zu machen, sind zumindest folgende Eintr&auml;ge im globalen Kontext der Apache-Konfigurationsdatei notwendig:</p>
+  <pre>LoadModule jk_module /usr/lib/apache/mod_jk.so<br>AddModule jk_module<br>JkOptions +ForwardKeySize +ForwardURICompat -ForwardDirectories<br>JkWorkersFile conf/workers.properties <br>JkMount /moa-spss/* moaworker </pre>
+  <p>Die Pfad- und Dateinamen k&ouml;nnen je nach existierender Apache Installation geringf&uuml;gig variieren.</p>
+  <h5><a name="webservice_erweiterungsmoeglichkeiten_webserver_apache_tomcat" id="webservice_erweiterungsmoeglichkeiten_webserver_apache_tomcat"></a>2.2.1.2.2 Konfiguration von Tomcat</h5>
+  <p>Die Konfiguration von Tomcat ist analog zu Abschnitt <a href="#webservice_erweiterungsmoeglichkeiten_webserver_iis_tomcat">2.2.1.1.2</a> durchzuf&uuml;hren.</p>
+  <h5><a name="webservice_erweiterungsmoeglichkeiten_webserver_apache_ssl" id="webservice_erweiterungsmoeglichkeiten_webserver_apache_ssl"></a>2.2.1.2.2 Konfiguration von SSL mit <span class="term">mod_SSL</span></h5>
+  <p>Apache kann in Verbindung mit <span class="term">mod_SSL</span> als SSL-Endpunkt f&uuml;r das MOA SP/SS Webservice fungieren. In diesem Fall entf&auml;llt die SSL-Konfiguration in Tomcat, da Apache und Tomcat auch im Fall von SSL Daten via <span class="term">mod_jk</span> austauschen. Eine detaillierte Installations- und Konfigurationsanleitung  enth&auml;lt die <a href="http://www.modssl.org/docs/" target="_blank">Online-Dokumentation</a> von <span class="term">mod_SSL</span>.</p>
+  <p>Bei der Verwendung von Client-Authentisierung muss darauf geachtet werden, dass <span class="term">mod_ssl</span> die HTTP-Header mit den Informationen &uuml;ber das Client-Zertifikat exportiert. Dies wird durch Angabe der folgenden Option in der Apache-Konfiguration erreicht: </p>
+  <pre>SSLOptions +ExportCertData +StdEnvVars</pre>
+    <p>Je nach vorhandener SSL-Konfiguration des Apache Webservers kann diese Option im globalen Kontext, im Kontext des Virtual Hosts oder im Kontext eines Verzeichnisses spezifiziert werden.</p>
+  <h3><a name="webservice_erweiterungsmoeglichkeiten_datenbank" id="webservice_erweiterungsmoeglichkeiten_datenbank"></a>2.2.2 Datenbank</h3>
+  <p>Die MOA SP/SS Module k&ouml;nnen eine Datenbank zum Archivieren von Certificate Revocation Lists (CRLs), sowie zum Abspeichern von Log-Meldungen verwenden. In beiden F&auml;llen wird eine installierte und konfigurierte Datenbank vorausgesetzt.</p>
+  <h4><a name="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql" id="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql"></a>2.2.2.1 PostgreSQL</h4>
+  <p>Eine detaillierte &Uuml;bersicht &uuml;ber die Installation und Konfiguration von <span class="term">PostgreSQL</span> gibt die <a href="http://wiki.postgresql.org/wiki/Main_Page" target="_blank">Online-Dokumentation</a>. </p>
+  <p class="term">Bitte beachten Sie: Eine M&ouml;glichkeit, PostgreSQL unter MS Windows zu installieren, besteht darin, <a href="http://sources.redhat.com/cygwin/" target="_blank">Cygwin</a> mit dem PostgreSQL-Package zu installieren. Alternative Installationsvarianten werden in der PostgreSQL Dokumentation angef&uuml;hrt.</p>
+  <h5><a name="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_benutzer" id="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_benutzer"></a>2.2.2.1.1 Anlegen eines Benutzers und einer Datenbank f&uuml;r MOA SP/SS</h5>
+  <p>Damit die MOA SP/SS Module eine Verbindung zu <span class="term">PostgreSQL</span> aufbauen kann, m&uuml;ssen der Name eines <span class="term">PostgreSQL</span>-Benutzers und einer <span class="term">PostgreSQL</span>-Datenbank bekannt sein. Sollten diese nicht vorhanden sein, kann mit folgenden Kommandos ein Benutzer namens <code>moa</code> und eine Datenbank namens <code>moadb</code> angelegt werden:</p>
+  <pre>createuser -U postgres -d -A -P moa<br>createdb -U moa moadb</pre>
+    <p>Da die MOA SP/SS Module &uuml;ber <span class="term">JDBC</span> mit der Datenbank kommunizieren, ist in der Folge die Angabe einer <span class="term">JDBC</span>-URL notwendig, welche die Verbindungsparameter enth&auml;lt. Wurden der Benutzer und die Datenbank wie im obigen Beispiel angelegt, ist folgende <span class="term">JDBC</span>-URL anzugeben (Annahme: als Passwort f&uuml;r den Benutzer moa wurde moapass gew&auml;hlt):</p>
+  <pre> jdbc:postgresql://host/moadb?user=moa&amp;password=moapass</pre>
+      <p>Die Zeichen <code>jdbc:postgresql://</code> sind unver&auml;nderliche Bestandteile einer <span class="term">PostgreSQL</span> <span class="term">JDBC</span>-URL. <code>host</code> gibt den Rechner an, auf dem <span class="term">PostgreSQL</span> l&auml;uft. <code>moadb</code> identifiziert den Namen der Datenbank. &Uuml;ber die Parameter <code>user=</code> und <code>pass=</code> werden Benutzername und Passwort f&uuml;r den DB-User bekanntgegeben.</p>
+      <h5><a name="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_crls" id="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_crls"></a>2.2.2.1.2 Archivierung von CRLs</h5>
+      <p>Zum Archivieren von CRLs m&uuml;ssen in der MOA SP/SS Konfigurationsdatei die Kinder des Elements <code>cfg:MOAConfiguration/cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:Archiving</code>        entsprechend
+        konfiguriert werden: </p>
+      <ul>
+        <li><code>cfg:EnableArchiving</code> muss auf den Wert <code>true</code> gesetzt sein;</li>
+        <li><code>cfg:ArchiveDuration</code> muss als nichtnegative Ganzzahl die maximale Archivierungsdauer in Tagen enthalten;</li>
+        <li><code>cfg:Archive</code> muss genau ein Element <code>cfg:DatabaseArchive</code> enthalten, das wiederum aus zwei Elementen
+          bestehen muss:
+          <ul>
+            <li><code>cfg:JDBCURL</code> muss eine g&uuml;ltige JDBC-URL enthalten, mit der auf die Datenbank zur Archivierung
+              zugegriffen werden kann (<span class="remark">Hinweis: da es sich hierbei um einen Eintrag
+          in eine XML-Datei handelt, muss das Zeichen <code>&amp;</code> in der in Abschnitt <a href="#webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_benutzer">2.2.2.1.1</a> gezeigten
+          JDBC-URL
+          durch die Zeichenfolge <code>&amp;amp;</code> ersetzt werden.</span>);</li>
+            <li><code>cfg:JDBCDriverClassName</code> muss den vollst&auml;ndig qualifizierten Java-Klassennamen des JDBC-Treibers
+            enthalten. </li>
+          </ul>
+        </li>
+      </ul>
+      <p>Vergleiche auch Abschnitt <a href="../config/config.html#konfigurationsparameter_sp_certificatevalidation_revocationchecking_archiving">2.3.1.3.4</a> im
+          Konfigurationshandbuch.</p>
+      <h5><a name="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_logging" id="webservice_erweiterungsmoeglichkeiten_datenbank_postgresql_logging"></a>2.2.2.1.3 Logging</h5>
+      <p>F&uuml;r das Logging in eine <span class="term">PostgreSQL</span> Datenbank mittels <span class="term">Log4j</span> muss zun&auml;chst eine Tabelle f&uuml;r die Log-Meldungen angelegt werden. Dies kann mit folgendem SQL-Statement erreicht werden:</p>
+  <pre> create table spss_log (log_time timestamp, log_level varchar(5), log_msg text);</pre>
+      <p>Damit <span class="term">Log4j</span> die Log-Meldungen in diese Datenbanktabelle schreibt, muss die <span class="term">Log4j</span>-Konfiguration adaptiert werden. Die mit MOA SP/SS mitgelieferte, beispielhafte <a href="../../../conf/moa-spss/log4j.properties">Log4j-Konfiguration</a> enth&auml;lt bereits die notwendigen Eintr&auml;ge f&uuml;r das Logging in eine PostgreSQL Datenbank, die jedoch standardm&auml;&szlig;ig ausgeschaltet sind. </p>
+      <p>Wie beim Caching von CRLs ist auch hier die Angabe einer <span class="term">JDBC</span>-URL notwendig, damit die MOA SP/SS Module eine Verbindung zur Datenbank aufnehmen k&ouml;nnen.</p>
+      <p><span class="remark">Bitte beachten Sie: Bei Tests hat sich das Logging in eine Datenbank mit Log4j als Performance-Engpass herausgestellt. Es wird deshalb empfohlen,  dieses Feature mit Bedacht einzusetzen.</span></p>
+  <h4><a name="webservice_erweiterungsmoeglichkeiten_datenbank_andere" id="webservice_erweiterungsmoeglichkeiten_datenbank_andere"></a>2.2.2.2 Andere Datenbanken </h4>
+  <p>&Uuml;ber die generische Anbindung JDBC k&ouml;nnen auch andere Datenbanken f&uuml;r die Archivierung von CRLs bzw. f&uuml;r die Speicherung der Log-Meldungen eingesetzt werden. Hinweise zu bestimmten Datenbanken finden Sie in den <a href="../faq/faq.html">FAQ</a>. </p>
+  <p>Die in Abschnitt <a href="#webservice_erweiterungsmoeglichkeiten_datenbank_postgresql">2.2.2.1</a> gemachten Angaben zu Archivierung von CRLs bzw. zur Speicherung von Log-Meldungen gelten sinngem&auml;&szlig;. </p>
+  <h3><a name="webservice_erweiterungsmoeglichkeiten_hsm" id="webservice_erweiterungsmoeglichkeiten_hsm"></a>2.2.3 Hardware Security Module (HSM)</h3>
+  <p>MOA SS kann f&uuml;r die Erstellung von Signaturen auf die Dienste eines HSM zur&uuml;ckgreifen. Voraussetzung daf&uuml;r ist, dass f&uuml;r das HSM eine Implementierung der Schnittstelle PCKS#11 (PKCS#11-Bibliothek) angeboten wird. </p>
+  <p>F&uuml;r die Einbindung des HSM in MOA SS m&uuml;ssen zun&auml;chst die Bibliotheken aus <code>$MOA_SPSS_INST/pkcs11</code>  in ein beliebiges Verzeichnis kopiert werden, welches dann in den Libray-Pfad des jeweiligen Betriebssystems aufgenommen werden muss (Windows:  Umgebungsvariable <code>PATH</code>; Linux: Umgebungsvariable <code>LD_LIBRARY_PATH</code>). </p>
+  <p>Der Name der f&uuml;r das HSM spezifischen PKCS#11-Bibliothek muss  in der Konfigurationsdatei eingetragen werden (vergleiche Abschnitt <a href="../config/config.html#konfigurationsparameter_ss_keymodules_hardwarekeymodule">2.2.1.1</a> des Konfigurationshandbuchs).</p>
+  <h1><a name="klassenbibliothek"></a>3 Klassenbibliothek</h1>
+  <p>Dieser Abschnitt beschreibt die Verwendung von MOA SP/SS als Klassenbibliothek. Im ersten Unterkapitel wird eine minimale Basisinstallation beschrieben. Das zweite Unterkapitel zeigt eine Reihe von optionalen Erweiterungsm&ouml;glichkeiten auf.</p>
+  <h2><a name="klassenbibliothek_basisinstallation" id="klassenbibliothek_basisinstallation"></a>3.1 Basisinstallation</h2>
+  <h3><a name="klassenbibliothek_basisinstallation_einfuehrung" id="klassenbibliothek_basisinstallation_einfuehrung"></a>3.1.1 Einf&uuml;hrung </h3>
+  <p>Die Basisinstallation der Klassenbibliothek stellt einerseits die minimalen Anforderungen f&uuml;r den Einsatz von MOA SP/SS als Klassenbibliothek dar, andererseits dient sie als Ausgangspunkt f&uuml;r optionale Erweiterungsm&ouml;glichkeiten.</p>
+  <p>    Die <strong>Mindestanforderungen</strong> f&uuml;r die Basisinstallation sind: </p>
+  <ul>
+    <li><a href="#referenziertesoftware">Java SE 5 oder h&ouml;her</a></li>
+</ul>
+  <p>Wir <strong>empfehlen</strong> jedoch jeweils aktuelle Version zu verwenden:</p>
+  <ul>
+    <li><a href="#referenziertesoftware">Java SE 6 (neuestes Update) bzw. Java SE Update SE 7 (neuestes Update)</a></li>
+  </ul>
+<h3><a name="klassenbibliothek_basisinstallation_vorbereitung" id="klassenbibliothek_basisinstallation_vorbereitung"></a>3.1.2 Vorbereitung </h3>
+<p>Die folgenden Schritte dienen der Vorbereitung der Installation.</p>
+  <dl>
+    <dt>Installation von Java SE</dt>
+    <dd>Installieren Sie Java SE in ein beliebiges Verzeichnis.  Das Wurzelverzeichnis der Java SE Installation wird im weiteren Verlauf als <code>$JAVA_HOME</code> bezeichnet.</dd>
+    <dt>Entpacken der MOA SP/SS Klassenbibliotheks-Distribution</dt>
+    <dd> Entpacken Sie die Datei <code>moa-spss-2.0.0-lib.zip</code> in ein beliebiges Verzeichnis. Dieses Verzeichnis wird im weiteren Verlauf als <code>$MOA_SPSS_INST</code> bezeichnet. </dd>
+    <dt>Installation der Kryptographiebibliotheken von SIC/IAIK</dt>
+    <dd>
+      <p>Kopieren Sie alle Dateien aus dem Verzeichnis <code>$MOA_SPSS_INST/ext</code> in das Verzeichnis <code>$JAVA_HOME/jre/lib/ext</code>. Zus&auml;tzlich m&uuml;ssen Sie die Rechtedateien Ihrer Java SE austauschen. Laden Sie dazu die passenden <span class="term">Unlimited Strength 
+      
+      
+      Jurisdiction Policy Files</span> von der <a href="http://java.com/download" target="_blank">Java SE Downloadseite </a>und achten Sie darauf die f&uuml;r ihre verwendete Java SE Installation richtige Version zu nehmen. Anschlie&szlig;end folgen Sie der darin enthaltenen Installationsanweisung.</p>
+</dd>
+</dl>
+<h3><a name="klassenbibliothek_basisinstallation_verwendung" id="klassenbibliothek_basisinstallation_verwendung"></a>3.1.3 Verwendung</h3>
+  <p> Um die MOA SP/SS Klassenbibliothek in einer Applikation verwenden zu k&ouml;nnen, m&uuml;ssen die mit MOA SP/SS ausgelieferten Bibliotheken in den Java Klassenpfad der Applikation eingebunden werden. </p>
+  <p>Die nachfolgende Tabelle listet diese Klassenbibliotheken auf; die Eintr&auml;ge in der Spalte Dateien sind relativ zum Verzeichnis <code>$MOA_SPSS_INST</code> zu interpretieren.</p>
+<table class="fixedWidth" border="1" cellpadding="2">
+  <tbody><tr>
+<th>Klassenbibliothek</th><th>Version</th><th>Dateien</th>
+
+</tr><tr>
+<td>MOA SP/SS</td>
+<td>2.0.0&nbsp; </td>
+<td><code>moa-spss.jar</code>, <code>moa-common.jar</code></td>
+</tr><tr>
+<td>MOA IAIK</td>
+<td><p>1.5<strong>&nbsp;</strong></p></td>
+<td><p><code>lib/iaik_moa-1.5.jar</code>,
+      <code>lib/iaik_cms-4.1.jar</code>, <code>lib/iaik_ixsil-1.2.2.5.jar</code></p>
+  </td>
+</tr>
+<tr>
+  <td>Mail</td>
+  <td>1.4&nbsp; </td>
+  <td><code>lib/mail-1.4.jar</code></td>
+</tr>
+<tr>
+  <td>Activation</td>
+  <td>1.1&nbsp; </td>
+  <td><code>lib/activation-1.1.jar</code></td>
+</tr>
+<tr>
+<td>Xerces-J</td>
+<td>2.9.0&nbsp; </td>
+<td><code>lib/xercesImpl.jar</code></td>
+</tr><tr>
+<td>Xalan-J</td>
+<td>2.7.1&nbsp; </td>
+<td><p><code>lib/xalan.jar</code>, <code>lib/xml-apis.jar</code>, <code>lib/serializer.jar</code></p>
+  <p class="remark">Bitte beachten Sie: Sie m&uuml;ssen diese Bibliothek gegebenenfalls der Java VM als endorsed bekanntgeben. Sie k&ouml;nnen dies tun, indem Sie entweder</p>
+  <ul>
+    <li class="remark">die Bibliothek in das (ggf. vorher anzulegende) Verzeichnis <code>$JAVA_HOME/jre/lib/endorsed/</code> kopieren; oder</li>
+    <li class="remark">die System Property <code>java.endorsed.dirs</code> verwenden, und als Wert den Pfad zu jenem Verzeichnis angeben, in dem Sie die Bibliothek vorhalten (also z.B. <code>java.endorsed.dirs=c:/mylibdir</code>).</li>
+  </ul></td>
+</tr><tr>
+<td>Jaxen</td><td>1.0&nbsp; </td>
+<td><code>lib/jaxen-1.0-FCS.jar</code>, <code>lib/saxpath-1.0-FCS.jar</code></td>
+
+</tr><tr>
+<td>Commons-Logging</td>
+<td>1.0.4&nbsp; </td>
+<td><code>lib/commons-logging-1.0.4.jar</code></td>
+</tr><tr>
+<td>Log4j</td>
+<td>1.2.14&nbsp; </td>
+<td><code>lib/log4j-1.2.14.jar</code></td>
+</tr>
+<tr>
+  <td>Commons-Discovery</td><td>0.2&nbsp; </td><td><code>lib/commons-discovery-0.2.jar</code></td>
+</tr>
+<tr>
+  <td>Postgres JDBC2</td><td>7.3&nbsp; </td><td><p><code>lib/postgresql-7.2.jar</code></p>
+  <p><span class="remark">Bitte beachten Sie: Wenn Sie keine Datenbank f&uuml;r MOA SP/SS verwenden (vergleiche </span><a href="#webservice_erweiterungsmoeglichkeiten_datenbank">2.2.2</a><span class="remark">), ben&ouml;tigen Sie diese Bibliothek nicht.</span></p></td>
+</tr><tr>
+</tr>
+<tr>
+  <td>Axis</td>
+  <td>1.0_IAIK/1.4&nbsp; </td>
+  <td><code>lib/axis-1.0_iaik.jar, lib/axis-jaxrpc-1.4.jar, lib/axis-saaj-1.4.jar, lib/axis-wsdl4j-1.5.1.jar</code></td>
+</tr>
+</tbody></table>
+  
+   <h3><a name="klassenbibliothek_basisinstallation_logging" id="klassenbibliothek_basisinstallation_logging"></a>3.1.4 Logging</h3>
+   <p> Die MOA SP/SS Klassenbibliothek verwendet <a href="#referenziertesoftware">Log4j</a> f&uuml;r die Ausgabe von Log-Meldungen am Bildschirm bzw. in Log-Dateien. Die im Abschnitt  <a href="#webservice_basisinstallation_logging">2.1.3</a> gemachten Aussagen lassen sich gro&szlig;teils auf den Einsatz der MOA SP/SS Klassenbibliothek &uuml;bertragen. </p>
+   <h2><a name="klassenbibliothek_erweiterungsmoeglichkeiten" id="klassenbibliothek_erweiterungsmoeglichkeiten"></a>3.2 Erweiterungsm&ouml;glichkeiten </h2>
+   <p>Die im Abschnitt <a href="#webservice_erweiterungsmoeglichkeiten">2.2</a> angef&uuml;hrten Erweiterungsm&ouml;glichkeiten f&uuml;r die MOA SP/SS Webservices gelten in analoger Weise auch f&uuml;r die Klassenbibliothek.</p>
+   <h1><a name="referenzierte_software"></a>A Referenzierte Software</h1>
+<p>Auf folgende Software-Pakete wird in diesem Handbuch verwiesen:</p>
+<table class="fixedWidth"  border="1" cellpadding="2">
+  <tr>
+    <th scope="col">Name</th>
+    <th scope="col">Beschreibung</th>
+  </tr>
+  <tr>
+    <td><a href="http://jakarta.apache.org/tomcat/index.html" target="_blank">Apache Tomcat </a></td>
+    <td>Apache Tomcat Servlet-Container</td>
+  </tr>
+  <tr>
+    <td><a href="http://java.com/" target="_blank">Java SE</a></td>
+    <td>Java Standard Edition (Software Development Kit bzw. Java Runtime Environment) </td>
+  </tr>
+  <tr>
+    <td><a href="http://logging.apache.org/log4j/1.2/" target="_blank"> Log4J </a></td>
+    <td>Logging Framework </td>
+  </tr>
+</table>
+
+</body>
+</html>

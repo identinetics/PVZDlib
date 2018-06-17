@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>MOA.spss.handbook.clients</groupId>
+    <artifactId>moa-spss-handbook-clients</artifactId>
+    <version>2.0</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>MOA.spss.handbook</groupId>
+  <artifactId>moa-spss-handbook-referencedData</artifactId>
+  <packaging>war</packaging>
+  <version>2.0</version>
+  <name>MOA SP/SS Handbook Referenced Data</name>
+
+  <properties>
+    <repositoryPath>${basedir}/../../../../../repository</repositoryPath>
+  </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>referencedData</warName>
+          <archive>
+            <manifest>
+              <addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+
+<!--         		<plugin>
+            		<groupId>org.codehaus.mojo</groupId>
+            		<artifactId>properties-maven-plugin</artifactId>
+            		<version>1.0-alpha-2</version>
+            		<executions>
+                		<execution>
+                    		<phase>initialize</phase>
+                    		<goals>
+                        		<goal>read-project-properties</goal>
+                    		</goals>
+                    		<configuration>
+    	                   		<files>
+		                            <file>${basedir}/../../../../../moa-id.properties</file>
+      		                  </files>
+          		          </configuration>
+              		  </execution>
+            		</executions>
+        		</plugin> -->
+        	</plugins>
+       </build>
+</project>

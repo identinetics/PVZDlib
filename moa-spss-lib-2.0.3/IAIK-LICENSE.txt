@@ -1,0 +1,108 @@
+Stiftung SIC License Agreement for "IAIK MOA"
+
+Valid from December 1st, 2005
+
+The Stiftung SIC
+Stiftung Secure Information and Communication Technologies
+Inffeldgasse16a, A-8010 Graz, Austria, hereafter referred to as "Stiftung SIC", 
+offers to grant licences for the SOFTWARE defined below according to the following conditions:
+
+1. DEFINITIONS
+For the purpose of this Licence Agreement, the following definitions are valid:
+
+a. The term "SOFTWARE" refers to the "IAIK MOA" bundle in any 
+form (object code or other) including documentation. The 
+SOFTWARE is the sole property of Stiftung SIC and protected by 
+Austrian, International Copyright Law, e.g. the Revised Berne 
+Convention, and the US Copyright Act.
+
+b. "IAIK MOA" is distributed in documentation, manuals, and user 
+guides, tools - including any revisions, patches and updates 
+downloaded by the customer.
+
+c."IAIK MOA Runtime Modules" means the runtime object code 
+modules provided with, or derived from the SOFTWARE.
+
+d. "MOA modules" mean the modules for online applications made 
+available by the Austrian Federal Chancellery and they consist of 
+MOA-Signature Creation (MOA-SS), MOA-Signature Verification 
+(MOA-SP) and MOA-Identification (MOA-ID).
+
+2. GRANTING of LICENCES
+
+The licensee is granted as specified below:
+
+o IAIK MOA Runtime License
+Stiftung SIC grants the Licensee a non-exclusive, non-transferable runtime licence to use the 
+"IAIK MOA" modules in the context of unmodified MOA modules. Any attempt to use any parts or 
+the whole IAIK Crypto Toolkits which come bundled together with the MOA modules for any 
+purpose other than accessing these MOA modules by applications, including, but not limited to, 
+the development of applications, the creation of a toolkit, or inclusion in a different toolkit, is not 
+permitted without additional licenses. These licences are not transferable to contractors or any 
+other persons, organisations or companies outside the licensee's organisation without making 
+such persons, organisations or companies explicitly aware of the restrictions of these licenses 
+and such persons, organisations or companies explicitly agree to observe these restrictions.
+
+3. LIMITATIONS for all LICENCES:
+LICENSEES must not attempt to reverse engineer, decompile, disassemble, reverse, translate or in 
+any other manner decode the computer programmes in the IAIK libraries in order to derive the 
+source code there from. 
+
+4. WARRANTY:
+Stiftung SIC guarantees that the SOFTWARE is free of any computer virus or other malicious 
+hidden routines that would intentionally cause damage to or corrupt data, storage media or 
+equipment. For proving the integrity of the SOFTWARE, Stiftung SIC may calculate a SHA-1 hash 
+value over the distribution file and publish it on its web site. It is the duty of the licensee to verify this 
+hash value. If the hash value cannot be verified, Stiftung SIC declines any warranties on that 
+software, and the licensee should immediately (or within 30 days of delivery at the latest), contact 
+Stiftung SIC for verification and reshipment.
+The SOFTWARE is provided "as is" and except for the declaration and warranty stated in this 
+section, Stiftung SIC makes no representations, conditions or warranties, either express or implied, 
+relative to the SOFTWARE or services provided hereunder, including all implied conditions or 
+warranties of merchantability and fitness for a particular purpose and all conditions with respect to 
+intellectual property infringement. Stiftung SIC may, but shall not be obliged to, fix errors in any 
+SOFTWARE.
+
+5. PROPRIETARY INFORMATION and CONFIDENTIALITY:
+The LICENSEE acknowledges that the SOFTWARE remains the property of, and is confidential to, 
+Stiftung SIC and incorporates trade secrets of Stiftung SIC, and that Stiftung SIC shall have the 
+exclusive right to any copyrights or patents in respect of the SOFTWARE. The LICENSEE agrees to 
+maintain the confidentiality of the SOFTWARE.
+The LICENSEE further agrees that (with the exception of paragraph 2 above), he shall not make 
+any disclosure of the SOFTWARE (including copies thereof or methods or concepts utilised therein) 
+to any person or entity, other than employees of the LICENSEE, to whom such disclosure is 
+necessary in order to use the SOFTWARE as provided herein. The LICENSEE shall appropriately 
+notify each employee to whom any such disclosure is made. Such disclosure must be made in 
+confidence and shall be kept in confidence by the employee in question.
+The LICENSEE agrees to use diligent and determined efforts to secure and protect the 
+SOFTWARE and copies thereof in a manner consistent with their proprietary character and the 
+maintenance of Licensor's rights therein, and without limitation thereof, to take appropriate action, 
+by instruction or agreement with its employees who are permitted access to the SOFTWARE or 
+copies thereof, or otherwise, to satisfy its obligations as hereby stated.
+
+6. TERMINATION:
+Stiftung SIC may terminate this Agreement without prior notice, if the licensee 1. neglects or fails to 
+perform or observe, or correct a breach of its obligations to Stiftung SIC; 2. goes out of business, 
+files a bankruptcy petition or has such a petition filed involuntarily against it or becomes insolvent; 3. 
+develops, sells, licenses or distributes or attempts to develop, sell, license or distribute any software 
+based on the SOFTWARE which is outside the scope of the limited rights granted herein, to any 
+third party. In the event of such a termination, the Licensee shall immediately destroy all copies and 
+ensure that all backup copies are destroyed as well.
+
+Stiftung SIC may at any time stop granting free licenses of the SOFTWARE in combination with the 
+MOA modules without prior notice. In this case, all licenses granted until that time remain valid, i.e. 
+allow the licensee to continue using the SOFTWARE in combination with the unmodified MOA 
+modules.
+
+7. LIABILITY:
+To the maximum extent allowed by applicable law Stiftung SIC shall not be liable for any damages 
+whatsoever (including, without limitation, damages for loss of business profits, business interruption, 
+loss of business information, or other pecuniary loss) arising out of the use of or inability to use the 
+SOFTWARE, even if Stiftung SIC has been advised of the possibility of such damages.
+
+8. WAIVER:
+Invalidity, on legal grounds, of any term of this Agreement does not render the Agreement as a whole 
+invalid.
+
+9. GOVERNING LAW, ARBITRATION:
+This Agreement is governed by Austrian law.

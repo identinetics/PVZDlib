@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc:XMLDocument xmlns:doc="urn:document" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:document http://localhost:8080/referencedData/XMLDocument.xsd">
+  <doc:Paragraph>Ich bin der erste Absatz in diesem Dokument.</doc:Paragraph>
+  <doc:Paragraph ParaId="Para2">Und ich bin der zweite Absatz in diesem Dokument.
+Ich habe weiters ein eigenens ID-Attribut bekommen.</doc:Paragraph>
+</doc:XMLDocument>

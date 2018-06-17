@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CreateXMLSignatureResponse xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><SignatureEnvironment><doc:XMLDocument xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#" xmlns:doc="urn:document" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:document urn:XMLDocument.xsd">
+  <doc:Paragraph>Ich bin der erste Absatz in diesem Dokument.</doc:Paragraph>
+  <doc:Paragraph ParaId="Para2">Und ich bin der zweite Absatz in diesem Dokument.
+Ich habe weiters ein eigenens ID-Attribut bekommen.</doc:Paragraph><dsig:Signature Id="signature-1-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/><dsig:Reference Id="reference-1-1" URI="#Para2"><dsig:Transforms><dsig:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"><xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:include href="XMLDocument.Para.xsl"/>
+</xsl:stylesheet></dsig:Transform><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><dsig:DigestValue>luM3wUmedTvkMHVedQkA/8otXUE=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue>vGVimRmUHwrDR8feQCK1DZ2kyDw0CCrXimJi/yCrIoqSkUKFlKrtAyP2RUBXXjye</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIID+DCCA2WgAwIBAgIBCTAJBgUrDgMCHQUAMH8xCzAJBgNVBAYTAkFUMSwwKgYD
+VQQKEyNTdGFic3RlbGxlIElLVC1TdHJhdGVnaWUgZGVzIEJ1bmRlczEeMBwGA1UE
+CxMVVGVjaG5payB1bmQgU3RhbmRhcmRzMSIwIAYDVQQDExlUZXN0IENBIC0gU2ln
+bmF0dXJkaWVuc3RlMB4XDTA0MDgwNDA4MjM0OFoXDTA3MDgwNDA4MjM0OFowgZgx
+CzAJBgNVBAYTAkFUMS0wKwYDVQQKEyRTdGFic3N0ZWxsZSBJS1QtU3RyYXRlZ2ll
+IGRlcyBCdW5kZXMxHjAcBgNVBAsTFVRlY2huaWsgdW5kIFN0YW5kYXJkczE6MDgG
+A1UEAxMxVGVzdDogU2lnbmF0dXJkaWVuc3QgYWxsZXIgS3VuZGVuOiBFQ0RTQSAo
+UDE5MnYxKTCB8zCBvAYHKoZIzj0CATCBsAIBATAkBgcqhkjOPQEBAhkA////////
+/////////////v//////////MDQEGP////////////////////7//////////AQY
+ZCEFGeWcgOcPp+mrciQwSf643uzBRrmxBDEEGI2oDrAwkPZ8vyDrQ6GIAPT/Cv2C
+/xASBxkrlf/I2nhjEBHtayTN1XP5d6EeeUgRAhkA////////////////md74NhRr
+ybG00igxAgEBAzIABNHWY9lQOE1zgmpcpjTg2WIg6qgEsGhpXELPinJoMPDVheTv
+2BZPG42YJsNfvWgC06OCARwwggEYMA4GA1UdDwEB/wQEAwIGwDAMBgNVHRMBAf8E
+AjAAMB0GA1UdDgQWBBRHH5EXnrWosCmIa+JyEM5seMxFVzBdBgNVHSAEVjBUMFIG
+DCsGAQQBlRIBAgMBATBCMEAGCCsGAQUFBwICMDQaMkRpZXNlcyBaZXJ0aWZpa2F0
+IGlzdCBudXIgZvxyIFRlc3R6d2Vja2UgZ2VlaWduZXQuMEMGA1UdHwQ8MDowOKA2
+oDSGMmh0dHA6Ly9sYWJzLmNpby5ndi5hdC90ZW1wL2NybHMvc2lnbmF0dXJkaWVu
+c3QuY3JsMBQGByooAAoBAQEECQwHQktBLUlLVDAfBgNVHSMEGDAWgBRAl0P5fWaw
+vf59+uxGcYY9wffZPTAJBgUrDgMCHQUAA4GBAIMKUsnajgfBtpHeDdMdQMLA8fdt
+lluezDOM78WYYSFURP04QZk5iHkShzptgZCF5Y/T4an3dC3SnytL67LJvEoKUyja
+iTMLo7650xRTvAjTaMJ+nly/wTRYJKplOLXKWj3WwfObMHXdsDE8NJmpJSRE7Sw7
++tj+UiTiNNSaXirq</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo></dsig:Signature>
+</doc:XMLDocument></SignatureEnvironment></CreateXMLSignatureResponse>

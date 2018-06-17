@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VerifyXMLSignatureRequest
+	xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#"
+	xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://reference.e-government.gv.at/namespace/moa/20020822# file:D:/_java/moa-idspss/trunk/common/src/main/resources/resources/schemas/MOA-SPSS-2.0.0.xsd
+	                http://www.w3.org/2000/09/xmldsig# http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd">
+	<VerifySignatureInfo>
+		<VerifySignatureEnvironment>
+			<XMLContent>
+				<dsig:Signature Id="signature-1-1"
+					xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+					<dsig:SignedInfo>
+						<dsig:CanonicalizationMethod
+							Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+						<dsig:SignatureMethod
+							Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1" />
+						<dsig:Reference
+							Type="http://www.w3.org/2000/09/xmldsig#Manifest"
+							URI="#dsig-manifest-1-1">
+							<dsig:DigestMethod
+								Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+							<dsig:DigestValue>
+								XRuYnuRTOAInpu8TzwDWn9Er4/Y=
+							</dsig:DigestValue>
+						</dsig:Reference>
+					</dsig:SignedInfo>
+					<dsig:SignatureValue>
+						O3/U4zcVG6BOdc2C/m09xe+vxGhp6TKz7lEukgjINsc1o1Bvdelo77T8cEG/muYd
+					</dsig:SignatureValue>
+					<dsig:KeyInfo>
+						<dsig:X509Data>
+							<dsig:X509Certificate>
+								MIIELjCCAxagAwIBAgIBEzANBgkqhkiG9w0BAQUFADBEMQswCQYDVQQGEwJBVDEQ
+								MA4GA1UEChMHVFUgR3JhejENMAsGA1UECxMERUdJWjEUMBIGA1UEAxMLTU9BIFRl
+								c3QgQ0EwHhcNMDcwODIzMTM1ODU0WhcNMTIwODIzMTM1ODU0WjBpMQswCQYDVQQG
+								EwJBVDEQMA4GA1UEChMHVFUgR1JBWjENMAsGA1UECxMERUdJWjE5MDcGA1UEAxMw
+								VGVzdCBTaWduYXR1cmRpZW5zdCBhbGxlciBLdW5kZW46IEVDRFNBIChQMTkydjEp
+								MIHzMIG8BgcqhkjOPQIBMIGwAgEBMCQGByqGSM49AQECGQD/////////////////
+								///+//////////8wNAQY/////////////////////v/////////8BBhkIQUZ5ZyA
+								5w+n6atyJDBJ/rje7MFGubEEMQQYjagOsDCQ9ny/IOtDoYgA9P8K/YL/EBIHGSuV
+								/8jaeGMQEe1rJM3Vc/l3oR55SBECGQD///////////////+Z3vg2FGvJsbTSKDEC
+								AQEDMgAExf78b6N6BUhK+FHmunDUCQefSxpQmC6m4yq/+pqdDMJalTWATFhQwZqE
+								qSMXJ2Tqo4IBNDCCATAwDgYDVR0PAQH/BAQDAgbAMAwGA1UdEwEB/wQCMAAwHQYD
+								VR0OBBYEFBrwapQSMwabwPPOijtgOu3iNlt3MHAGA1UdIARpMGcwZQYMKwYBBAGV
+								EgECewEBMFUwUwYIKwYBBQUHAgIwRxpFVGhpcyBjZXJ0aWZpY2F0ZSBvbmx5IG1h
+								eSBiZSB1c2VkIGZvciBkZW1vbnN0cmF0aW9uIGFuZCB0ZXN0IHB1cnBvc2VzMEYG
+								A1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9tb2EtaWRzcHNzLmVnb3ZsYWJzLmd2LmF0
+								L2NybHMvbW9hLXRlc3QtY2EuY3JsMBYGByooAAoBAQEECxMJRUdJWi1UZXN0MB8G
+								A1UdIwQYMBaAFFKXvB3Ugd6H51ClcBGdjhYJNiRSMA0GCSqGSIb3DQEBBQUAA4IB
+								AQB60RLi9zIwF/Rmy/Wo0yf1/ZktElIt91vfBsXlpgLJ4Q6ol/4hTjMJ4FIa8GOl
+								0b9dIkEe+WGq77JFJVgltsRoJfQBSvnK9jdLfB5YJD0ETDnMdckBV+RsxkEtl5Lr
+								IrT6vExyJUAWz15XJiHgkYZncJCBTy1oh8f3V8cR1VZYwO4QBRDwRdVdZsaL5PME
+								vvLrcAMJhF5fS4AiqMex2Eh2kav5t6/I5bmB4CKEe+0+dPO8DGl7areEfzQEPd8p
+								jkkX5PnxriQvZfgVzwrdXGDqMTnBNaRtCGMiQU/0kp21a6BVtT4am27yr9p3ddhl
+								z7sJ4Z6ys1bwB0on/O65tdn7
+							</dsig:X509Certificate>
+						</dsig:X509Data>
+					</dsig:KeyInfo>
+					<dsig:Object>
+						<dsig:Manifest Id="dsig-manifest-1-1">
+							<dsig:Reference Id="reference-1-1"
+								URI="file:referencedData/Text.txt">
+								<dsig:DigestMethod
+									Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+								<dsig:DigestValue>
+									TrE7WPVlNnBf1dh9PRiZdwpTaxs=
+								</dsig:DigestValue>
+							</dsig:Reference>
+						</dsig:Manifest>
+					</dsig:Object>
+				</dsig:Signature>
+			</XMLContent>
+		</VerifySignatureEnvironment>
+		<VerifySignatureLocation
+			xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+			/dsig:Signature
+		</VerifySignatureLocation>
+	</VerifySignatureInfo>
+	<TrustProfileID>Test-Signaturdienste</TrustProfileID>
+</VerifyXMLSignatureRequest>
+

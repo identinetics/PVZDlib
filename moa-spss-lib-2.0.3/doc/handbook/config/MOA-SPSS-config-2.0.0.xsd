@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MOA SP/SS 2.0.0 Configuration Schema
+-->
+<xs:schema xmlns:config="http://reference.e-government.gv.at/namespace/moaconfig/20021122#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://reference.e-government.gv.at/namespace/moaconfig/20021122#" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="http://www.w3.org/TR/xmldsig-core/xmldsig-core-schema.xsd"/>
+	<xs:element name="MOAConfiguration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Common" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="HardwareCryptoModule" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Name" type="xs:string"/>
+										<xs:element name="SlotId" type="xs:string" minOccurs="0"/>
+										<xs:element name="UserPIN" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:choice>
+								<xs:element name="PermitExternalUris" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence minOccurs="0">
+											<xs:element name="BlackListUri" minOccurs="0" maxOccurs="unbounded">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="IP" type="xs:string"/>
+														<xs:element name="Port" type="xs:int" minOccurs="0"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="ForbidExternalUris" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="WhiteListUri" minOccurs="0" maxOccurs="unbounded">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="IP" type="xs:string"/>
+														<xs:element name="Port" type="xs:int" minOccurs="0"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:choice>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="SignatureCreation" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="KeyModules">
+								<xs:complexType>
+									<xs:choice maxOccurs="unbounded">
+										<xs:element name="HardwareKeyModule">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Id" type="xs:token"/>
+													<xs:element name="Name" type="xs:string"/>
+													<xs:element name="SlotId" type="xs:string" minOccurs="0"/>
+													<xs:element name="UserPIN" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="SoftwareKeyModule">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Id" type="xs:token"/>
+													<xs:element name="FileName" type="xs:string"/>
+													<xs:element name="Password" type="xs:string" minOccurs="0"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="KeyGroup" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Id" type="xs:token"/>
+										<xs:sequence maxOccurs="unbounded">
+											<xs:element name="Key">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="KeyModuleId" type="xs:token"/>
+														<xs:element name="KeyCertIssuerSerial" type="dsig:X509IssuerSerialType"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:element name="DigestMethodAlgorithm" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="KeyGroupMapping" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CustomerId" type="dsig:X509IssuerSerialType" minOccurs="0"/>
+										<xs:element name="KeyGroupId" type="xs:token" maxOccurs="unbounded"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="XMLDSig">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CanonicalizationAlgorithm" type="xs:anyURI" minOccurs="0"/>
+										<xs:element name="DigestMethodAlgorithm" type="xs:anyURI" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CreateTransformsInfoProfile" type="config:ProfileType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="CreateSignatureEnvironmentProfile" type="config:ProfileType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="XAdES" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Version">
+											<xs:simpleType>
+												<xs:restriction base="xs:token">
+													<xs:enumeration value="1.4.2"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="SignatureVerification" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CertificateValidation">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PathConstruction">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="AutoAddCertificates" type="xs:boolean"/>
+													<xs:element name="UseAuthorityInformationAccess" type="xs:boolean"/>
+													<xs:element name="CertificateStore">
+														<xs:complexType>
+															<xs:choice>
+																<xs:element name="DirectoryStore">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="Location" type="xs:token"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:choice>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="PathValidation">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="ChainingMode">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="DefaultMode" type="config:ChainingModeType"/>
+																<xs:element name="TrustAnchor" minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="Identification" type="dsig:X509IssuerSerialType"/>
+																			<xs:element name="Mode" type="config:ChainingModeType"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="TrustProfile" minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Id" type="xs:token"/>
+																<xs:element name="TrustAnchorsLocation" type="xs:anyURI"/>
+																<xs:element name="SignerCertsLocation" type="xs:anyURI" minOccurs="0"/>
+																<xs:element name="EUTSL" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="CountrySelection" type="xs:string" minOccurs="0"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<!-- 
+													<xs:element name="TSLTrustProfile">
+													<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Id" type="xs:token"/>
+																<xs:element name="TrustAnchorsLocation" type="xs:anyURI"/>
+																<xs:element name="SignerCertsLocation" type="xs:anyURI" minOccurs="0"/>
+																<xs:element name="EUTSL" minOccurs="0">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="CountrySelection" minOccurs="0"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													 -->
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="RevocationChecking">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EnableChecking" type="xs:boolean"/>
+													<xs:element name="MaxRevocationAge" type="xs:integer"/>
+													<xs:element name="ServiceOrder" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence maxOccurs="2">
+																<xs:element name="Service">
+																	<xs:simpleType>
+																		<xs:restriction base="xs:token">
+																			<xs:enumeration value="OCSP"/>
+																			<xs:enumeration value="CRL"/>
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="Archiving">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="EnableArchiving" type="xs:boolean"/>
+																<xs:element name="ArchiveDuration" type="xs:nonNegativeInteger" minOccurs="0"/>
+																<xs:element name="Archive" minOccurs="0">
+																	<xs:complexType>
+																		<xs:choice>
+																			<xs:element name="DatabaseArchive">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="JDBCURL" type="xs:anyURI"/>
+																						<xs:element name="JDBCDriverClassName" type="xs:token"/>
+																					</xs:sequence>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:choice>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="DistributionPoint" minOccurs="0" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="CAIssuerDN" type="xs:token"/>
+																<xs:choice maxOccurs="unbounded">
+																	<xs:element name="CRLDP">
+																		<xs:complexType>
+																			<xs:sequence>
+																				<xs:element name="Location" type="xs:anyURI"/>
+																				<xs:element name="ReasonCode" minOccurs="0" maxOccurs="unbounded">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:token">
+																							<xs:enumeration value="unused"/>
+																							<xs:enumeration value="keyCompromise"/>
+																							<xs:enumeration value="cACompromise"/>
+																							<xs:enumeration value="affiliationChanged"/>
+																							<xs:enumeration value="superseded"/>
+																							<xs:enumeration value="cessationOfOperation"/>
+																							<xs:enumeration value="certificateHold"/>
+																							<xs:enumeration value="privilegeWithdrawn"/>
+																							<xs:enumeration value="aACompromise"/>
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:element>
+																			</xs:sequence>
+																		</xs:complexType>
+																	</xs:element>
+																	<xs:element name="OCSPDP">
+																		<xs:complexType>
+																			<xs:sequence>
+																				<xs:element name="Location" type="xs:anyURI"/>
+																			</xs:sequence>
+																		</xs:complexType>
+																	</xs:element>
+																</xs:choice>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="CrlRetentionIntervals" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence maxOccurs="unbounded">
+																<xs:element name="CA">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="X509IssuerName" type="xs:string"/>
+																			<xs:element name="Interval" type="xs:integer"/>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="TSLConfiguration" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EUTSLUrl" type="xs:anyURI" minOccurs="0"/>
+													<xs:element name="UpdateSchedule" minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="StartTime" type="xs:time"/>
+																<xs:element name="Period" type="xs:unsignedLong"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="WorkingDirectory" type="xs:anyURI" minOccurs="0"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="VerifyTransformsInfoProfile" type="config:ProfileType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="SupplementProfile" type="config:ProfileType" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="PermitFileURIs" type="xs:boolean" default="false" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="ChainingModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="chaining"/>
+			<xs:enumeration value="pkix"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ProfileType">
+		<xs:sequence>
+			<xs:element name="Id" type="xs:token"/>
+			<xs:element name="Location" type="xs:anyURI"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc:XMLDocument xmlns:doc="urn:document">
+  <doc:Paragraph>Ich bin der erste Absatz in diesem Dokument.</doc:Paragraph>
+  <doc:Paragraph ParaId="Para2">Und ich bin der zweite Absatz in diesem Dokument.
+Ich habe weiters ein eigenens ID-Attribut bekommen.</doc:Paragraph>
+</doc:XMLDocument>

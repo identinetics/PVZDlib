@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VerifyXMLSignatureResponse xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+         <SignerInfo>
+            <dsig:X509Data>
+               <dsig:X509SubjectName>T=DI,serialNumber=847206943023,givenName=Klaus,SN=Stranacher,CN=Klaus Stranacher,C=AT</dsig:X509SubjectName>
+               <dsig:X509IssuerSerial>
+                  <dsig:X509IssuerName>CN=a-sign-premium-mobile-03,OU=a-sign-premium-mobile-03,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName>
+                  <dsig:X509SerialNumber>685117</dsig:X509SerialNumber>
+               </dsig:X509IssuerSerial>
+               <dsig:X509Certificate>MIIEtTCCA52gAwIBAgIDCnQ9MA0GCSqGSIb3DQEBBQUAMIGdMQswCQYDVQQGEwJB
+VDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBp
+bSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMSEwHwYDVQQLDBhhLXNpZ24tcHJl
+bWl1bS1tb2JpbGUtMDMxITAfBgNVBAMMGGEtc2lnbi1wcmVtaXVtLW1vYmlsZS0w
+MzAeFw0xMjAxMTkxMDUwNDRaFw0xNzAxMTkxMDUwNDRaMHExCzAJBgNVBAYTAkFU
+MRkwFwYDVQQDDBBLbGF1cyBTdHJhbmFjaGVyMRMwEQYDVQQEDApTdHJhbmFjaGVy
+MQ4wDAYDVQQqDAVLbGF1czEVMBMGA1UEBRMMODQ3MjA2OTQzMDIzMQswCQYDVQQM
+DAJESTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCl9cWMwe9LaXbcwuLCMRXS6
+KYhou9Fzvo7ScXpwcRn1sbTSjUIIhLUTrqfqO/pnwoKd87PmNcGUFoCXvsb4lUqj
+ggHyMIIB7jARBgNVHQ4ECgQITPnzawkXeUUwDgYDVR0PAQH/BAQDAgbAMBMGA1Ud
+IwQMMAqACEu4Yddf1khjMAkGA1UdEwQCMAAwfgYIKwYBBQUHAQEEcjBwMEUGCCsG
+AQUFBzAChjlodHRwOi8vd3d3LmEtdHJ1c3QuYXQvY2VydHMvYS1zaWduLXByZW1p
+dW0tbW9iaWxlLTAzYS5jcnQwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLmEtdHJ1
+c3QuYXQvb2NzcDBgBgNVHSAEWTBXMEsGBiooABEBFDBBMD8GCCsGAQUFBwIBFjNo
+dHRwOi8vd3d3LmEtdHJ1c3QuYXQvZG9jcy9jcC9hLXNpZ24tcHJlbWl1bS1tb2Jp
+bGUwCAYGBACLMAEBMCcGCCsGAQUFBwEDAQH/BBgwFjAIBgYEAI5GAQEwCgYIKwYB
+BQUHCwEwgZ0GA1UdHwSBlTCBkjCBj6CBjKCBiYaBhmxkYXA6Ly9sZGFwLmEtdHJ1
+c3QuYXQvb3U9YS1zaWduLXByZW1pdW0tbW9iaWxlLTAzLG89QS1UcnVzdCxjPUFU
+P2NlcnRpZmljYXRlcmV2b2NhdGlvbmxpc3Q/YmFzZT9vYmplY3RjbGFzcz1laWRD
+ZXJ0aWZpY2F0aW9uQXV0aG9yaXR5MA0GCSqGSIb3DQEBBQUAA4IBAQBWEeyDzBQA
+5O5CY7z6K9EwbXxxuuaEEb1GVIyTZ4DcfodjkEEdGqWicsPdUUJDZ7ETyaKucgVt
+WaOHaObkCua9tM5TP3YtaEyDRteqU7N6LMDcMrXle8WOTUcIhSFy5UU8SnFtbZyQ
+v+eeAW48PVq5pzBzizGNtMKCv9XC7df5ARhDEU7tYaVrKIobTdeq8D7zXnZ2Wdt9
+6VG6QBe8eH49bAxabnOk/rF6TMO2NX4h/tlQLBzOdOeEolUHOHkA3L01REL2m/6k
+lPNsA8mX++cD3yKuoCWxtl27peTscRyGKEo2EBLtt7mfaTFBbkdKo1WUkZ+dVesa
+XtKckFCEtW3r</dsig:X509Certificate>
+               <QualifiedCertificate/>
+               <SecureSignatureCreationDevice Source="Certificate"/>
+               <IssuerCountryCode>AT</IssuerCountryCode>
+            </dsig:X509Data>
+         </SignerInfo>
+         <SignatureCheck>
+            <Code>0</Code>
+         </SignatureCheck>
+         <SignatureManifestCheck>
+            <Code>0</Code>
+         </SignatureManifestCheck>
+         <CertificateCheck>
+            <Code>0</Code>
+         </CertificateCheck>
+      </VerifyXMLSignatureResponse>

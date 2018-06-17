@@ -1,0 +1,1224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>MOA SS und SP - Konfiguration</title>
+  <link rel="stylesheet" href="../common/MOA.css" type="text/css">
+</head>
+<body link="#990000"> 
+  <table class="logoTable" width="100%" border="0" cellspacing="0" cellpadding="10">
+    <tr>
+       <td align="center" class="logoTitle" width="267"><img src="../common/LogoBKA.png" alt="Logo BKA" width="267" height="37" align="left"></td>
+      <td align="center" class="logoTitle">Dokumentation</td>
+      <td align="center" class="logoTitle" width="123"><img src="../common/LogoEGIZ.png" alt="Logo EGIZ" width="230" height="81" align="right"></td>
+    </tr>
+  </table>
+  <hr/> 
+  <p class="title"><a href="../index.html">MOA: Serversignatur (SS) und Signaturpr&uuml;fung (SP)</a></p> 
+  <p class="subtitle">Konfiguration</p> 
+  <hr/>
+  <h1>Inhalt</h1>
+  <ol>
+    <li>
+      <p><a href="#uebersicht">&Uuml;bersicht</a></p>
+      <ol>
+        <li><a href="#uebersicht_allgemeines">Allgemeines</a>
+          <ol>
+            <li><a href="#uebersicht_allgemeines_namenskonventionen">Namenskonventionen</a></li>
+          </ol>
+        </li>
+        <li><a href="#uebersicht_zentraledatei">Zentrale Konfigurationsdatei</a>
+          <ol>
+            <li><a href="#uebersicht_zentraledatei_aktualisierung">Aktualisierung auf das Format von MOA SP/SS 1.3</a></li>
+          </ol>
+        </li>
+        <li><a href="#uebersicht_bekanntmachung">Bekanntmachung der Konfigurationsdatei
+          </a>
+          <ol>
+            <li><a href="#uebersicht_bekanntmachung_laufenderbetrieb">Aktualisierung der Konfiguration im laufenden Betrieb</a></li>
+          </ol>
+        </li>
+		<li><a href="#uebersicht_logging">Konfiguration des Loggings</a></li>
+      </ol>
+    </li>
+  <li><a href="#konfigurationsparameter">Konfigurationsparameter</a>
+    <ol>
+      <li><a href="#konfigurationsparameter_allgemein">Allgemeines Parameter</a>        <ol>
+          <li><a href="#konfigurationsparameter_allgemein_hardwarecryptomodule">Hardwarebasiertes Kryptographiemodul</a></li>
+          <li><a href="#konfigurationsparameter_allgemein_externaluris">Aufl&ouml;sen externer URIs</a>
+            <ol>
+              <li><a href="#konfigurationsparameter_allgemein_externaluris_blacklisting">Blacklisting</a></li>
+              <li><a href="#konfigurationsparameter_allgemein_externaluris_whitelisting">Whitelisting</a></li>
+            </ol>
+          </li>
+          </ol>
+      </li>
+      <li><a href="#konfigurationsparameter_ss">Parameter f&uuml;r MOA SS</a>        <ol>
+          <li><a href="#konfigurationsparameter_ss_keymodules">Schl&uuml;sselspeicher</a>            <ol>
+              <li><a href="#konfigurationsparameter_ss_keymodules_hardwarekeymodule">Hardware-Schl&uuml;sselspeicher</a></li>
+              <li><a href="#konfigurationsparameter_ss_keymodules_softwarekeymodule">Software-Schl&uuml;sselspeicher</a></li>
+            </ol>
+          </li>
+          <li><a href="#konfigurationsparameter_ss_keygroup">Schl&uuml;sselgruppe</a></li>
+          <li><a href="#konfigurationsparameter_ss_keygroupmapping">Zuordnung von Schl&uuml;sselgruppen zu einem
+          Kunden</a></li>
+          <li><a href="#konfigurationsparameter_ss_xmldsig">Parameter f&uuml;r XML-Signaturen</a> </li>
+          <li><a href="#konfigurationsparameter_ss_createtransformsinfoprofile">Profil f&uuml;r Transformationen</a></li>
+          <li><a href="#konfigurationsparameter_ss_createsignatureenvironmentprofile">Profil f&uuml;r Signaturumgebung </a></li>
+          <li><a href="#konfigurationsparameter_ss_xades">XAdES Version</a></li>
+        </ol>
+      </li>
+      <li><a href="#konfigurationsparameter_sp">Parameter f&uuml;r MOA SP</a>        <ol>
+          <li><a href="#konfigurationsparameter_sp_certificatevalidation">Zertifikatsvalidierung</a>            <ol>
+              <li><a href="#konfigurationsparameter_sp_certificatevalidation_pathconstruction">Konstruktion des Zertifikatspfads</a>
+                <ol>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_pathconstruction_autoaddcertificates">Cachen von Zertifikaten</a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_pathconstruction_useauthorityinfoaccess">Auswertung der Zertifikatserweiterung <span class="term">Authority Information Access</span></a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_pathconstruction_certificatestore">Lokalisierung des Zertifikatsspeichers</a></li>
+                </ol>
+              </li>
+              <li><a href="#konfigurationsparameter_sp_certificatevalidation_pathvalidation">Valdierung des Zertifikatspfads</a>
+                <ol>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_pathvalidation_chainingmode">G&uuml;ltigkeitsmodell f&uuml;r die Zertifikatskettenpr&uuml;fung</a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_pathvalidation_trustprofile">Vertrauensprofile</a></li>
+                </ol>
+              </li>
+              <li><a href="#konfigurationsparameter_sp_certificatevalidation_revocationchecking">Widerrufspr&uuml;fung</a>
+                <ol>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_revocationchecking_enablechecking">Aktivieren
+                  der Widerrufspr&uuml;fung</a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_revocationchecking_maxrevocationage">Maximales Alter der Widerrufsinformation</a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_revocationchecking_serviceorder">Reihenfolge der Widerrufsdienste</a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_revocationchecking_archiving">Archivierung von Widerrufsinformationen</a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_revocationchecking_distributionpoint">Manuelle
+                  Konfiguration von Verteilungspunkten f&uuml;r Widerrufsinformationen</a></li>
+                  <li><a href="#konfigurationsparameter_sp_certificatevalidation_tslconfiguration">TSL Konfiguration</a></li>
+                </ol>
+              </li>
+              </ol>
+          </li>
+          <li><a href="#konfigurationsparameter_sp_verifytransformsinfoprofile">Profil f&uuml;r Transformationen</a></li>
+          <li><a href="#konfigurationsparameter_sp_supplementprofile">Profil f&uuml;r Erg&auml;nzungsobjekte</a></li>
+		  <li><a href="#konfigurationsparameter_sp_permitfileuris">file-URIs</a></li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li><a href="#beispielkonfigurationen">Beispielkonfigurationen</a>
+    <ol>
+      <li><a href="#beispielkonfigurationen_minss">Minimale Konfiguration f&uuml;r MOA SS</a></li>
+      <li><a href="#beispielkonfigurationen_minsp">Minimale Konfiguration f&uuml;r MOA SP</a></li>
+      <li><a href="#beispielkonfigurationen_minsptsl">Minimale Konfiguration f&uuml;r MOA SP mit TSL Unterst&uuml;tzung</a></li>
+      <li><a href="#beispielkonfigurationen_typspss">Typische Konfiguration f&uuml;r MOA SP/SS</a></li>
+    </ol>
+  </li>
+  </ol>
+<hr/>
+  <h1><a name="uebersicht" id="uebersicht"></a>1 &Uuml;bersicht </h1>
+  <p>Dieses Handbuch beschreibt detailliert die Konfigurationsm&ouml;glichkeiten f&uuml;r MOA SP/SS. Wenn nicht anders angegeben, beziehen sich die Erl&auml;uterungen sowohl auf die Konfiguration des Webservices als auch auf die Konfiguration von MOA SP/SS f&uuml;r den Einsatz als Klassenbibliothek.</p>
+  <h2><a name="uebersicht_allgemeines" id="uebersicht_allgemeines"></a>1.1 Allgemeines</h2>
+  <h3><a name="uebersicht_allgemeines_namenskonventionen" id="uebersicht_allgemeines_namenskonventionen"></a>1.1.1 Namenskonventionen </h3>
+  <p>Folgende Namenraum-Pr&auml;fixe werden in diesem Handbuch zur Kennzeichnung der Namenr&auml;ume
+    von XML-Elementen verwendet:  </p>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <th scope="col">Pr&auml;fix</th>
+      <th scope="col">Namenraum</th>
+    </tr>
+    <tr>
+      <td><code>cfg</code></td>
+      <td><code>http://reference.e-government.gv.at/namespace/moaconfig/20021122#</code></td>
+    </tr>
+    <tr>
+      <td><code>dsig</code></td>
+      <td><code>http://www.w3.org/2000/09/xmldsig#</code></td>
+    </tr>
+    <tr>
+      <td><code>moa</code></td>
+      <td><code>http://reference.e-government.gv.at/namespace/moa/20020822#</code></td>
+    </tr>
+    <tr>
+      <td><code>xs</code></td>
+      <td><code>http://www.w3.org/2001/XMLSchema</code></td>
+    </tr>
+  </table>
+  <h2><a name="uebersicht_zentraledatei" id="uebersicht_zentraledatei"></a>1.2 Zentrale Konfigurationsdatei</h2>
+  <p>Die Konfiguration von MOA SP/SS erfolgt zentral &uuml;ber eine einzige Konfigurationsdatei. Das Format der Konfigurationsdatei ist XML und muss dem Schema <a href="./MOA-SPSS-config-2.0.0.xsd">MOA-SPSS-config-2.0.0.xsd</a> entsprechen. <a href="#konfigurationsparameter">Abschnitt 2</a> erl&auml;utert die Konfigurationsm&ouml;glichkeiten im Einzelnen.</p>
+  <h3><a name="uebersicht_zentraledatei_aktualisierung" id="uebersicht_zentraledatei_aktualisierung"></a>1.2.1
+    Aktualisierung auf das Format von MOA SP/SS 1.3</h3>
+  <p>Mit dem Wechsel auf  Version 1.3 verwendet MOA SP/SS ein neues, &uuml;bersichtlicheres Format f&uuml;r die
+    XML-Konfigurationsdatei.    </p>
+  <p>Wenn Sie von einer &auml;lteren Version von MOA SP/SS auf die Version 1.3 wechseln  und Ihre bestehende
+      Konfiguration beibehalten wollen, steht Ihnen ein einfaches Kommandozeilenwerkzeug zur Verf&uuml;gung, mit dem
+      Sie Ihre Konfigurationsdatei vom bisherigen auf das neue Format migrieren k&ouml;nnen. </p>
+  <p>Dieses Werkzeug k&ouml;nnen Sie durch Ausf&uuml;hren des Scripts <code>configtool</code> aus dem Verzeichnis
+  <code>tools</code> im MOA-Installationsverzeichnis verwenden:</p>
+  <pre>configtool c:\pfad\zur\konfiguration\config.alt.xml c:\pfad\zur\konfiguration\config.neu.xml</pre>
+  <p>Der erste Parameter f&uuml;r das Script gibt also Pfad und Dateiname der bestehenden, alten Konfigurationsdatei
+  an, der zweite Parameter Pfad und Dateiname f&uuml;r die zu erzeugende Konfigurationsdatei im neuen Format (<span class="remark">Hinweis:
+    Die Beispielpfade beziehen sich auf Windows-Betriebssysteme; f&uuml;r Unix-Betriebssysteme w&auml;hlen Sie bitte sinngem&auml;&szlig;e
+    Pfade.</span>). </p>
+  <h2><a name="uebersicht_bekanntmachung" id="uebersicht_bekanntmachung"></a>1.3 Bekanntmachung der Konfigurationsdatei</h2>
+  <p>Die zentrale Konfigurationsdatei von MOA SP/SS wird der <span class="term">Java Virtual Machine</span>, in der MOA SP/SS l&auml;uft, durch eine <span class="term">System Property </span> mitgeteilt (wird beim Starten der <span class="term">Java Virtual Machine</span> in der Form <code>-D&lt;name&gt;=&lt;wert&gt;</code> gemacht). Der Name der <span class="term">System Property</span> lautet <code>moa.spss.server.configuration</code>; als Wert der <span class="term">System Property</span> ist der Pfad sowie der Name der Konfigurationsdatei im Dateisystem anzugeben, z.B.</p>
+  <pre>moa.spss.server.configuration=C:/Programme/apache/tomcat-4.1.30/conf/moa-spss/moa-spss.config.xml 
+</pre>
+<p>Weitere Informationen zum Bekanntmachen der zentralen Konfigurationsdatei f&uuml;r MOA SP/SS erhalten Sie in <a href="../install/install.html#webservice_basisinstallation_installation_spssdeploy">Abschnitt 2.1.2.3</a> des Installationshandbuchs.</p>
+<h3><a name="uebersicht_bekanntmachung_laufenderbetrieb" id="uebersicht_bekanntmachung_laufenderbetrieb"></a>1.3.1
+  Aktualisierung der Konfiguration im laufenden Betrieb</h3>
+<p>Wird MOA SP/SS als Webservice eingesetzt, kann durch Aufrufen einer speziellen URL des Webservice ein erneutes Einlesen der Konfigurationsdatei erzwungen werden. Damit ist es m&ouml;glich, &Auml;nderungen an der Konfigurationsdatei vorzunehmen, und diese &Auml;nderungen ohne Neustart des zu Grunde liegenden Servlet Containers in den Betrieb zu &uuml;bernehmen.</p>
+<p>Weitere Informationen zum erneuten Einlesen der Konfigurationsdatei im Webservice-Betrieb erhalten Sie in <a href="../install/install.html#webservice_basisinstallation_installation_changeonthefly">Abschnitt 2.1.2.5</a> des Installationshandbuchs.</p>
+<h2><a name="uebersicht_logging" id="uebersicht_logging"></a>1.4 Konfiguration des Loggings</h2>
+  <p>MOA SP/SS verwendet als Framework f&uuml;r Logging-Information die Open Source Software <code>log4j</code>. Die Konfiguration der Logging-Information erfolgt  nicht direkt durch MOA SP/SS, sondern &uuml;ber eine eigene Konfigurationsdatei, die der <span class="term">Java Virtual Machine</span> durch eine <span class="term">System Property </span>  mitgeteilt wird. Der Name der <span class="term">System Property </span>  lautet <code>log4j.configuration</code>; als Wert der <span class="term">System Property </span>  ist eine URL anzugeben, die auf die <code>log4j</code>-Konfigurationsdatei verweist, z.B.  </p>
+<pre>log4j.configuration=file:/C:/Programme/apache/tomcat-4.1.30/conf/moa-spss/log4j.properties</pre>
+  Weitere Informationen zur Konfiguration des Loggings erhalten Sie in <a href="../install/install.html#webservice_basisinstallation_logging">Abschnitt 2.1.3</a> des Installationshandbuchs.
+<p></p>
+  <h1><a name="konfigurationsparameter"></a>2 Konfigurationsparameter</h1>
+  <p>Nachfolgend werden die verf&uuml;gbaren Konfigurationsparameter der zentralen Konfigurationsdatei im Detail erl&auml;utert. Die Reihenfolge der Abhandlung entspricht der Reihenfolge des vorgeschriebenen Auftretens in der Konfigurationsdatei. F&uuml;r beispielhafte Konfigurationsdateien siehe <a href="#beispielkonfigurationen">Abschnitt 3</a>. </p>
+  <p>Muss der Wert eines Konfigurationsparameters eine URL oder eine Pfadangabe sein, und wird als konkreter Wert eine relative URL bzw. ein relativer Pfad angegeben, so wird diese Angabe relativ zum Pfad jenes Verzeichnisses interpretiert, in dem die zentrale Konfigurationsdatei gespeichert ist.</p>
+  <h2><a name="konfigurationsparameter_allgemein" id="konfigurationsparameter_allgemein"></a>2.1
+    Allgemeine Parameter</h2>
+  <h3><a name="konfigurationsparameter_allgemein_hardwarecryptomodule" id="konfigurationsparameter_allgemein_hardwarecryptomodule"></a>2.1.1 Hardwarebasiertes Kryptographiemodul</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:Common/cfg:HardwareCryptoModule</code></td>
+    </tr>
+    <tr>
+      <td> Gebrauch</td>
+      <td>Null mal  bis unbeschr&auml;nkt oft </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Mit diesem Element wird MOA SP bzw. SS die Verf&uuml;gbarkeit eines Hardware-Kryptographiemoduls
+          mitgeteilt. Wird ein solches Hardware-Kryptographiemodul konfiguriert, versucht MOA SP/SS das
+          Hardware-Kryptographiemodul f&uuml;r die Verifikation des Signaturwerts (MOA SP) bzw. f&uuml;r die Berechnung
+          von Hashwerten (MOA SP und MOA SS) anstatt des standardm&auml;&szlig;ig konfigurierten Software-Kryptographiemoduls
+          zu verwenden. </p>
+        <p>Werden mehrere Hardware-Kryptographiemodule konfiguriert, pr&uuml;ft MOA SP/SS  entsprechend
+            der Konfigurationsreihenfolge der Hardware-Kryptographiemodule, ob eines der Module die ben&ouml;tigte
+          Funktion (Hashwertberechnung, Siganturpr&uuml;fung) zur Verf&uuml;gung stellt. Verwendet wird das erste Hardware-Kryptographiemodul,
+            das ide ben&ouml;tigte Funktion zur Verf&uuml;gung stellen kann. </p>
+        <p>Das Element weist bis zu drei Kindelemente auf:</p>
+          <ul>
+            <li>Element <code>cfg:Name</code>: Dieses obligatorische Element vom Typ <code>xs:string</code> enth&auml;lt
+              den Dateinamen der DLL (Windows) oder der Shared-Library (Unix), welche die PKCS#11-Schnittstelle
+              zum Hardware-Kryptographiemodul implementiert; der Wert enth&auml;lt entweder einen Dateinamen
+              mit absoluter Pfadangabe oder einen Dateinamen ohne Pfadangabe. Im letzteren Fall wird der Dateiname
+            relativ zum Suchpfad des Betriebssystems interpretiert. </li>
+            <li>Element <code>cfg:SlotId</code>: Dieses optionale Element vom Typ <code>xs:string</code> gibt
+              des Slot der PKCS#11-Schnittstelle an, &uuml;ber den das Hardware-Kryptographiemodul von MOA
+              SP/SS angesprochen werden soll. Fehlt dieses Attribut, w&auml;hlt MOA SP/SS selbst einen Slot
+              aus der Liste der verf&uuml;gbaren Slots aus. </li>
+            <li>Element <code>cfg:UserPIN</code>: Dieses obligatorische Element vom Typ <code>xs:string</code> enth&auml;lt
+              den PIN-Code zur Freischaltung der Kryptographiefunktionen &uuml;ber die PKCS#11-Schnittstelle
+              des Hardware-Kryptographiemoduls. </li>
+          </ul></td>
+    </tr>
+  </table>
+  
+  <h3><a name="konfigurationsparameter_allgemein_externaluris" id="konfigurationsparameter_allgemein_externaluris"></a>2.1.2 Aufl&ouml;sen externer URIs</h3>
+  <p>Standardm&auml;&szlig;ig ist das Aufl&ouml;sen von externen URIs (inkl. localhost) deaktiviert (d.h. keines der nachfolgenden Konfigurationselement <code>cfg:PermitExternalUris</code> bzw. <code>cfg:ForbidExternalUris</code> existiert). Es gibt jedoch zwei M&ouml;glichkeiten das Aufl&ouml;sen zu aktivieren: </p>
+  <ul>
+    <li>Blacklisting: Hierbei wird das Aufl&ouml;sen von externen URIs erlaubt. Es kann jedoch durch die Angaben einer Blacklist der Zugriff auf bestimmte URIs eingeschr&auml;nkt werden.</li>
+    <li>Whitelisting: Hierbei ist das Aufl&ouml;sen von externen URIs weiterhin verboten. Es kann jedoch durch die Angabe einer Whitelist der Zugriff auf bestimmte URIs gestattet werden.</li>
+</ul>
+<p>Diese beiden M&ouml;glichkeiten stehen wahlweise zur Verf&uuml;gung, d.h. es kann entweder Blacklisting oder Whitelisting konfiguriert werden.</p>
+<h4><a name="konfigurationsparameter_allgemein_externaluris_blacklisting" id="konfigurationsparameter_allgemein_externaluris_blacklisting"></a>2.1.2.1 Blacklisting</h4>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:Common/cfg:PermitExternalUris</code></td>
+    </tr>
+    <tr>
+      <td> Gebrauch</td>
+      <td>Null mal  bis einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Mit diesem Element wird MOA SP bzw. SS mitgeteilt, dass das Aufl&ouml;sen externer URIs (inkl. localhost) erlaubt ist. Ist dieses Element vorhanden, so ist das Aufl&ouml;sen aller externer URIs aktiviert. Durch einen Blacklist-Mechanismus kann jedoch eingeschr&auml;nkt werden, dass bestimmte URIs, die sich auf dieser Blacklist befinden, nicht aufgel&ouml;st werden. Diese Blacklist kann in dem folgenden Kindelement angegeben werden:</p>
+        <ul>
+          <li>Element <code>cfg:BlackListUri</code>: Dieses optionale und  unbegrenzten Element gibt einen Blacklist-Eintrag an und besteht aus folgenden zwei weiteren Kindelementen:</li>
+          <ul>
+          <li>Element <code>cfg:IP</code>: Dieses Element vom Type <code>xs:string</code> gibt eine IP-Adresse (z.B.: 127.0.0.1) oder einen IP-Adress-Bereich (z.B.: 192.168) an. Bei Angabe einer IP-Adresse werden nur URIs mit exakt dieser IP-Adresse  nicht aufgel&ouml;st. Bei Angabe eines IP-Adress-Bereichs werden s&auml;mtliche URIs, die mit diesem IP-Bereich beginnen nicht aufgel&ouml;st (z.B.: alle IPs im Bereich 192.168.0.0 bis 192.168.255.255)</li>
+          <li>Element <code>cfg:Port</code>: Dieses optionale Element vom Typ <code>xs:int</code> legt eine bestimmte Portnummer fest. Ist eine Portnummer angegeben werden alle URIs mit obiger IP-Adresse und dieser Portnummer nicht aufgel&ouml;st. Ist keine Portnummer angegeben, sind alle Portnummern gesperrt.</li>
+          </ul>
+        </ul>
+      
+      <p><b>Empfehlung:</b> Bei aktiviertem Aufl&ouml;sen von externen URIs sollten sowohl <em>localhost</em> als auch der <em>gesamte Intranetbereich</em> in die Blacklist eingetragen werden. Hierzu eine beispielhafte Blacklist: </p>
+      <p><code>&lt;cfg:BlackListUri&gt;<br>
+				&lt;cfg:IP&gt;192.168&lt;/cfg:IP&gt;<br>
+			&lt;/cfg:BlackListUri&gt;<br>
+			&lt;cfg:BlackListUri&gt;<br>
+				&lt;cfg:IP&gt;127.0.0.1&lt;/cfg:IP&gt;<br>
+	  &lt;/cfg:BlackListUri&gt;</code></p></td>
+    </tr>
+  </table>
+  
+  <h4><a name="konfigurationsparameter_allgemein_externaluris_whitelisting" id="konfigurationsparameter_allgemein_externaluris_whitelisting"></a>2.1.2.2 Whitelisting</h4>
+<table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:Common/cfg:ForbidExternalUris</code></td>
+  </tr>
+    <tr>
+      <td> Gebrauch</td>
+      <td>Null mal  bis einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Mit diesem Element wird MOA SP bzw. SS mitgeteilt, dass das Aufl&ouml;sen externer URIs (inkl. localhost) zwar verboten ist, aber durch eine Whitelist entsprechende Ausnahmen angeben werden k&ouml;nnen. D.h. URIs, die sich auf dieser Whitelist befinden werden aufgel&ouml;st. Diese Whitelist kann in dem folgenden Kindelement angegeben werden:</p>
+        <ul>
+          <li>Element <code>cfg:WhiteListUri</code>: Dieses optionale und  unbegrenzten Element gibt einen Whitelist-Eintrag an und besteht aus folgenden zwei weiteren Kindelementen:</li>
+          <ul>
+            <li>Element <code>cfg:IP</code>: Dieses Element vom Type <code>xs:string</code> gibt eine IP-Adresse (z.B.: 127.0.0.1) oder einen IP-Adress-Bereich (z.B.: 192.168) an. Bei Angabe einer IP-Adresse werden nur URIs mit exakt dieser IP-Adresse  aufgel&ouml;st. Bei Angabe eines IP-Adress-Bereichs werden s&auml;mtliche URIs, die mit diesem IP-Bereich beginnen  aufgel&ouml;st (z.B.: alle IPs im Bereich 192.168.0.0 bis 192.168.255.255)</li>
+            <li>Element <code>cfg:Port</code>: Dieses optionale Element vom Typ <code>xs:int</code> legt eine bestimmte Portnummer fest. Ist eine Portnummer angegeben werden alle URIs mit obiger IP-Adresse und dieser Portnummer aufgel&ouml;st. Ist Portnummer angegeben, sind alle Portnummern offen.</li>
+          </ul>
+        </ul></td>
+    </tr>
+</table>
+<h2><a name="konfigurationsparameter_ss" id="konfigurationsparameter_ss"></a>2.2 Parameter f&uuml;r MOA SS</h2>
+  <h3><a name="konfigurationsparameter_ss_keymodules" id="konfigurationsparameter_ss_keymodules"></a>2.2.1 Schl&uuml;sselspeicher</h3>
+  <h4><a name="konfigurationsparameter_ss_keymodules_hardwarekeymodule" id="konfigurationsparameter_ss_keymodules_hardwarekeymodule"></a>2.2.1.1 Hardware-Schl&uuml;sselspeicher</h4>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:KeyModules/cfg:HardwareKeyModule</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal  bis unbeschr&auml;nkt oft; zumindest ein Hardware- (<code>cfg:HardwareKeyModule</code>) oder
+        Software-Schl&uuml;sselspeicher (<code>cfg:SoftwareKeyModule</code>) muss
+        jedoch vorhanden sein</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Mit diesem Element wird MOA SS die Verf&uuml;gbarkeit eines Hardware-Schl&uuml;sselspeichers mitgeteilt. </p>
+          <p>Das Element weist bis zu vier Kindelemente auf:</p>
+          <ul>
+            <li>Element <code>cfg:Id</code>: Dieses obligatorische Element vom Typ <code>xs:token</code> enth&auml;lt
+              einen frei w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der
+              XML-Konfigurationsdatei eindeutig sein muss. Mit Hilfe dieses Identifikators wird im Konfigurationselement <code>cfg:SignatureCreation/cfg:KeyGroup</code> auf
+              dieses Konfigurationselement referenziert.</li>
+            <li> Element <code>cfg:Name</code>: Dieses obligatorische Element vom Typ <code>xs:string</code> enth&auml;lt
+              den Dateinamen der DLL (Windows) oder der Shared-Library (Unix), welche die PKCS#11-Schnittstelle
+              zum Hardware-Schl&uuml;sselspeicher implementiert; der Wert enth&auml;lt entweder einen Dateinamen
+              mit absoluter Pfadangabe oder einen Dateinamen ohne Pfadangabe. Im letzteren Fall wird der Dateiname
+              relativ zum Suchpfad des Betriebssystems interpretiert. </li>
+            <li>Element <code>cfg:SlotId</code>: Dieses optionale Element vom Typ <code>xs:string</code> gibt des
+              Slot der PKCS#11-Schnittstelle an, &uuml;ber den der Hardware-Schl&uuml;sselspeicher von MOA SS
+              angesprochen werden soll. Fehlt dieses Attribut, w&auml;hlt MOA SS selbst einen Slot aus der Liste
+              der verf&uuml;gbaren Slots aus. </li>
+            <li>Element <code>cfg:UserPIN</code>: Dieses obligatorische Element vom Typ <code>xs:string</code> enth&auml;lt
+              den PIN-Code zur Freischaltung der Schl&uuml;sselverwendung &uuml;ber die PKCS#11-Schnittstelle
+              des Hardware-Schl&uuml;sselspeichers. </li>
+          </ul>          </td>
+    </tr>
+  </table>
+  <h4><a name="konfigurationsparameter_ss_keymodules_softwarekeymodule" id="konfigurationsparameter_ss_keymodules_softwarekeymodule"></a>2.2.1.2
+  Software-Schl&uuml;sselspeicher</h4>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:KeyModules/cfg:SoftwareKeyModule</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal  bis unbeschr&auml;nkt oft; zumindest ein Hardware- (<code>cfg:HardwareKeyModule</code>) oder
+      Software-Schl&uuml;sselspeicher (<code>cfg:SoftwareKeyModule</code>) muss jedoch vorhanden sein</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Mit diesem Element wird MOA SS die Verf&uuml;gbarkeit eines Software-Schl&uuml;sselspeichers in
+          Form einer PKCS#12-Datei mitgeteilt. </p>
+          <p>Das Element weist drei obligatorische Kindelemente auf:</p>
+          <ul>
+            <li>Element <code>cfg:Id</code>: Dieses Element vom Typ <code>xs:token</code> enth&auml;lt einen
+              frei w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der XML-Konfigurationsdatei
+              eindeutig sein muss. Mit Hilfe dieses Identifikators wird im Konfigurationselement <code>cfg:SignatureCreation/cfg:KeyGroup</code> auf
+              dieses Konfigurationselement referenziert.</li>
+            <li> Element <code>cfg:Filename</code>: Dieses Element vom Typ <code>xs:string</code> enth&auml;lt
+              den Dateinamen der PKCS#12-Datei, die den Software-Schl&uuml;sselspeicher repr&auml;sentiert. Der
+              Wert enth&auml;lt einen Dateinamen mit absoluter oder relativer Pfadangabe. Eine relative Pfadangabe
+              wird von MOA SS relativ zum Pfad jenes Verzeichnisses interpretiert, in dem die zentrale Konfigurationsdatei
+              gespeichert ist.</li>
+            <li>Element <code>cfg:Password</code>: Dieses Element vom Typ <code>xs:string</code> enth&auml;lt
+              das Passwort zum Entschl&uuml;sseln der Inhalte der PKCS#12-Datei. </li>
+          </ul>          </td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_ss_keygroup" id="konfigurationsparameter_ss_keygroup"></a>2.2.2 Schl&uuml;sselgruppe</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:KeyGroup</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>einmal bis unbeschr&auml;nkt oft </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Mit diesem Element wird in MOA SS eine Schl&uuml;sselgruppe definiert. Eine Schl&uuml;sselgruppe
+          ist eine Zusammenfassung von einem oder mehreren privaten Schl&uuml;sseln, die in Hardware- bzw. Softwareschl&uuml;sselspeichern
+          (vergleiche Abschnitte <a href="#konfigurationsparameter_ss_keymodules_hardwarekeymodule">2.2.1.1</a> bzw. <a href="#konfigurationsparameter_ss_keymodules_softwarekeymodule">2.2.1.2</a>)
+          verwaltet werden. Die Schl&uuml;sselgruppe wird vom Kunden von MOA SS &uuml;ber einen eindeutigen Bezeichner
+          im Request zur Signaturerstellung angesprochen. </p>
+<p>Sinn der Zusammenfassung von mehreren privaten Schl&uuml;sseln zu einer Schl&uuml;sselgruppe ist
+            es, dass MOA SS selbst entscheidet, welcher konkrete Schl&uuml;ssel aus der Schl&uuml;sselgruppe
+            zur Erstellung der Signatur verwendet wird. Durch die somit m&ouml;gliche Parallelisierung (mehrere
+            private Schl&uuml;ssel werden parallel f&uuml;r Anfragen, die auf die gleiche Schl&uuml;sselgruppe
+        referenzieren) l&auml;sst sich der Durchsatz der erstellten Signaturen verbessern. </p>
+          <p>Das Element <code>cfg:SignatureCreation/cfg:KeyGroup</code> hat folgenden Element-Inhalt:</p>
+          <ul>
+            <li>Element <code>cfg:Id</code>: Dieses obligatorische Element vom Typ <code>xs:token</code> enth&auml;lt
+              einen frei w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der
+              XML-Konfigurationsdatei eindeutig sein muss. Mit Hilfe dieses Identifikators wird im Konfigurationselement <code>cfg:SignatureCreation/cfg:KeyGroupMapping</code> auf
+              dieses Konfigurationselement referenziert. Weiters wird dieser Identifikator im Request zur Erstellung
+            der Signatur verwendet, um die zu verwendende Schl&uuml;sselgruppe anzugeben.</li>
+            <li>Element <code>cfg:Key</code>: Dieses Element muss zumindest einmal vorkommen. Jedes Element beschreibt
+              einen der privaten Schl&uuml;ssel, aus denen sich die Schl&uuml;sselgruppe zusammensetzt. Das Element
+              hat folgenden Element-Inhalt:
+              <ul>
+                <li>Element <code>cfg:KeyModuleId</code>: Dieses Element kommt genau einmal vor. Mit ihm wird
+                    auf einen der konfigurierten Hardware- oder Software-Schl&uuml;sselspeicher referenziert.
+                    Sein Textinhalt vom Typ <code>xs:token</code> enth&auml;lt den Identifikator des Hardware-
+                    oder Software-Schl&uuml;sselspeichers, so wie er in <code>cfg:SignatureCreation/cfg:KeyModules/cfg:HardwareKeyModule/cfg:Id</code> bzw. <code>cfg:SignatureCreation/cfg:KeyModules/cfg:SoftwareKeyModule/cfg:Id</code> festgelegt
+                  wurde. </li>
+                <li>Element <code>cfg:KeyCertIssuerSerial</code>: Dieses Element kommt ebenfalls genau einmal
+                    vor. Mit ihm wird ein privater Schl&uuml;ssel innerhalb des mit <code>cfg:KeyModuleId</code> ausgew&auml;hlten
+                    Schl&uuml;sselspeichers ausgew&auml;hlt (sowohl Hardware- als auch Softwareschl&uuml;sselspeicher
+                    k&ouml;nnen ja prinzipiell mehr als nur einen einzigen privaten Schl&uuml;ssel verwalten).
+                    Das Element  hat folgenden Element-Inhalt:
+                    <ul>
+                      <li>Element <code>dsig:X509IssuerName</code>: Dieses Element kommt genau einmal vor.
+                          Sein Textinhalt vom Typ <code>xs:string</code> enth&auml;lt den Namen des Ausstellers
+                        des Zertifikats f&uuml;r den ausgew&auml;hlten privaten Schl&uuml;ssel.</li>
+                      <li>Element <code>dsig:X509SerialNumber</code>: Dieses Element kommt genau einmal vor.
+                          Sein Textinhalt vom Typ <code>xs:integer</code> enth&auml;lt die Seriennummer des Zertifikats
+                        f&uuml;r den ausgew&auml;hlten privaten Schl&uuml;ssel. </li>
+                    </ul>
+                </li>
+              </ul>
+            </li>
+            <li>Element <code>cfg:DigestMethodAlgorithm</code>: Dieses optionale Element spezifiert einen Digest-Algorithmus, der f&uuml;r das Erstellen von XML-Signaturen mittels dieser Schl&uuml;sselgruppe verwendet werden soll. Der Default-Wert bzw. ein allf&auml;llig in Abschnitt &quot;<a href="#konfigurationsparameter_ss_xmldsig">Parameter f&uuml;r XML-Signaturen</a>&quot; definierter Wert, werden dadurch f&uuml;r diese Schl&uuml;sselgruppe &uuml;berschrieben. M&ouml;gliche Werte sind dem Element <code>cfg:SignatureCreation/cfg:XMLDSig/cfg:DigestMethodAlgorithm</code> ebenfalls in Abschnitt &quot;<a href="#konfigurationsparameter_ss_xmldsig">Parameter f&uuml;r XML-Signaturen</a>&quot; zu entnehmen. </li>
+          </ul>
+          <p>Um auf einfache Weise f&uuml;r alle in Ihren Schl&uuml;sselspeichern enthaltenen privaten Schl&uuml;ssel
+            die jeweiligen Werte f&uuml;r <code>dsig:X509IssuerName</code> und <code>dsig:X509SerialNumber</code> zu
+</p>
+          <ol>
+            <li>Erfassen Sie in der zentralen Konfigurationsdatei alle Ihre Schl&uuml;sselspeicher mit Hilfe
+              der Konfigurationselemente <code>cfg:SignatureCreation/cfg:KeyModules/cfg:HardwareKeyModule</code> bzw. <code>cfg:SignatureCreation/cfg:KeyModules/cfg:SoftwareKeyModule</code>. </li>
+            <li>Starten Sie nun - mit bewusst fehlenden <code>cfg:SignatureCreation/cfg:KeyGroup</code> Elementen - den MOA SP/SS Server.
+              Stellen Sie dabei sicher, dass das Log-Level f&uuml;r den Logger <code>moa.spss.server</code> zumindest
+              auf das Niveau <code>info</code> eingestellt ist (Informationen zur Konfiguration des Loggings
+              von MOA SP/SS finden Sie in <a href="../install/install.html#webservice_basisinstallation_logging">Abschnitt
+              2.1.3</a> des Installationshandbuchs). Im Log-File werden dann alle verf&uuml;gbaren privaten Schl&uuml;ssel
+              an Hand der Werte <code>dsig:X509IssuerName</code> und <code>dsig:X509SerialNumber</code> aufgelistet.
+              Vergleichen Sie den folgenden beispielhaften Auszug:<br>
+                <pre>INFO | 15 15:10:14,737 | moa.spss.server | TID=startup NID=node1 MSG=Key <br>  ID=SKM_Kunde1;CN=Test CA - Signaturdienste,OU=Technik und Standards,O=Stabstelle IKT-Strategie des Bundes,C=AT;7
+INFO | 15 15:10:14,737 | moa.spss.server | TID=startup NID=node1 MSG=Key 
+  ID=SKM_allgemein;CN=Test CA - Signaturdienste,OU=Technik und Standards,O=Stabstelle IKT-Strategie des Bundes,C=AT;9<br>INFO | 15 15:10:14,737 | moa.spss.server | TID=startup NID=node1 MSG=Key <br>  ID=SKM_Kunde2;CN=Test CA - Signaturdienste,OU=Technik und Standards,O=Stabstelle IKT-Strategie des Bundes,C=AT;8</pre>
+          Der Wert der Eigenschaft <code>ID</code> des Logging-Eintrags gliedert sich in drei Teile:
+          <ol>
+            <li>Der erste Teil enth&auml;lt den Identifikator des Hardware- bzw. Softwareschl&uuml;sselspeichers,
+              so wie er im entsprechenden Konfigurationselement <code>cfg:SignatureCreation/cfg:KeyModules/cfg:HardwareKeyModule</code> bzw. <code>cfg:SignatureCreation/cfg:KeyModules/cfg:SoftwareKeyModule</code> erfasst
+              wurde. </li>
+            <li>Der zweite Teil enth&auml;lt nach dem ersten Semikolon den Namen des Ausstellers des Zertifikats
+              f&uuml;r den privaten Schl&uuml;ssel, so wie er in <code>dsig:X509IssuerName</code> ben&ouml;tigt
+              wird. </li>
+            <li>Der dritte Teil enth&auml;lt nach dem zweiten Semikolon die Seriennummer des Zertifikats f&uuml;r
+              den privaten Schl&uuml;ssel, so wie er in <code>dsig:X509SerialNumber</code> ben&ouml;tigt wird. </li>
+          </ol>
+            </li>
+            <li>Erfassen Sie nun mit Hilfe der neu gewonnenen Informationen die Schl&uuml;sselgruppen, die in
+              MOA SS zur Verf&uuml;gung stehen sollen. </li>
+          </ol>
+          <p>Wenn Ihnen f&uuml;r einen privaten Schl&uuml;ssel, den Sie in eine Schl&uuml;sselgruppe aufnehmen
+            wollen, das Zertifikat bekannt ist und es in Form einer DER-kodierten Datei vorliegt, k&ouml;nnen
+            Sie alternativ das Script <code>certtool</code> aus dem Verzeichnis <code>tools</code> im MOA-Installationsverzeichnis
+            verwenden, um zu den Werten f&uuml;r <code>dsig:X509IssuerName</code> und <code>dsig:X509SerialNumber</code> zu
+            kommen: </p>
+          <pre>certtool -info &lt;certfilename&gt;</pre>          <p><code>&lt;certfilename&gt;</code> enth&auml;lt den Namen der DER-kodierten Zertifikatsdatei, f&uuml;r
+            die die beiden Werte <code>dsig:X509IssuerName</code> und <code>dsig:X509SerialNumber</code> geliefert
+            werden sollen. Eine beispielhafte Ausgabe des Scripts sieht wie folgt aus: </p>
+          <pre>SubjectDN (RFC2253): 
+  CN=Test: Signaturdienst aller Kunden: ECDSA (P192v1),OU=Technik und Standards,O=Stabsstelle IKT-Strategie des Bundes,C=AT
+IssuerDN (RFC2253) : 
+  CN=Test CA - Signaturdienste,OU=Technik und Standards,O=Stabstelle IKT-Strategie des Bundes,C=AT<br>Serial Number      : 
+  9</pre>          <p>Die Werte f&uuml;r <code>IssuerDN (RFC2253)</code> sowie <code>Serial Number</code> entsprechen
+            den Werten f&uuml;r <code>dsig:X509IssuerName</code> und <code>dsig:X509SerialNumber</code>.</p></td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_ss_keygroupmapping" id="konfigurationsparameter_ss_keygroupmapping"></a>2.2.3
+    Zuordnung von Schl&uuml;sselgruppen zu Kunden</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:KeyGroupMapping</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>einmal bis unbeschr&auml;nkt oft </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Das Element <code>cfg:SignatureCreation/cfg:KeyGroupMapping</code> ordnet einem Kunden von MOA SS die ihm zur Verf&uuml;gung
+          stehenden Schl&uuml;sselgruppen zu, indem das den Kunden repr&auml;sentierende SSL-Clientzertifikat
+          mit einer oder mehreren Schl&uuml;sselgruppen assoziiert wird. </p>
+          <p>Das Element  hat folgenden Element-Inhalt:</p>
+          <ul>
+            <li>Element <code>cfg:CustomerId</code>: Dieses  Element bezeichnet auf eindeutige
+              Weise das den Kunden repr&auml;sentierende SSL-Clientzertifikat. Der Aufbau des Elements enspricht
+              dem Aufbau des Elements <code>cfg:KeyCertIssuerSerial</code> in Abschnitt <a href="#konfigurationsparameter_ss_keygroup">2.2.2</a>.
+              Um zu den Werten f&uuml;r Ausstellername und Seriennummer des SSL-Clientzertifikats zu kommen,
+              k&ouml;nnen Sie auch hier das Script <code>certtool</code> (vergleiche Abschnitt <a href="#konfigurationsparameter_ss_keygroup">2.2.2</a>)
+              verwenden. </li>
+            <li>Element <code>cfg:KeyGroupId</code>: Dieses Element vom Typ <code>xs:token</code> kommt so oft
+              vor, wie Schl&uuml;sselgruppen
+              einem bestimmten SSL-Clientzertifikat zugeordnet werden sollen, mindestens jedoch einmal. Sein
+              Wert repr&auml;sentiert dem Identifikator der Schl&uuml;sselgruppe, so wie er in <code>cfg:SignatureCreation/cfg:KeyGroup/cfg:Id</code> festgelegt
+              wurde. </li>
+          </ul>
+          <p class="remark">Bitte beachten Sie: F&uuml;r maximal ein Konfigurationselement <code>cfg:SignatureCreation/cfg:KeyGroupMapping</code> kann <code>cfg:CustomerId</code> auch
+            weggelassen werden. Die darin enthaltenen Schl&uuml;sselgruppen stehen dann allen Kunden von MOA
+            SS gleicherma&szlig;en zur Verf&uuml;gung.</p></td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_ss_xmldsig" id="konfigurationsparameter_ss_xmldsig"></a>2.2.4 Parameter
+    f&uuml;r XML-Signaturen  </h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:XMLDSig/cfg:CanonicalizationAlgorithm</code></td>
+    </tr>
+    <tr>
+      <td>      Gebrauch</td>
+      <td>Null mal oder einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Als Inhalt des Elements  kann der Kanonisierungs-Algorithmus, der f&uuml;r das Erstellen von XML-Signaturen verwendet werden soll und in der Signatur als Inhalt von <code>dsig:Signature/dsig:SignedInfo/dsig:CanonicalizationMethod</code> aufscheint, spezifiziert werden. Folgende Werte d&uuml;rfen verwendet werden:</p>
+<p>
+<pre>http://www.w3.org/TR/2001/REC-xml-c14n-20010315 <br>http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments <br>http://www.w3.org/2001/10/xml-exc-c14n# <br>http://www.w3.org/2001/10/xml-exc-c14n#WithComments  </pre>
+        <p></p>        <p>Wird das Element nicht angegeben, wird folgender Wert als Default-Wert verwendet:</p>
+      <pre>http://www.w3.org/TR/2001/REC-xml-c14n-20010315  </pre>	  <p>F&uuml;r die genaue Bedeutung der Werte siehe die <a href="http://www.w3.org/TR/xmldsig-core/" target="_blank">Spezifikation f&uuml;r XML-Signaturen</a>.</p></td>
+    </tr>
+  </table>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:XMLDSig/cfg:DigestMethodAlgorithm</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal oder einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Als Inhalt des Elements kann der Digest-Algorithmus, der f&uuml;r das Erstellen von XML-Signaturen verwendet werden soll und in der Signatur als Inhalt von <code>dsig:Signature/dsig:SignedInfo/dsig:Reference/dsig:DigestMethod</code> aufscheint, spezifiziert werden. Folgende Werte d&uuml;rfen verwendet werden:
+</p>
+        <pre>http://www.w3.org/2000/09/xmldsig#sha1
+http://www.w3.org/2000/09/xmldsig#sha256<br>http://www.w3.org/2000/09/xmldsig#sha384<br>http://www.w3.org/2000/09/xmldsig#sha512     </pre>
+      Wird das Element nicht angegeben, wird - abh&auml;ngig von der konfigurierten XAdES-Version (siehe <a href="#konfigurationsparameter_ss_xades">XAdES-Version</a>)- folgender Wert als Default-Wert verwendet: 
+      <p>F&uuml;r XAdES Version 1.1.1:</p>
+      <pre>http://www.w3.org/2000/09/xmldsig#sha1</pre>          
+      <p>F&uuml;r XAdES Version 1.4.2:</p>
+<pre>http://www.w3.org/2000/09/xmldsig#sha256</pre>          
+<p>F&uuml;r die genaue Bedeutung der Werte siehe die <a href="http://www.w3.org/TR/xmldsig-core/" target="_blank">Spezifikation f&uuml;r XML-Signaturen</a>.</p></td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_ss_createtransformsinfoprofile" id="konfigurationsparameter_ss_createtransformsinfoprofile"></a>2.2.5 Profil f&uuml;r Transformationen</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:CreateTransformsInfoProfile</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal bis unbeschr&auml;nkt oft</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>MOA  SS erlaubt die Hinterlegung von vordefinierten Profilen f&uuml;r Transformationen, die im Rahmen
+          einer XML-Signaturerstellung zur Anwendung kommen sollen. Im Request zur XML-Signaturerstellung
+          reicht es dann aus, auf dieses Profil zu referenzieren, anstatt die gesamten Transformationen explizit
+          anzugeben. </p>
+        <p><code>cfg:CreateTransformsInfoProfile</code> enth&auml;lt f&uuml;r ein bestimmtes Datenobjekt
+              f&uuml;r eine zu erstellende XML-Signatur die auf dieses Datenobjekt anzuwendenden Transformationen,
+              sowie allenfalls f&uuml;r die Durchf&uuml;hrung der Transformationen notwendige Erg&auml;nzungsobjekte
+          (z.B. einen zu importierenden Stylesheet f&uuml;r eine XSL-Transformation).</p>
+        <p><code>cfg:CreateTransformsInfoProfile</code> weist folgende obligatorische Kindelemene auf: </p>
+        <ul>
+          <li>Element<code> Id</code>: Dieses Element<code></code> vom Typ <code>xs:token</code> enth&auml;lt einen frei
+            w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der XML-Konfigurationsdatei
+            eindeutig sein muss. Dieser Identifikator wird im Request zur Erstellung der XML-Signatur verwendet,
+            um das hinterlegte Profil zu referenzieren (vergleiche Element <code>moa:CreateTransformsInfoProfileID</code>). </li>
+          <li>Element<code></code> <code>Location</code>: Dieses Element<code></code> vom Typ <code>xs:anyURI</code> enth&auml;lt
+            den Namen der XML-Datei, die das hinterlegte Profil beinhaltet. Der Wert enth&auml;lt eine relative
+            oder absolute URI. Eine relative URI
+            wird von MOA SS als File-URI relativ zum Lage jenes Verzeichnisses interpretiert, in dem die zentrale
+            Konfigurationsdatei gespeichert ist. Die XML-Datei muss als Wurzelelement das Element<code> moa:CreateTransformsInfoProfile
+            </code>enthalten.</li>
+        </ul>        </td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_ss_createsignatureenvironmentprofile" id="konfigurationsparameter_ss_createsignatureenvironmentprofile"></a>2.2.6 Profil f&uuml;r Signaturumgebung  </h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:CreateSignatureEnvironmentProfile</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal bis unbeschr&auml;nkt oft</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>MOA SS erlaubt die Hinterlegung von vordefinierten Profilen f&uuml;r die Signaturumgebung,
+          die im Rahmen einer XML-Signaturerstellung zur Anwendung kommen soll. Im Request zur XML-Signaturerstellung
+          reicht es dann aus, auf dieses Profil zu referenzieren, anstatt die Informationen zur Signaturumgebung
+          explizit anzugeben. </p>
+          <p><code>cfg:CreateSignatureEnvironmentProfile</code> enth&auml;lt f&uuml;r eine zu erstellende XML-Signatur,
+            die in ein bereits bestehendes XML-Dokument integriert werden soll, die Stelle, an der die XML-Signatur
+            eingef&uuml;gt werden soll, sowie allenfalls f&uuml;r die Verarbeitung des bestehenden XML-Dokuments
+            notwendige Erg&auml;nzungsobjekte (z.B. ein XML-Schema f&uuml;r das validierende Parsen des bestehenden
+          XML-Dokuments).</p>
+          <p><code>cfg:</code><code>CreateSignatureEnvironmentProfile</code> weist folgende obligatorische Kindelemente
+          auf: </p>
+          <ul>
+            <li>Element<code> Id</code>: Dieses Element<code></code> vom Typ <code>xs:token</code> enth&auml;lt
+              einen frei w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der
+              XML-Konfigurationsdatei eindeutig sein muss. Dieser Identifikator wird im Request zur Erstellung
+              der XML-Signatur verwendet, um das hinterlegte Profil zu referenzieren (vergleiche Element <code>moa:</code><code>CreateSignatureEnvironmentProfileID</code>). </li>
+            <li>Element<code></code> <code>Location</code>: Dieses Element<code></code> vom Typ <code>xs:anyURI</code> enth&auml;lt
+              den Namen der XML-Datei, die das hinterlegte Profil beinhaltet. Der Wert enth&auml;lt eine relative
+              oder absolute URI. Eine relative URI wird von MOA SS als File-URI relativ zum Lage jenes Verzeichnisses
+              interpretiert, in dem die zentrale Konfigurationsdatei gespeichert ist. Die XML-Datei muss als
+              Wurzelelement das Element<code> moa:CreateSignatureEnvironmentProfile </code>enthalten.</li>
+        </ul></td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_ss_xades" id="konfigurationsparameter_ss_xades"></a>2.2.7 XAdES Version</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureCreation/cfg:XAdES</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal bis einmal</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>MOA SS erm&ouml;glicht die Erstellung einer herk&ouml;mmlichen XML-Signatur (das Attribut <code>SecurityLayerConformity</code> im <code>CreateXMLSignatureRequest</code> ist auf <code>false</code> gesetzt) oder einer XAdES-Signatur (<code>SecurityLayerConformity=true</code>) gem&auml;&szlig; der <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20020831/core/Core.html#signaturerstellungNachXMLDSIGAntwort" target="_blank">Security-Layer Spezifikation V1.1</a>. Dieses Element gibt nun an welche XAdES-Version in diesem Fall eingesetzt werden soll. Bei Nichtvorhandensein des Elements wird die bisherige Standardversion XAdES 1.1.1 verwendet. Im folgenden Kindelement kann jedoch eine andere XAdES-Version konfiguriert werden. <code>cfg:</code><code>XAdES</code> weist daher folgendes obligatorische Kindelement
+          auf: </p>
+        <ul>
+          <li>Element<code> Version</code>: Dieses Element<code></code> vom Typ <code>xs:token</code> gibt die zu verwendende XAdES-Version an. Derzeit kann nur die Version 1.4.2 angegeben werden.</li>
+      </ul></td>
+    </tr>
+  </table>
+  <h2><a name="konfigurationsparameter_sp" id="konfigurationsparameter_sp"></a>2.3
+Parameter f&uuml;r MOA SP </h2>
+  <h3> <a name="konfigurationsparameter_sp_certificatevalidation" id="konfigurationsparameter_sp_certificatevalidation"></a>2.3.1
+    Zertifikatsvalidierung</h3>
+  <h4><a name="konfigurationsparameter_sp_certificatevalidation_pathconstruction" id="konfigurationsparameter_sp_certificatevalidation_pathconstruction"></a>2.3.1.1
+  Konstruktion des Zertifikatspfads</h4>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_pathconstruction_autoaddcertificates" id="konfigurationsparameter_sp_certificatevalidation_pathconstruction_autoaddcertificates"></a>2.3.1.1.1 Cachen von Zertifikaten </h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathConstruction/cfg:AutoAddCertificates</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>genau einmal</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Der Inhalt dieses Elements vom Typ <code>xs:boolean</code> gibt an, ob Zertifikate, die in einer
+          zu pr&uuml;fenden
+          Signatur enthalten sind bzw. bei der Zertifikatspfaderstellung durch Auswertung der Zertifikatserweiterung <span class="term">Authority
+          Information Access</span> (siehe
+          auch Parameter <code>cfg:UseAuthorityInfoAccess</code>) aus dem Internet geladen werden, automatisch
+          in den lokalen Zertifikatsspeicher hinzugef&uuml;gt werden sollen.</p>
+          <p>Zul&auml;ssige Werte f&uuml;r diesen Parameter sind <code>true</code> oder <code>false</code>.</p>
+      </td>
+    </tr>
+  </table>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_pathconstruction_useauthorityinfoaccess" id="konfigurationsparameter_sp_certificatevalidation_pathconstruction_useauthorityinfoaccess"></a>2.3.1.1.2 Auswertung
+    der Zertifikatserweiterung <span class="term">Authority Information Access</span>
+  </h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathConstruction/cfg:UseAuthorityInfoAccess</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>genau einmal</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Der Inhalt dieses Elements vom Typ <code>xs:boolean</code> gibt an, ob die Zertifikatserweiterung <span class="term">Authority
+            Information Access</span> f&uuml;r die Zertifikatspfaderstellung verwendet werden soll. Wird der
+            Wert auf <code>true</code> gesetzt, dann setzt MOA auch den Parameter <code>cfg:AutoAddCertificate</code> automatisch
+            auf <code>true</code> und ignoriert den gegebenenfalls in der Konfigurationsdatei daf&uuml;r gesetzten
+            Wert. </p>
+          <p>Zul&auml;ssige Werte f&uuml;r diesen Parameter sind <code>true</code> oder <code>false</code>.</p></td>
+    </tr>
+  </table>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_pathconstruction_certificatestore" id="konfigurationsparameter_sp_certificatevalidation_pathconstruction_certificatestore"></a>2.3.1.1.3 Lokalisierung
+    des Zertifikatsspeichers </h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathConstruction/cfg:CertificateStore/cfg:DirectoryStore/cfg:Location</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>genau einmal</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Der Inhalt dieses Elements vom Typ <code>xs:token</code> gibt  ein Verzeichnis im lokalen Dateisystem
+          an, das von MOA als lokaler Zertifikatsspeicher verwendet werden soll.
+Zul&auml;ssige Werte f&uuml;r diesen Parameter sind absolute oder relative Pfadangaben, wobei relative Pfadangaben
+als relativ zum Pfad jenes Verzeichnisses interpretiert werden, in dem die zentrale
+              Konfigurationsdatei gespeichert ist. Beispiele f&uuml;r zul&auml;ssige Werte lauten:</p>
+        <pre>C:/Programme/apache/tomcat-4.1.30/conf/moa-spss/certstore</pre>
+        <pre>certstore</pre></td>
+    </tr>
+  </table>
+  <h4><a name="konfigurationsparameter_sp_certificatevalidation_pathvalidation" id="konfigurationsparameter_sp_certificatevalidation_pathvalidation"></a>2.3.1.2
+  Valdierung des Zertifikatspfads</h4>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_pathvalidation_chainingmode" id="konfigurationsparameter_sp_certificatevalidation_pathvalidation_chainingmode"></a>2.3.1.2.1 G&uuml;ltigkeitsmodell
+    f&uuml;r die Zertifikatskettenpr&uuml;fung</h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathValidation/cfg:ChainingMode</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>genau einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Dieses Element legt fest, ob MOA SP f&uuml;r die Pr&uuml;fung der G&uuml;ltigkeit
+          einer konstruierten Zertifikatskette das Kettenmodell aus ISIS-MTT oder das Schalenmodell aus dem PKIX
+          RFC 3280 verwenden soll. Es hat folgende Kindelemente:</p>
+        <ul>
+          <li><code>cfg:DefaultMode</code>: Dieses obligatorische Element gibt das Default-Modell f&uuml;r die Pr&uuml;fung
+            der G&uuml;ltigkeit einer konstruierten Zertifikatskette an. G&uuml;ltige Werte sind <code>chaining</code> (Kettenmodell)
+          oder <code>pkix</code> (Schalenmodell).          </li>
+            <li><code>cfg:TrustAnchor</code>:  Dieses Element kann beliebig oft (auch gar nicht) verwendet
+                  werden, um f&uuml;r bestimmte Vertrauensanker (vergleiche n&auml;chsten Parameter <code>cfg:TrustProfile</code>)
+                  Ausnahmen vom Default-Modell vorzugeben. 
+              Das Element weist folgende Kindelemente auf:
+                  <ul>
+                    <li><code>cfg:Identification</code>: Dieses obligatorische Element identifiziert den Vertrauensanker,
+                      f&uuml;r den ein bestimmtes Modell konfiguriert werden soll. Es entspricht vom Aufbau jenem
+                      von <code>cfg:KeyCertIssuerSerial</code> in
+                      Abschnitt <a href="#konfigurationsparameter_ss_keygroup">2.2.2</a>. Um zu den Werten f&uuml;r
+                      Ausstellername und Seriennummer des Vertrauensankers zu kommen, k&ouml;nnen Sie auch hier
+                      das Script <code>certtool</code> (vergleiche Abschnitt <a href="#konfigurationsparameter_ss_keygroup">2.2.2</a>)
+                      verwenden. </li>
+                    <li><code>cfg:Mode</code>: Dieses obligatorische Element vom Typ <code>xs:string</code> gibt
+                      jenes Modell an, das von MOA SP f&uuml;r die
+                          Pr&uuml;fung von konstruierten Zertifikatsketten zu verwenden ist, die im mittels <code>cfg:Identification/dsig:X509IssuerName</code> und <code>cfg:Identification/dsig:X509SerialNumber</code> angegebenen
+                    Vertrauensanker m&uuml;nden. G&uuml;ltige Werte sind <code>chaining</code> (Kettenmodell)
+                    oder <code>pkix</code> (Schalenmodell).</li>
+                  </ul>
+            </li>
+        </ul>        </td>
+    </tr>
+  </table>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_pathvalidation_trustprofile" id="konfigurationsparameter_sp_certificatevalidation_pathvalidation_trustprofile"></a>2.3.1.2.2 Vertrauensprofile </h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathValidation/cfg:TrustProfile</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>einmal bis unbeschr&auml;nkt oft  (zumindest ein Vertrauensprofil muss vorhanden sein) </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Das Element <code>cfg:</code><code>TrustProfile</code> wird dazu verwendet, um in MOA SP ein Vertrauensprofil
+          f&uuml;r die Signaturpr&uuml;fung einzurichten. Ein Vertrauensprofil besteht aus einer Menge von Vertrauensankern
+          und einer optionalen Menge von explizit erlaubten Signatorzertifikaten. </p>
+          <p>Ein Vertrauensanker ist ein CA-Zertifikat, das explizit als vertrauensw&uuml;rdig eingestuft wird.
+            MOA SP versucht bei der Konstruktion einer Zertifikatskette, einen Pfad vom Signatorzertifikat bis
+            hin zu einem der konfigurierten Vertrauensanker zu finden. Gelingt dies, wird auch das Signatorzertifikat
+            als vertrauensw&uuml;rdig betrachtet, ansonsten nicht. </p>
+          <p>Wird neben der Menge von Vertrauensankern auch noch eine Menge von explizit erlaubten Signatorzertifikaten
+            angegeben, pr&uuml;ft MOA SP nicht nur, ob sich ein Pfad vom Signatorzertifikat zu einem konfigurierten
+            Vertrauensanker konstruieren l&auml;sst, sondern dar&uuml;ber hinaus auch noch, ob das Signatorzertifikat
+            aus der zu pr&uuml;fenden Signatur in der Menge der explizit erlaubten Signatorzertifikate vorkommt.
+            Explizit erlaubte Signatorzertifikate sollten Sie dann konfigurieren, wenn nicht allen von einer
+            als Vertrauensanker konfigurierten CA ausgestellten Zertifikaten vertraut werden soll, sondern nur
+            ganz bestimmten Zertifikaten dieser CA. </p>
+          <p>In MOA SP k&ouml;nnen beliebig viele solcher Vertrauensprofile konfiguriert werden. Der Kunde von
+            MOA SP gibt im Request zur Signaturpr&uuml;fung an, gegen welches Vertrauensprofil MOA SP die Zertifikatspr&uuml;fung
+            vornehmen soll.</p>
+          <p>Das Element <code>cfg:</code><code>TrustProfile</code> weist folgende Kindelemente
+            auf:</p>
+          <ul>
+            <li><code>cfg:Id</code>: Dieses obligatorische Element vom Typ <code>xs:token</code> enth&auml;lt einen
+              frei w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der XML-Konfigurationsdatei
+              eindeutig sein muss. Dieser Identifikator wird im Request zur Signaturpr&uuml;fung verwendet, um
+              das zu verwendende Vertrauensprofil auszuw&auml;hlen. </li>
+            <li>Element <code>cfg:TrustAnchorsLocation</code>: Dieses obligatorische Element vom Typ <code>xs:anyURI </code> enth&auml;lt
+              eine relative oder absolute URL, die ein Verzeichnis im lokalen Dateisystem referenziert.
+              Eine relative URL wird relativ zum Pfad jenes Verzeichnisses interpretiert, in dem die zentrale
+              Konfigurationsdatei gespeichert ist. Eine absolute URL muss als Protokoll-Teil <code>file</code> verwenden.
+              Das referenzierte Verzeichnis muss eine oder mehrere DER-kodierte Zertifikatsdateien beinhalten.
+              Jede Zertifikatsdatei repr&auml;sentiert einen Vertrauensanker. </li>
+            <li>Element <code>cfg:SignerCertsLocation</code>: Dieses optionale Element vom Typ <code>xs:anyURI </code> enth&auml;lt
+              eine relative oder absolute URL, die ein Verzeichnis im lokalen Dateisystem referenziert. Eine
+              relative URL wird relativ zum Pfad jenes Verzeichnisses interpretiert, in dem die zentrale Konfigurationsdatei
+              gespeichert ist. Eine absolute URL muss als Protokoll-Teil <code>file</code> verwenden. Das referenzierte
+              Verzeichnis muss eine oder mehrere DER-kodierte Zertifikatsdateien beinhalten. Jede Zertifikatsdatei
+              repr&auml;sentiert ein explizit erlaubtes Signatorzertifikat. </li>
+            <li>Element <code>cfg:EUTSL</code>: Dieses optionale Element aktiviert bei Vorhandensein die EU-TSL Unterst&uuml;tzung f&uuml;r dieses Vertrauensprofile. D.h. als Vertrauensanker werden jene CA-Zertifikate herangezogen, die zum gegenw&auml;rtigen Zeitpunkt auf der EU-TSL bzw. den entsprechenden TSLs der Mitgliedsstaaten befugt sind qualifizierte Zertifikate auszustellen und dessen Zertififierungsdiensteanbieter unter dem ServiceLevel &quot;accredited&quot; oder &quot;undersupervision&quot; stehen. Des Weiteren werden bei TSL-aktivierten Vertrauensprofilen, die &Uuml;berpr&uuml;fung auf qualifiziertes Zertifikat (QC-&Uuml;berpr&uuml;fung) und die &Uuml;berpr&uuml;fung auf sichere Signaturerstellungseinheit (SSCD-&Uuml;berpr&uuml;fung) &uuml;ber die EU-TSL durchgef&uuml;hrt.<br>
+              Zus&auml;tzliche kann ein optionales Kind-Element 
+            <code>cfg:CountrySelection</code> angegeben werden. Dieses Element definiert eine komma-separierte Liste an zweistelligen L&auml;nderk&uuml;rzeln nach ISO 3166. Ist so eine Liste vorhanden, werden nur die Vertrauensanker der angegebenen L&auml;nder herangezogen.<br>
+            <strong>Wichtig</strong>: Es k&ouml;nnen zus&auml;tzlich manuelle Vertrauensanker via <code>cfg:TrustAnchorsLocation</code> konfiguriert werden. Hierbei ist jedoch, insbesondere beim Hinzuf&uuml;gen von Enduser-Zertifikaten als Vertrauensanker, zu beachten, dass eine QC- bzw. SSCD-&Uuml;berpr&uuml;fung gegebenenfalls nicht erfolgreich durchgef&uuml;hrt werden kann.<br>
+            <strong>Wichtig</strong>: Bei aktivierter TSL-Unterst&uuml;tzung muss einen entsprechende TSL Konfiguration angegeben werden (siehe <a href="#konfigurationsparameter_sp_certificatevalidation_tslconfiguration">TSL Konfiguration</a>).</li>
+        </ul></td>
+    </tr>
+  </table>
+  <h4><a name="konfigurationsparameter_sp_certificatevalidation_revocationchecking" id="konfigurationsparameter_sp_certificatevalidation_revocationchecking"></a>2.3.1.3
+  Widerrufspr&uuml;fung</h4>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_revocationchecking_enablechecking" id="konfigurationsparameter_sp_certificatevalidation_revocationchecking_enablechecking"></a>2.3.1.3.1 Aktivieren
+    der Widerrufspr&uuml;fung</h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code> cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:EnableChecking</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>genau einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Der Inhalt dieses Elements vom Typ <code>xs:boolean</code> gibt an,  ob bei der Zertifikats&uuml;berpr&uuml;fung im Zuge einer Signaturpr&uuml;fung auch der
+          Zertifikatsstatus jedes einzelnen Zertifikats des gebildeten Zertifikatspfads &uuml;berpr&uuml;ft werden
+          soll. </p>
+          <p class="remark">Bitte beachten Sie: Die Widerrufspr&uuml;fung ist ein sehr wichtiger Schritt der
+            Zertifikats&uuml;berpr&uuml;fung und somit der Signaturpr&uuml;fung. Eine Deaktivierung sollte nur
+            in begr&uuml;ndeten Ausnahmef&auml;llen in Erw&auml;gung gezogen werden, z.B. f&uuml;r Testsituationen. </p>
+          <p>Zul&auml;ssige Werte f&uuml;r diesen Parameter sind <code>true</code> oder <code>false</code>.</p>          </td>
+    </tr>
+  </table>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_revocationchecking_maxrevocationage" id="konfigurationsparameter_sp_certificatevalidation_revocationchecking_maxrevocationage"></a>2.3.1.3.2
+    Maximales Alter der Widerrufsinformation </h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code> cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:MaxRevocationAge</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>genau einmal</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Der Inhalt dieses Elements vom Typ <code>xs:integer</code> gibt an, wie aktuell eine ggf. lokal
+          gespeicherte Widerrufsinformation sein muss, damit sie von MOA SP als g&uuml;ltig angesehen wird. Ist
+          die lokal gespeicherte Widerrufsinformation nicht aktuell genug, wird sie von MOA SP erneut aus dem
+          Internet geladen.</p>
+          <p>Dieser Parameter wird nur ausgewertet, wenn die Widerrufspr&uuml;fung aktiviert ist (siehe Parameter <code>cfg:EnableChecking</code>). </p>
+          <p>Zul&auml;ssige Werte f&uuml;r diesen Parameter sind ganze Zahlen: </p>
+          <ul>
+            <li>Ein beliebiger negativer Wert bedeutet, dass eine Widerrufsinformation jedes Mal, wenn sie ben&ouml;tigt
+              wird, neu aus dem Internet geladen wird. </li>
+            <li>Der Wert <code>0</code> bedeutet, dass eine Widerrufsinformation dann neu geladen wird, wenn
+              das Datum im Feld <code>nextUpdate</code> der entsprechenden Widerrufsliste bereits &uuml;berschritten
+              ist.</li>
+            <li>Ein positiver Wert gibt gibt die Zeitspanne in Millisekunden an, nach der eine ggf. vorhandene
+              lokale Widerrufsinformation sp&auml;testens durch erneutes Laden aus dem Internet aktualisiert
+              wird.</li>
+          </ul>          </td>
+    </tr>
+  </table>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_revocationchecking_serviceorder" id="konfigurationsparameter_sp_certificatevalidation_revocationchecking_serviceorder"></a>2.3.1.3.3
+    Reihenfolge der Widerrufsdienste</h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code> cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:ServiceOrder</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal oder einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Dieses Element gibt an, in welcher Reihenfolge MOA SP die Widerrufsdienste f&uuml;r die Pr&uuml;fung des
+          Widerrufs f&uuml;r ein Zertifikat kontaktieren soll, wenn f&uuml;r das Zertifikat mehrere unterschiedliche Widerrufsdienste
+          (CRL, OCSP) verf&uuml;gbar sind. Das Element weist folgendes Kindelement auf: </p>
+        <ul>
+          <li><code>cfg:Service</code>: Dieses Element vom Typ <code>xs:token</code> muss genau ein oder zwei mal vorkommen. G&uuml;tlige Werte f&uuml;r den
+            Textinhalt des Elements sind <code>OCSP</code> und <code>CRL</code>. Damit kann entweder die Reihenfolge (CRL, OCSP) oder (OCSP,
+            CRL) festgelegt werden. Wird nur ein Element angegeben, so wird auch nur der jeweilige Dienst verwendet. </li>
+        </ul>        <p>Wird das Element nicht angegeben, so lautet die von MOA SP dann verwendete Default-Reihenfolge (CRL,
+          OCSP).</p>        </td>
+    </tr>
+  </table>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_revocationchecking_archiving" id="konfigurationsparameter_sp_certificatevalidation_revocationchecking_archiving"></a>2.3.1.3.4
+    Archivierung von Widerrufsinformationen</h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code> cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:Archiving/cfg:EnableArchiving</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>genau einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Der Inhalt dieses Elements vom Typ <code>xs:boolean</code> gibt an,  ob mittlerweile ung&uuml;ltig
+          gewordene (i.e. historische) CRL-Widerrufsinformationen von MOA SP archiviert werden soll. </p>
+        <p>Wird dieser
+            Parameter auf den Wert <code>true</code> gesetzt, muss auch der Parameter <code>cfg:Archive</code> (siehe
+          unten) angegeben werden. Zul&auml;ssige Werte f&uuml;r diesen Parameter sind <code>true</code> oder <code>false</code>.</p>        </td>
+    </tr>
+  </table>
+ 
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:Archiving/cfg:ArchiveDuration</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal oder einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Dieses Element vom Typ <code>xs:nonNegativeInteger</code>  gibt (in Tagen) an, wie lange Widerrufsinformationen
+          von MOA SP archiviert werden m&uuml;ssen. Das Element wird von MOA SP nur dann ausgewertet, wenn der
+           Konfigurationsparameter <code>cfg:EnableArchiving</code>           auf
+          true gesetzt ist. </p>
+          <p>Wird das Element nicht angegeben, so verwendet MOA SP den Default-Wert von 365 Tagen.</p>          </td>
+    </tr>
+  </table>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td> Name </td>
+      <td><code> cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:Archiving/cfg:Archive</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal oder einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Dieses Element gibt an, welches Archiv MOA SP zur Archivierung von mittlerweile ung&uuml;ltig
+          gewordene (i.e. historische) CRL-Widerrufsinformationen verwenden soll, falls der Konfigurationsparameter <code>cfg:EnableArchiving</code> auf
+          <code>true</code> gesetzt ist. Es muss angegeben werden, wenn der
+           Konfigurationsparameter <code>cfg:EnableArchiving</code> auf true gesetzt ist. Das Element weist folgendes
+           Kindelement auf:</p>
+        <ul>
+          <li><code>cfg:DatabaseArchive</code>: Dieses obligatorische Element dient zur Angabe der notwendigen
+            Informationen f&uuml;r die Benutzung eines datenbankbasierten CRL-Archivs durch MOA SP. Das Datenbankarchiv
+            ist die einzige derzeit unterst&uuml;tzte Archivform. Das Element weist folgende Kindelemente auf:
+            <ul>
+              <li> <code>cfg:JDBCURL</code>: Dieses obligatorische Element vom Typ <code>xs:anyURI</code> gibt
+                die JDBC-URL zu jener Datenbank an, in der MOA historische Widerrufsinformationen archivieren
+              soll. Der genaue Aufbau der JDBC-URL ist abh&auml;ngig von der verwendeten Datenbank. Im Fall von
+              PostgreSQL kann folgende URL verwendet werden:
+			  <pre>jdbc:postgresql://&lt;host&gt;/&lt;moadb&gt;?user=&lt;moauser&gt;&amp;amp;password=&lt;moapassword&gt;</pre>
+			   <p> Die Platzhalter <code>&lt;host&gt;</code>, <code>&lt;moadb&gt;</code>, <code>&lt;moauser&gt;</code> und <code>&lt;moapassword&gt;</code> m&uuml;ssen
+            dabei an die tats&auml;chlich verwendete Datenbank angepasst werden.</p>
+          <p class="remark"> Bitte beachten Sie: Die Kodierung des Zeichens &quot;&amp;&quot; als "&amp;amp;" ist
+            erforderlich, da es andernfalls zu einem Validierungsfehler beim Parsen der XML-Konfigurationsdatei
+            durch MOA kommen w&uuml;rde.</p>
+          <p class="remark"> Bitte beachten Sie: MOA SP legt eigenst&auml;ndig eine passende Tabelle in der angegebenen
+            Datenbank an und bef&uuml;llt diese dann in weiterer Folge. Der in der JDBC-URL angegebene Benutzer
+            muss mit den dazu passenden Rechten ausgestattet sein. </p>
+              </li>
+              <li><p><code>cfg:JDBCDriverClassName</code>: Dieses obligatorische Element vom Typ <code>xs:token</code> gibt den
+                vollst&auml;ndig
+              qualifizierten Java-Klassennamen des JDBC-Treibers an, der von MOA SP zur  Ansprache der f&uuml;r
+              die CRL-Archivierung zu verwendenden Datenbank ben&uuml;tzt werden soll.</p>
+              <p class="remark">Bitte beachten Sie: Informationen zum Anlegen einer Datenbank in postgreSQL finden Sie in <a href="../install/install.html#webservice_erweiterungsm&#246;glichkeiten_datenbank_postgresql">Abschnitt
+              2.2.2.1</a> des Installationshandbuchs.</p>              
+              </li>
+            </ul>
+          </li>
+        </ul>         </td>
+    </tr>
+  </table>
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_revocationchecking_distributionpoint" id="konfigurationsparameter_sp_certificatevalidation_revocationchecking_distributionpoint"></a>2.3.1.3.5
+    Manuelle Konfiguration von Verteilungspunkten f&uuml;r Widerrufsinformationen</h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:DistributionPoint</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal bis unbeschr&auml;nkt oft </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p> Das Element <code>cfg:</code><code>CRLDistributionPoint</code> kann dazu verwendet werden, manuelle
+          Verteilungspunkte f&uuml;r Widerrufsinformationen einer bestimmten CA zu konfigurieren. </p>
+        <p>Dies macht f&uuml;r veraltete Zertifikate Sinn, die nicht den aktuellen Vorgaben aus dem PKIX RFC 3280 entsprechen und im Zertifikat selbst keine Zertifikatserweiterung mit einem solchen Verteilungspunkt enthalten.</p>
+        <p>Weiters kann diese manuelle Konfiguration verwendet werden, wenn die in einem Zertifikat enthaltenen Verteilungspunkte f&uuml;r eine bestimmte CA durch einen manuellen Eintrag &uuml;berschrieben werden soll (etwa weil die im Zertifikat enthaltenen Verteilungspunkte in Form von ldap-URLs angegeben sind,   MOA SP aber der Zugriff auf ldap-URLs per Firewall-Einstellungen untersagt ist; dann k&ouml;nnte man stattdessen manuell eine (lokale) http-URL als Verteilungspunkt angeben, die von MOA SP dann aufgel&ouml;st werden kann). </p>
+        <p>Das Element weist folgende Kind-Elemente auf:</p>
+        <ul>
+            <li>Element <code>cfg:CAIssuerDN</code>: Dieses Element enth&auml;lt als Textinhalt vom Typ <code>xs:string</code> den
+              Namen jener CA, die das Zertifikat ausgestellt hat, dessen Widerruf mit Hilfe des zu konfigurierenden
+              Verteilungspunktes gepr&uuml;ft werden soll. Um zu diesem Wert zu kommen, k&ouml;nnen Sie auch
+              hier das Script <code>certtool</code> (vergleiche Abschnitt<a href="#konfigurationsparameter_ss_keygroup"> 2.2.2</a>)
+              verwenden, in dem Sie es f&uuml;r das Zertifikat anwenden, dessen Widerruf mit Hilfe des zu konfigurierenden
+              Verteilungspunktes gepr&uuml;ft werden soll.</li>
+            <li>Element <code>cfg:CRLDP</code>: Dieses Element verweist auf einen Verteilungspunkt, an dem eine
+              Widerrufsliste abgeholt werden kann. Es weist folgende Kind-Elemente auf:
+              <ul>
+                <li>Element<code> cfg:Location</code>: Der Wert dieses obligatorischen Elements vom Typ<code> xs:anyURI</code> enth&auml;lt
+                  die URL f&uuml;r den zu konfigurierenden Verteilungspunkt. Es werden die Protokolle HTTP, HTTPS
+                und LDAP unterst&uuml;tzt.</li>
+                <li>Element<code> cfg:ReasonCode</code>: Dieses Element vom Typ <code>xs:token</code> kann
+                  null mal bis unbeschr&auml;nkt
+                  oft vorkommen und enth&auml;lt
+                  jeweils einen laut PKIX RFC 3280  m&ouml;glichen Grund eines Widerrufs,
+                  f&uuml;r
+                  welche die &uuml;ber den zu konfigurierenden Verteilungspunkt zu beziehende Widerrufsliste
+                  ausgestellt ist. G&uuml;ltige Gr&uuml;nde sind <code>unused</code>, <code>keyCompromise</code>, <code>cACompromise</code>, <code>affiliationChanged</code>, <code>superseded</code>, <code>cessationOfOperation</code>, <code>certificateHold</code>, <code>privilegeWithdrawn</code> und <code>aACompromise</code>.
+                  Wird eine Widerrufsliste f&uuml;r mehrere Gr&uuml;nde ausgestellt, muss also das Element <code>cfg:ReasonCode</code>                  mehrmals
+                  angegeben werden. Wird das Element null mal angegeben, gilt der Verteilungspunkt f&uuml;r alle m&ouml;glichen
+                  Widerrufsgr&uuml;nde.</li>
+              </ul>
+            </li>
+            <li>Element <code>cfg:OCSPDP</code>: Dieses Element verweist auf einen Verteilungspunkt, an dem die
+              Widerrufsinformation von einem OCSP-Responder bezogen werden kann. Es weist folgendes Kind-Element
+              auf: 
+              <ul>
+                <li></li>
+              </ul>
+            Element<code> cfg:Location</code>: Der Wert dieses obligatorischen Elements vom Typ<code> xs:anyURI</code> enth&auml;lt
+            die URL f&uuml;r den zu konfigurierenden Verteilungspunkt. Es werden die Protokolle HTTP, HTTPS und
+            LDAP unterst&uuml;tzt.</li>
+        </ul>          
+        <p>Hinweis: Die Elemente <code>cfg:CRLDP</code> bzw. <code>cfg:OSCPDP</code> k&ouml;nnen beliebig oft als Kinder von <code>cfg:CRLDistributionPoint</code> angegeben
+          werden. Die Reihenfolge spielt dabei keine Rolle. Jedenfalls muss aber eines dieser beiden Elemente
+        angegeben werden. </p></td>
+    </tr>
+  </table>
+
+<h5><a name="konfigurationsparameter_sp_certificatevalidation_revocationchecking_crlretention" id="konfigurationsparameter_sp_certificatevalidation_revocationchecking_crlretention"></a>2.3.1.3.6
+    Konfiguration CRL Retention Intervallen </h5>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking/cfg:CrlRetentionIntervals</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null oder einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Das Element  <code>cfg:</code><code>CrlRetentionIntervals</code> kann 
+      dazu verwendet werden, um Retention Intervalle f&uuml;r  bestimmte CAs zu 
+      konfigurieren. <br />
+      Gem&auml;ß <a href="http://www.ietf.org/rfc/rfc5280.txt" target="_blank">RFC 5280</a> 
+      muss ein widerrufenes Zertifikat solange auf Widerrufslisten 
+      aufscheinen, bis das Zertifikat abgelaufen ist und noch eine CRL-Periode 
+      dar&uuml;ber hinaus. Auf allen weiteren CRLs muss das Zertifikat nicht mehr
+      gef&uuml;hrt werden. Daraus folgt, dass MOA SP f&uuml;r abgelaufene Zertifikate in 
+      der Regel keine CRL-Statusabfrage durchf&uuml;hren kann, da nicht sichergestellt 
+      ist, dass eine aktuell geladene Widerrufssliste f&uuml;r derartige 
+      Zertifikate noch adeqaute Widerrufsinformationen enth&auml;lt. <br />
+      Garantiert eine CA jedoch, dass widerrufene Zertifikate noch &uuml;ber deren 
+      Ablauf hinaus auf der Widerrufsliste gef&uuml;hrt werden, so kann f&uuml;r diese 
+      CA ein Retention Intervall definiert werden. <p />
+      Das <code>cfg:</code><code>CrlRetentionIntervals</code> Element weist folgendes Kind-Element auf:</p>
+		<ul>
+<li>Element <code>cfg:CA</code>: Dieses Element legt ein Retention Intervall f&uuml;r eine CA fest und kann beliebig oft vorkommen. Es weist folgende Kind-Elemente auf:</li>
+<ul>
+<li>Element <code>cfg:X509IssuerName</code>: Dieses Element vom Typ <code>xs:string</code> muss einmal vorkommen und definiert die entsprechende CA &uuml;ber einen RFC2253 String. Das (im folgenden Element) festgelegte Intervall wird f&uuml;r alle Widerrufslisten, die von dieser CA ausgestellt werden, verwendet.</li></li>
+<li>Element <code>cfg:Interval</code>: Dieses Element vom Typ <code>xs:integer</code> muss einmal vorkommen und enth&auml;lt das Retention Intervall. Es gibt den Zeitraum in Tagen an, &uuml;ber 
+den widerrufene Zertifikate &uuml;ber deren Ablauf hinaus auf Widerrufslisten gef&uuml;hrt werden.
+Wird der Wert auf -1 gesetzt, dann bedeutet das ein unendlich langes Intervall. In diesem Fall wird ein widerrufenes Zertifikat niemals von den Widerrufslisten entfernt.<br />
+</ul>
+</ul>
+      </td>
+    </tr>
+  </table>
+
+
+  <h5><a name="konfigurationsparameter_sp_certificatevalidation_tslconfiguration" id="konfigurationsparameter_sp_certificatevalidation_tslconfiguration"></a>2.3.1.3.7
+    TSL Konfiguration</h5>
+<table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:TSLConfiguration</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null oder einmal </td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>Das Element <code>cfg:TSLConfiguration</code><code></code> legt die TSL Konfiguration fest, wenn Vertrauensprofile mit TSL Unterst&uuml;tzung konfiguriert sind. Das Element weist folgende Kind-Elemente auf:
+        <ul>
+        <ul>
+            <li>Element <code>cfg:EUTSLUrl</code>: Dieses optionale Element legt die URL zur EU-TSL fest.<br>
+            </li>
+            <em>Hinweis</em>: Wird kein <code>cfg:EUTSLUrl</code> Element angegeben so wird defaultm&auml;&szlig;ig <code>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</code> als EU-TSL URL herangezogen.
+            <li>Element <code>cfg:UpdateSchedule</code>: Dieses optionale Element legt fest wann und in welchem Intervall die EU-TSL erneut eingelesen werden soll. Das Element <code>cfg:UpdateSchedule</code> besteht dabei aus folgenden Kind-Elementen:</li>
+            <ul>
+            <li>Element <code>cfg:StartTime</code>: Legt eine Startzeit im Format hh:mm:ss fest. </li>
+            <li>Element <code>cfg:Period</code>: Legt das Intervall (in Millisekunden) fest, in welchem die EU-TSL erneut eingelesen werden soll</li>
+            </ul>
+            <em>Hinweis</em>: Wird kein <code>cfg:UpdateSchedule</code> Element angegeben so wird defaultm&auml;&szlig;ig <code>02:00.00</code> als Startzeit und <code>86400000</code> Millisekunden (=1 Tag) als Intervall herangezogen<br>
+            <em>Hinweis</em>:  Der Import der Zertifikate von der EU-TSL ben&ouml;tigt (je nach Verbindung) ca. 90-180  Sekunden. Als Startzeit sollte daher eine Zeit gew&auml;hlt werden, zu der die  Auslastung gering ist.
+<li>Element             <code>cfg:WorkingDirectory</code>: Diese Element gibt einen Pfad zum Arbeitsverzeichnis (inkl. Lese- und Schreibrechte) f&uuml;r die TSL an. Enth&auml;lt dieses Element eine relative Pfadangabe, so wird dieser relativ zum Verzeichnis in dem sich die MOA-SPSS Konfigurationsdatei befindet interpretiert.<br>
+          </li>
+          <em>Hinweis</em>: Wird kein <code>cfg:WorkingDirectory</code> Element angegeben so wird defaultm&auml;&szlig;ig <code>tslworking</code> als Arbeitsverzeichnis herangezogen.<br/>
+<strong>
+          Wichtig</strong>: Das angegebene Verzeichnis muss jedenfalls die Unterverzeichnis
+          &quot;trust&quot; aus der <a href="../../../conf/moa-spss/tslworking">Beispiel-Konfiguration</a> beinhalten. In dessen Unterverzeichnis &quot;eu&quot; m&uuml;ssen jene vertrauensw&uuml;rdigen Zertifikate angegeben werden, mit denen die EU-TSL signiert ist.
+        </ul>
+      <p><em>Hinweis</em>: Um die TSL &Uuml;berpr&uuml;fung zu aktivieren muss auch (zumindest) ein Vertrauensprofil mit TSL &Uuml;berpr&uuml;fung konfiguriert werden (siehe <a href="#konfigurationsparameter_sp_certificatevalidation_pathvalidation_trustprofile">Vertrauensprofil</a>)</p></td>
+    </tr>
+    
+</table>
+<h3><a name="konfigurationsparameter_sp_verifytransformsinfoprofile" id="konfigurationsparameter_sp_verifytransformsinfoprofile"></a>2.3.2 Profil f&uuml;r Transformationen</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:VerifyTransformsInfoProfile</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal bis unbeschr&auml;nkt oft</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>MOA SP erlaubt die Hinterlegung eines vordefinierten Profils f&uuml;r eine erlaubte Transformationsfolge,
+          deren Einhaltung im Rahmen einer XML-Signaturpr&uuml;fung kontrolliert wird. Im Request
+          zur XML-Signaturpr&uuml;fung reicht es dann aus, auf dieses Profil zu referenzieren, anstatt die
+          gesamten Transformationen explizit anzugeben. </p>
+          <p><code>cfg:VerifyTransformsInfoProfile</code> enth&auml;lt f&uuml;r ein bestimmtes Datenobjekt f&uuml;r
+            eine zu pr&uuml;fende XML-Signatur eine
+            f&uuml;r dieses Datenobjekt erlaubte Transformationsfolge, bestehend aus den anzuwendenden Transformationen,
+            sowie allenfalls f&uuml;r die Durchf&uuml;hrung der Transformationen erlaubte implizite Transformationsparameter
+          (z.B. einen zu importierenden Stylesheet f&uuml;r eine XSL-Transformation).</p>
+          <p><code>cfg:</code><code>VerifyTransformsInfoProfile</code> weist folgende obligatorische Kindelemene
+            auf: </p>
+          <ul>
+            <li>Element<code> Id</code>: Dieses Element<code></code> vom Typ <code>xs:token</code> enth&auml;lt
+              einen frei w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der
+              XML-Konfigurationsdatei eindeutig sein muss. Dieser Identifikator wird im Request zur Pr&uuml;fung
+              der XML-Signatur verwendet, um das hinterlegte Profil zu referenzieren (vergleiche Element <code>moa:</code><code>VerifyTransformsInfoProfileID</code>). </li>
+            <li>Element<code></code> <code>Location</code>: Dieses Element<code></code> vom Typ <code>xs:anyURI</code> enth&auml;lt
+              den Namen der XML-Datei, die das hinterlegte Profil beinhaltet. Der Wert enth&auml;lt eine relative
+              oder absolute URI. Eine relative URI wird von MOA SP als File-URI relativ zum Lage jenes Verzeichnisses
+              interpretiert, in dem die zentrale Konfigurationsdatei gespeichert ist. Die XML-Datei muss als
+              Wurzelelement das Element<code> moa:VerifyTransformsInfoProfile </code>enthalten.</li>
+        </ul></td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_sp_supplementprofile" id="konfigurationsparameter_sp_supplementprofile"></a>2.3.3 Profil f&uuml;r Erg&auml;nzungsobjekte</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:SupplementProfile</code></td>
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal bis unbeschr&auml;nkt oft</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+      <td><p>MOA SS erlaubt die Hinterlegung eines vordefinierten Profils f&uuml;r ein Erg&auml;nzungsobjekt,
+          das im Rahmen einer XML-Signaturpr&uuml;fung verwendet werden soll. Im Request zur XML-Signaturpr&uuml;fung        reicht es dann aus, auf dieses Profil zu referenzieren, anstatt die Informationen zur Signaturumgebung
+        explizit anzugeben. </p>
+          <p><code>cfg:SupplementProfile</code> enth&auml;lt f&uuml;r ein Datenobjekt in der zu pr&uuml;fenden
+            XML-Signatur ein allenfalls f&uuml;r die Durchf&uuml;hrung der vorgegebenen Transformationen notwendiges
+          Erg&auml;nzungsobjekt (z.B. einen zu importierenden Stylesheet f&uuml;r eine XSL-Transformation).</p>
+          <p><code>cfg:</code><code>SupplementProfile</code> weist folgende obligatorische Kindelemene auf: </p>
+          <ul>
+            <li>Element<code> Id</code>: Dieses Element<code></code> vom Typ <code>xs:token</code> enth&auml;lt
+              einen frei w&auml;hlbaren Identifikator f&uuml;r dieses Konfigurationselement, der innerhalb der
+              XML-Konfigurationsdatei eindeutig sein muss. Dieser Identifikator wird im Request zur Pr&uuml;fung
+              der XML-Signatur verwendet, um das hinterlegte Profil zu referenzieren (vergleiche Element <code>moa:</code><code>SupplementProfileID</code>). </li>
+            <li>Element<code></code> <code>Location</code>: Dieses Element<code></code> vom Typ <code>xs:anyURI</code> enth&auml;lt
+              den Namen der XML-Datei, die das hinterlegte Profil beinhaltet. Der Wert enth&auml;lt eine relative
+              oder absolute URI. Eine relative URI wird von MOA SP als File-URI relativ zum Lage jenes Verzeichnisses
+              interpretiert, in dem die zentrale Konfigurationsdatei gespeichert ist. Die XML-Datei muss als
+              Wurzelelement das Element<code> moa:SupplementProfile </code>enthalten.</li>
+        </ul></td>
+    </tr>
+  </table>
+  <h3><a name="konfigurationsparameter_sp_permitfileuris" id="konfigurationsparameter_sp_permitfileuris"></a>2.3.4 file-URIs</h3>
+  <table class="fixedWidth"  border="1" cellpadding="2">
+    <tr>
+      <td>Name</td>
+      <td><code>cfg:SignatureVerification/cfg:PermitFileURIs</code></td>
+
+    </tr>
+    <tr>
+      <td>Gebrauch</td>
+      <td>Null mal oder einmal</td>
+    </tr>
+    <tr>
+      <td>Erl&auml;uterung</td>
+
+      <td><p>Der Inhalt dieses Elements vom Typ <code>xs:boolean</code> gibt an, ob file-URIs innerhalb von MOA-SP zugelassen werden sollen. In MOA-SS werden file-URIs strikt verboten.</p>
+			<p class="remark">Bitte beachten Sie: Das Erlauben von file-URIs birgt Sicherheitsrisikien. Eine Deaktivierung sollte nur in begr&uuml;ndeten Ausnahmef&auml;llen in Erw&auml;gung gezogen werden. </p>
+			<p class="remark">Bitte beachten Sie: Es werden keine file-URIs in Erg&auml;nzungsobjekten unterst&uuml;tzt.</p>
+			<p>Zul&auml;ssige Werte f&uuml;r diesen Parameter sind <code>true</code> oder <code>false</code>. Wird dieses Element nicht angegeben, so nimmt MOA den Wert <code>false</code> an.</p>
+	  </td>
+    </tr>
+  </table>
+  <h1><a name="beispielkonfigurationen"></a>3 Beispielkonfigurationen</h1>
+  <!--<p>TODO Update Konfigurations (Simple, Expert)</p>-->
+<h2><a name="beispielkonfigurationen_minss" id="beispielkonfigurationen_minss"></a>3.1 Minimale Konfiguration f&uuml;r MOA SS</h2>
+  <p>Nachfolgend finden Sie eine zentrale Konfigurationsdatei mit den minimal notwendigen Eintr&auml;gen f&uuml;r
+    den alleinigen Betrieb von MOA SS. Darin sind als Kinder des Wurzelelements <code>cfg:MOAConfiguration</code>    folgende
+    Konfigurationselemente enthalten:</p>
+  <ul>
+    <li>Ein Software-Schl&uuml;sselspeicher (<code>cfg:SignatureCreation/cfg:KeyModules/cfg:SoftwareKeyModule</code>);</li>
+    <li>Eine Schl&uuml;sselgruppe (<code>cfg:SignatureCreation/</code><code>cfg:KeyGroup</code>);</li>
+    <li>Eine Zuordnung dieser Schl&uuml;sselgruppe f&uuml;r einen bestimmten Kunden (<code>cfg:SignatureCreation/cfg:KeyGroupMapping</code>). </li>
+  </ul>
+  <p><a href="../../../conf/moa-spss/ss.minimum.config.xml">Minimale Konfiguration f&uuml;r MOA SS</a> </p>
+  <h2><a name="beispielkonfigurationen_minsp" id="beispielkonfigurationen_minsp"></a>3.2 Minimale Konfiguration f&uuml;r MOA SP</h2>
+  <p>Nachfolgend finden Sie eine zentrale Konfigurationsdatei mit den minimal notwendigen Eintr&auml;gen f&uuml;r
+  den alleinigen Betrieb von MOA SP. Darin sind als Kinder des Wurzelelements <code>cfg:MOAConfiguration</code> folgende
+  Konfigurationselemente enthalten:</p>
+  <ul>
+    <li>Einstellungen betreffend die Konstruktion des Zertifikatspfades (<code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathConstruction</code>);</li>
+    <li>Einstellungen betreffend die Validierung des Zertifikatspfades (<code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathValidation</code>),
+      unter anderem ein Vertrauensprofil (<code>cfg:TrustProfile</code>);</li>
+    <li>Einstellungen betreffend die Widerrufspr&uuml;fung von Zertifikaten des Zertifikatspfades (<code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking</code>) . </li>
+  </ul>
+  <p><a href="../../../conf/moa-spss/sp.minimum.config.xml">Minimale Konfiguration f&uuml;r MOA SP</a> </p>
+  <h2><a name="beispielkonfigurationen_minsptsl" id="beispielkonfigurationen_minsptsl"></a>3.3 Minimale Konfiguration f&uuml;r MOA SP mit TSL Unterst&uuml;tzung</h2>
+<p>Nachfolgend finden Sie eine zentrale Konfigurationsdatei mit den minimal notwendigen Eintr&auml;gen f&uuml;r
+  den alleinigen Betrieb von MOA SP mit TSL Unterst&uuml;tzung. Darin sind als Kinder des Wurzelelements <code>cfg:MOAConfiguration</code> folgende
+  Konfigurationselemente enthalten:</p>
+  <ul>
+    <li>Einstellungen betreffend die Konstruktion des Zertifikatspfades (<code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathConstruction</code>);</li>
+    <li>Einstellungen betreffend die Validierung des Zertifikatspfades (<code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:PathValidation</code>),
+      unter anderem ein Vertrauensprofil mit TSL Unterst&uuml;tzung (<code>cfg:TrustProfile</code>);</li>
+    <li>Einstellungen betreffend die Widerrufspr&uuml;fung von Zertifikaten des Zertifikatspfades (<code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:RevocationChecking</code>) .</li>
+    <li>Einstellungen betreffend der TSL Konfiguration (<code>cfg:SignatureVerification/cfg:CertificateValidation/cfg:TSLConfiguration</code>) . </li>
+  </ul>
+  <p><a href="../../../conf/moa-spss/sp.minimum_with_tsl.config.xml">Minimale Konfiguration f&uuml;r MOA SP mit TSL Unterst&uuml;tzung</a> </p>
+
+<h2><a name="beispielkonfigurationen_typspss" id="beispielkonfigurationen_typspss"></a>3.4 Typische Konfiguration f&uuml;r MOA SP/SS</h2>
+  <p>Nachfolgend finden Sie eine typische zentrale Konfigurationsdatei mit Eintr&auml;gen f&uuml;r den kombinierten Betrieb von MOA SP und SS. Diese Datei wird auch als Konfiguration von MOA SP und SS verwendet, die f&uuml;r das Ausf&uuml;hren der Beispiele des <a href="../usage/usage.html">Anwenderhandbuchs</a> notwendig ist.</p>
+  <p><a href="../../../conf/moa-spss/spss.config.xml">Typische Konfiguration f&uuml;r MOA SP/SS</a>  </p>
+</body>
+</html>

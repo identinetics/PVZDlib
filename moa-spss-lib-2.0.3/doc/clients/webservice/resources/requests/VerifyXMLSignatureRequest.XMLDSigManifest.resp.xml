@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VerifyXMLSignatureResponse xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><SignerInfo><dsig:X509Data><dsig:X509SubjectName>CN=Test: Signaturdienst aller Kunden: ECDSA (P192v1),OU=Technik und Standards,O=Stabsstelle IKT-Strategie des Bundes,C=AT</dsig:X509SubjectName><dsig:X509IssuerSerial><dsig:X509IssuerName>CN=Test CA - Signaturdienste,OU=Technik und Standards,O=Stabstelle IKT-Strategie des Bundes,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>9</dsig:X509SerialNumber></dsig:X509IssuerSerial><dsig:X509Certificate>MIID+DCCA2WgAwIBAgIBCTAJBgUrDgMCHQUAMH8xCzAJBgNVBAYTAkFUMSwwKgYD
+VQQKEyNTdGFic3RlbGxlIElLVC1TdHJhdGVnaWUgZGVzIEJ1bmRlczEeMBwGA1UE
+CxMVVGVjaG5payB1bmQgU3RhbmRhcmRzMSIwIAYDVQQDExlUZXN0IENBIC0gU2ln
+bmF0dXJkaWVuc3RlMB4XDTA0MDgwNDA4MjM0OFoXDTA3MDgwNDA4MjM0OFowgZgx
+CzAJBgNVBAYTAkFUMS0wKwYDVQQKEyRTdGFic3N0ZWxsZSBJS1QtU3RyYXRlZ2ll
+IGRlcyBCdW5kZXMxHjAcBgNVBAsTFVRlY2huaWsgdW5kIFN0YW5kYXJkczE6MDgG
+A1UEAxMxVGVzdDogU2lnbmF0dXJkaWVuc3QgYWxsZXIgS3VuZGVuOiBFQ0RTQSAo
+UDE5MnYxKTCB8zCBvAYHKoZIzj0CATCBsAIBATAkBgcqhkjOPQEBAhkA////////
+/////////////v//////////MDQEGP////////////////////7//////////AQY
+ZCEFGeWcgOcPp+mrciQwSf643uzBRrmxBDEEGI2oDrAwkPZ8vyDrQ6GIAPT/Cv2C
+/xASBxkrlf/I2nhjEBHtayTN1XP5d6EeeUgRAhkA////////////////md74NhRr
+ybG00igxAgEBAzIABNHWY9lQOE1zgmpcpjTg2WIg6qgEsGhpXELPinJoMPDVheTv
+2BZPG42YJsNfvWgC06OCARwwggEYMA4GA1UdDwEB/wQEAwIGwDAMBgNVHRMBAf8E
+AjAAMB0GA1UdDgQWBBRHH5EXnrWosCmIa+JyEM5seMxFVzBdBgNVHSAEVjBUMFIG
+DCsGAQQBlRIBAgMBATBCMEAGCCsGAQUFBwICMDQaMkRpZXNlcyBaZXJ0aWZpa2F0
+IGlzdCBudXIgZvxyIFRlc3R6d2Vja2UgZ2VlaWduZXQuMEMGA1UdHwQ8MDowOKA2
+oDSGMmh0dHA6Ly9sYWJzLmNpby5ndi5hdC90ZW1wL2NybHMvc2lnbmF0dXJkaWVu
+c3QuY3JsMBQGByooAAoBAQEECQwHQktBLUlLVDAfBgNVHSMEGDAWgBRAl0P5fWaw
+vf59+uxGcYY9wffZPTAJBgUrDgMCHQUAA4GBAIMKUsnajgfBtpHeDdMdQMLA8fdt
+lluezDOM78WYYSFURP04QZk5iHkShzptgZCF5Y/T4an3dC3SnytL67LJvEoKUyja
+iTMLo7650xRTvAjTaMJ+nly/wTRYJKplOLXKWj3WwfObMHXdsDE8NJmpJSRE7Sw7
++tj+UiTiNNSaXirq</dsig:X509Certificate><PublicAuthority><Code>BKA-IKT</Code></PublicAuthority></dsig:X509Data></SignerInfo><SignatureCheck><Code>0</Code></SignatureCheck><XMLDSIGManifestCheck><Code>0</Code><Info><ReferringSigReference>1</ReferringSigReference></Info></XMLDSIGManifestCheck><CertificateCheck><Code>0</Code></CertificateCheck></VerifyXMLSignatureResponse>

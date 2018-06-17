@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>MOA SS und SP - Einf&uuml;hrung</title>
+  <link rel="stylesheet" href="../common/MOA.css" type="text/css">
+</head>
+<body link="#990000"> 
+  <table class="logoTable" width="100%" border="0" cellspacing="0" cellpadding="10">
+    <tr>
+      <td align="center" class="logoTitle" width="267"><img src="../common/LogoBKA.png" alt="Logo BKA" width="267" height="37" align="left"></td>
+      <td align="center" class="logoTitle">Dokumentation</td>
+      <td align="center" class="logoTitle" width="123"><img src="../common/LogoEGIZ.png" alt="Logo EGIZ" width="230" height="81" align="right"></td>
+    </tr>
+  </table>
+  <hr/> 
+  <p class="title"><a href="../index.html">MOA: Serversignatur (SS) und Signaturpr&uuml;fung (SP)</a></p> 
+  <p class="subtitle">Einf&uuml;hrung</p> 
+  <hr/>
+  <h1>Inhalt</h1>
+  <ol>
+    <li>
+      <p><a href="#allgemeines">Allgemeines</a></p>
+    </li>
+  <li>
+      <p><a href="#ss">Modul Serversignatur (SS) </a></p>
+    </li>
+    <li><a href="#sp">Modul Signaturpr&uuml;fung (SP) </a></li>
+  </ol>
+<hr/>
+  <h1><a name="allgemeines"></a>1 Allgemeines</h1>
+  <p> Die Module Serversignatur (SS) und Signaturpr&uuml;fung (SP) k&ouml;nnen von Anwendungen verwendet werden, um elektronische Signaturen zu erstellen bzw. vorliegende elektronische Signaturen zu &uuml;berpr&uuml;fen.</p>
+  <p>Die Funktionalit&auml;t und der Aufbau der Schnittstelle zu den beiden Modulen ist in der <a href="../spec/MOA-SPSS-2.0.0.pdf" target="_blank" class="term">Spezifikation MOA SP/SS (V2.0.0)</a> detailliert beschrieben. Da diese Spezifikation auf der <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20140114/core/core.html#core" target="_blank" class="term">  Schnittstellenspezifikation des Security-Layers (V 1.2.7)</a> aufbaut, ist deren Kenntnis zum Verstehen der Schnittstellen zu SS und SP erforderlich. </p>
+<h1><a name="ss"></a>2 Modul Serversignatur (SS) </h1>
+  <p> Das Modul Serversignatur (SS) dient zum Erstellen von XML-Signaturen in Anlehnung an die <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20140114/core/core.html#core" target="_blank" class="term"> Schnittstellenspezifikation des Security-Layers (V 1.2.7)</a>. Eine Signatur kann entweder rein in Software erstellt werden, oder aber unter Zuhilfenahme eines Hardware Security Modules (HSM), das den privaten Schl&uuml;ssel gesch&uuml;tzt enth&auml;lt und die Signatur berechnet.</p>
+  <p>    Der Zugriff auf einzelne Signaturschl&uuml;ssel in MOA SS kann basierend auf dem f&uuml;r TLS-Client-Authentisierung verwendeten Zertifikat eingeschr&auml;nkt werden. </p>
+  <p>    Anwendungen k&ouml;nnen das Modul entweder als Web-Service oder &uuml;ber ein Java-API ansprechen. </p>
+  <h1><a name="sp"></a>3 Modul Signaturpr&uuml;fung (SP) </h1>
+  <p> Das Modul Signaturpr&uuml;fung (SP) dient zum &Uuml;berpr&uuml;fen von <a href="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/" target="_blank">XML-Signaturen</a> und <a href="http://www.ietf.org/rfc/rfc2630.txt" target="_blank">CMS-Signaturen</a> sowie den fortgeschrittenen Signaturen XAdES  und CAdES entsprechende der <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20140114/core/core.html#core" target="_blank" class="term">Schnittstellenspezifikation des Security-Layers (V 1.2.7)</a>.</p>
+<p>Im Zuge der Verifikation einer XML-Signatur werden die Signatur, gegebenenfalls vorhandene XMLDSIG-Manifeste,  als auch die G&uuml;ltigkeit und Anwendbarkeit des Zertifikats &uuml;berpr&uuml;ft. Bei XML-Signaturen kann zus&auml;tzlich &uuml;berpr&uuml;ft werden, ob sie den speziellen Anforderungen <a href="http://www.buergerkarte.at/konzept/securitylayer/spezifikation/20140114/core/core.html#core" target="_blank" class="term"> Schnittstellenspezifikation des Security-Layers (V 1.2.7)</a> entsprechen (vgl. Signaturmanifest). </p>
+  <p>    Anwendungen k&ouml;nnen das Modul entweder als Web-Service oder &uuml;ber ein Java-API ansprechen.</p>
+</body>
+</html>

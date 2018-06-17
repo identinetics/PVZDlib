@@ -1,0 +1,1120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Securitylayer, Schnittstellenspezifikation -->
+<!-- XML-Schema fuer Schnittstellenspezifikation Version 1.2.3 -->
+<!-- 01. 03. 2005, Bundeskanzleramt, Stabsstelle IKT-Strategie, Technik und Standards -->
+<!-- 24. 09. 2013, EGIZ -->
+<xsd:schema targetNamespace="http://www.buergerkarte.at/namespaces/securitylayer/1.2#" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.2.1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.buergerkarte.at/namespaces/securitylayer/1.2#">
+  <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
+  <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <!--###################################################################### -->
+  <!--# Create CMS Signature                                               # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Create CMS Signature Request                                       = -->
+  <!--====================================================================== -->
+  <xsd:element name="CreateCMSSignatureRequest" type="CreateCMSSignatureRequestType"/>
+  <xsd:complexType name="CreateCMSSignatureRequestType">
+    <xsd:sequence>
+      <xsd:element name="KeyboxIdentifier" type="BoxIdentifierType"/>
+      <xsd:element name="DataObject" type="CMSDataObjectRequiredMetaType"/>
+    </xsd:sequence>
+    <xsd:attribute name="Structure" use="required">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="detached"/>
+          <xsd:enumeration value="enveloping"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="PAdESCompatibility" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+  <xsd:complexType name="CMSDataObjectRequiredMetaType">
+    <xsd:complexContent>
+      <xsd:restriction base="CMSDataObjectOptionalMetaType">
+        <xsd:sequence>
+          <xsd:element name="MetaInfo" type="MetaInfoType"/>
+          <xsd:element name="Content" type="Base64OptRefContentType"/>
+          <xsd:element name="ExcludedByteRange" type="ExcludedByteRangeType" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="CMSDataObjectOptionalMetaType">
+    <xsd:sequence>
+      <xsd:element name="MetaInfo" type="MetaInfoType" minOccurs="0"/>
+      <xsd:element name="Content" type="Base64OptRefContentType"/>
+      <xsd:element name="ExcludedByteRange" type="ExcludedByteRangeType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ExcludedByteRangeType">
+    <xsd:sequence>
+      <xsd:element name="From" type="xsd:unsignedLong"/>
+      <xsd:element name="To" type="xsd:unsignedLong"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Create CMS Signature Response                                      = -->
+  <!--====================================================================== -->
+  <xsd:element name="CreateCMSSignatureResponse" type="CreateCMSSignatureResponseType"/>
+  <xsd:complexType name="CreateCMSSignatureResponseType">
+    <xsd:sequence>
+      <xsd:element name="CMSSignature" type="xsd:base64Binary"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Create XML Signature                                               # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Create XML Signature Request                                       = -->
+  <!--====================================================================== -->
+  <xsd:element name="CreateXMLSignatureRequest" type="CreateXMLSignatureRequestType"/>
+  <xsd:complexType name="CreateXMLSignatureRequestType">
+    <xsd:sequence>
+      <xsd:element name="KeyboxIdentifier" type="BoxIdentifierType"/>
+      <xsd:element name="DataObjectInfo" type="DataObjectInfoType" maxOccurs="unbounded"/>
+      <xsd:element name="SignatureInfo" type="SignatureInfoCreationType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="SignatureInfoCreationType">
+    <xsd:sequence>
+      <xsd:element name="SignatureEnvironment" type="Base64XMLOptRefContentType"/>
+      <xsd:element name="SignatureLocation">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:token">
+              <xsd:attribute name="Index" type="xsd:nonNegativeInteger" use="required"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Supplement" type="DataObjectAssociationType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="MetaInfoType">
+    <xsd:sequence>
+      <xsd:element name="MimeType" type="MimeTypeType"/>
+      <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+      <xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="DataObjectInfoType">
+    <xsd:sequence>
+      <xsd:element name="DataObject" type="Base64XMLLocRefOptRefContentType"/>
+      <xsd:element name="TransformsInfo" type="TransformsInfoType" maxOccurs="unbounded"/>
+      <xsd:element name="Supplement" type="DataObjectAssociationType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="Structure" use="required">
+      <xsd:simpleType>
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="detached"/>
+          <xsd:enumeration value="enveloping"/>
+        </xsd:restriction>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+  <xsd:complexType name="TransformsInfoType">
+    <xsd:sequence>
+      <xsd:element ref="dsig:Transforms" minOccurs="0"/>
+      <xsd:element name="FinalDataMetaInfo" type="MetaInfoType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Create XML Signature Response                                      = -->
+  <!--====================================================================== -->
+  <xsd:element name="CreateXMLSignatureResponse" type="CreateXMLSignatureResponseType"/>
+  <xsd:complexType name="CreateXMLSignatureResponseType">
+    <xsd:sequence>
+      <xsd:any namespace="##any" processContents="lax"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Verify CMS Signature                                               # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Verify CMS Signature Request                                       = -->
+  <!--====================================================================== -->
+  <xsd:element name="VerifyCMSSignatureRequest" type="VerifyCMSSignatureRequestType"/>
+  <xsd:complexType name="VerifyCMSSignatureRequestType">
+    <xsd:sequence>
+      <xsd:element name="DateTime" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="CMSSignature" type="xsd:base64Binary"/>
+      <xsd:element name="DataObject" type="CMSDataObjectOptionalMetaType" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="Signatories" type="SignatoriesType" use="optional" default="1"/>
+  </xsd:complexType>
+  <xsd:simpleType name="SignatoriesType">
+    <xsd:union memberTypes="AllSignatoriesType">
+      <xsd:simpleType>
+        <xsd:list itemType="xsd:positiveInteger"/>
+      </xsd:simpleType>
+    </xsd:union>
+  </xsd:simpleType>
+  <xsd:simpleType name="AllSignatoriesType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="all"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!--====================================================================== -->
+  <!--= Verify CMS Signature Response                                      = -->
+  <!--====================================================================== -->
+  <xsd:element name="VerifyCMSSignatureResponse" type="VerifyCMSSignatureResponseType"/>
+  <xsd:complexType name="VerifyCMSSignatureResponseType">
+    <xsd:sequence maxOccurs="unbounded">
+      <xsd:element name="SignerInfo" type="dsig:KeyInfoType"/>
+      <xsd:element name="SignatureCheck" type="CheckResultType"/>
+      <xsd:element name="CertificateCheck" type="CheckResultType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="QualifiedCertificate"/>
+  <!--###################################################################### -->
+  <!--# Verify XML Signature                                               # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Verify XML Signature Request                                       = -->
+  <!--====================================================================== -->
+  <xsd:element name="VerifyXMLSignatureRequest" type="VerifyXMLSignatureRequestType"/>
+  <xsd:complexType name="VerifyXMLSignatureRequestType">
+    <xsd:sequence>
+      <xsd:element name="DateTime" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="SignatureInfo" type="SignatureInfoVerificationType"/>
+      <xsd:element name="Supplement" type="DataObjectAssociationType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="SignatureInfoVerificationType">
+    <xsd:sequence>
+      <xsd:element name="SignatureEnvironment" type="Base64XMLOptRefContentType"/>
+      <xsd:element name="SignatureLocation" type="xsd:token"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Verify XML Signature Response                                      = -->
+  <!--====================================================================== -->
+  <xsd:element name="VerifyXMLSignatureResponse" type="VerifyXMLSignatureResponseType"/>
+  <xsd:complexType name="VerifyXMLSignatureResponseType">
+    <xsd:sequence>
+      <xsd:element name="SignerInfo" type="dsig:KeyInfoType"/>
+      <xsd:element name="SignatureCheck" type="ReferencesCheckResultType"/>
+      <xsd:element name="SignatureManifestCheck" type="ReferencesCheckResultType"/>
+      <xsd:element name="XMLDSIGManifestCheck" type="ManifestRefsCheckResultType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="CertificateCheck" type="CheckResultType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ReferencesCheckResultType">
+    <xsd:sequence>
+      <xsd:element name="Code" type="xsd:nonNegativeInteger"/>
+      <xsd:element name="Info" type="ReferencesCheckResultInfoType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ReferencesCheckResultInfoType" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="FailedReference" type="xsd:positiveInteger" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ManifestRefsCheckResultType">
+    <xsd:sequence>
+      <xsd:element name="Code" type="xsd:nonNegativeInteger"/>
+      <xsd:element name="Info" type="ManifestRefsCheckResultInfoType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ManifestRefsCheckResultInfoType" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="ReferringSigReference" type="xsd:positiveInteger"/>
+      <xsd:element name="FailedReference" type="xsd:positiveInteger" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CheckResultType">
+    <xsd:sequence>
+      <xsd:element name="Code" type="xsd:nonNegativeInteger"/>
+      <xsd:element name="Info" type="AnyMixedChildrenType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Encrypt a CMS message                                              # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Encrypt a CMS message: Request                                     = -->
+  <!--====================================================================== -->
+  <xsd:element name="EncryptCMSRequest" type="EncryptCMSRequestType"/>
+  <xsd:complexType name="EncryptCMSRequestType">
+    <xsd:sequence>
+      <xsd:element name="RecipientPublicKey" type="CMSRecipientPublicKeyType" maxOccurs="unbounded"/>
+      <xsd:element name="ToBeEncrypted" type="CMSToBeEncryptedType"/>
+    </xsd:sequence>
+    <xsd:attribute name="ReturnBinaryResult" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+  <xsd:complexType name="CMSToBeEncryptedType">
+    <xsd:sequence>
+      <xsd:element name="MetaInfo" type="MetaInfoType"/>
+      <xsd:element name="Content" type="Base64OptRefContentType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CMSRecipientPublicKeyType">
+    <xsd:choice>
+      <xsd:element name="X509Certificate" type="xsd:base64Binary"/>
+    </xsd:choice>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Encrypt a CMS message: Response                                    = -->
+  <!--====================================================================== -->
+  <xsd:element name="EncryptCMSResponse" type="EncryptCMSResponseType"/>
+  <xsd:complexType name="EncryptCMSResponseType">
+    <xsd:sequence>
+      <xsd:element name="CMSMessage" type="xsd:base64Binary"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Decrypt a CMS message                                              # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Decrypt a CMS message: Request                                     = -->
+  <!--====================================================================== -->
+  <xsd:element name="DecryptCMSRequest" type="DecryptCMSRequestType"/>
+  <xsd:complexType name="DecryptCMSRequestType">
+    <xsd:sequence>
+      <xsd:element name="CMSMessage" type="xsd:base64Binary"/>
+      <xsd:element name="EncryptedContent" type="CMSEncryptedContentType" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="ReturnResult" type="ReturnResultType" use="optional" default="xml"/>
+  </xsd:complexType>
+  <xsd:complexType name="CMSEncryptedContentType">
+    <xsd:sequence>
+      <xsd:element name="MetaInfo" type="MetaInfoType" minOccurs="0"/>
+      <xsd:element name="Content" type="Base64OptRefContentType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="ReturnResultType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="binary"/>
+      <xsd:enumeration value="xml"/>
+      <xsd:enumeration value="none"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!--====================================================================== -->
+  <!--= Decrypt a CMS message: Response                                    = -->
+  <!--====================================================================== -->
+  <xsd:element name="DecryptCMSResponse" type="DecryptCMSResponseType"/>
+  <xsd:complexType name="DecryptCMSResponseType">
+    <xsd:sequence>
+      <xsd:element name="DecryptedData" type="xsd:base64Binary"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Encrypt an XML document                                            # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Encrypt an XML document: Request                                   = -->
+  <!--====================================================================== -->
+  <xsd:element name="EncryptXMLRequest">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="EncryptXMLRequestType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="EncryptXMLRequestType">
+    <xsd:sequence>
+      <xsd:element name="RecipientPublicKey" type="XMLRecipientPublicKeyType" maxOccurs="unbounded"/>
+      <xsd:element name="ToBeEncrypted" type="ToBeEncryptedType" maxOccurs="unbounded"/>
+      <xsd:element name="EncryptionInfo" type="EncryptionInfoType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ToBeEncryptedType">
+    <xsd:choice>
+      <xsd:element name="Element">
+        <xsd:complexType>
+          <xsd:attribute name="Selector" type="xsd:token" use="required"/>
+          <xsd:attribute name="EncDataReference" type="xsd:anyURI" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ElementContent">
+        <xsd:complexType>
+          <xsd:attribute name="Selector" type="xsd:token" use="required"/>
+          <xsd:attribute name="EncDataReference" type="xsd:anyURI" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="New" type="XMLToBeEncryptedNewType"/>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="XMLToBeEncryptedNewType">
+    <xsd:sequence>
+      <xsd:element name="MetaInfo" type="MetaInfoType"/>
+      <xsd:element name="Content" type="XMLToBeEncryptedNewContentType"/>
+    </xsd:sequence>
+    <xsd:attribute name="ParentSelector" type="xsd:token" use="required"/>
+    <xsd:attribute name="NodeCount" type="xsd:nonNegativeInteger" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="XMLToBeEncryptedNewContentType">
+    <xsd:complexContent>
+      <xsd:extension base="Base64XMLLocRefContentType">
+        <xsd:attribute name="EncDataReference" type="xsd:anyURI" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="XMLRecipientPublicKeyType">
+    <xsd:choice>
+      <xsd:element ref="dsig:KeyValue"/>
+      <xsd:element name="X509Certificate" type="xsd:base64Binary"/>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="EncryptionInfoType">
+    <xsd:sequence>
+      <xsd:element name="EncryptionEnvironment" type="Base64XMLOptRefContentType"/>
+      <xsd:element name="EncryptedKeyLocation" minOccurs="0">
+        <xsd:complexType>
+          <xsd:attribute name="ParentSelector" type="xsd:token" use="required"/>
+          <xsd:attribute name="NodeCount" type="xsd:nonNegativeInteger" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Supplement" type="DataObjectAssociationType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Encrypt an XML document: Response                                  = -->
+  <!--====================================================================== -->
+  <xsd:element name="EncryptXMLResponse" type="EncryptXMLResponseType"/>
+  <xsd:complexType name="EncryptXMLResponseType">
+    <xsd:sequence>
+      <xsd:element name="EncryptionEnvironment">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:any namespace="##any" processContents="lax"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="EncryptedData" type="EncryptedDataType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EncryptedDataType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+        <xsd:attribute name="EncDataReference" type="xsd:anyURI" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Decrypt an XML document                                            # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Decrypt an XML document: Request                                   = -->
+  <!--====================================================================== -->
+  <xsd:element name="DecryptXMLRequest" type="DecryptXMLRequestType"/>
+  <xsd:complexType name="DecryptXMLRequestType">
+    <xsd:sequence>
+      <xsd:element name="EncryptedContent" type="Base64XMLOptRefContentType"/>
+      <xsd:element name="EncrElemsSelector" type="xsd:string"/>
+      <xsd:element name="Supplement" type="DataObjectAssociationType" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="ReturnResult" type="ReturnResultType" use="optional" default="xml"/>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Decrypt an XML document: Response                                  = -->
+  <!--====================================================================== -->
+  <xsd:element name="DecryptXMLResponse" type="DecryptXMLResponseType"/>
+  <xsd:complexType name="DecryptXMLResponseType">
+    <xsd:sequence minOccurs="0">
+      <xsd:element name="CandidateDocument" type="XMLContentType"/>
+      <xsd:element name="DecryptedBinaryData" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:base64Binary">
+              <xsd:attribute name="EncrElemSelector" type="xsd:string" use="required"/>
+              <xsd:attribute name="MimeType" type="xsd:string" use="optional"/>
+              <xsd:attribute name="Encoding" type="xsd:anyURI" use="optional"/>
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Hashing                                                            # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Hash Computation Request                                           = -->
+  <!--====================================================================== -->
+  <xsd:element name="CreateHashRequest" type="CreateHashRequestType"/>
+  <xsd:complexType name="CreateHashRequestType">
+    <xsd:sequence>
+      <xsd:element name="HashInfo" type="CreateHashInfoRequestType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CreateHashInfoRequestType">
+    <xsd:sequence>
+      <xsd:element name="HashData" type="HashDataType"/>
+      <xsd:element name="HashAlgorithm" type="xsd:anyURI"/>
+      <xsd:element name="FriendlyName" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="RespondHashData" type="xsd:boolean" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="HashDataType">
+    <xsd:sequence>
+      <xsd:element name="MetaInfo" type="MetaInfoType"/>
+      <xsd:element name="Content" type="Base64XMLOptRefContentType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Hash Computation Response                                          = -->
+  <!--====================================================================== -->
+  <xsd:element name="CreateHashResponse" type="CreateHashResponseType"/>
+  <xsd:complexType name="CreateHashResponseType">
+    <xsd:sequence>
+      <xsd:element name="HashInfo" type="CreateHashInfoResponseType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="CreateHashInfoResponseType">
+    <xsd:sequence>
+      <xsd:element name="HashData" type="HashDataType" minOccurs="0"/>
+      <xsd:element name="HashAlgorithm" type="xsd:anyURI"/>
+      <xsd:element name="FriendlyName" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="HashValue" type="xsd:base64Binary"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Hash Verification Request                                          = -->
+  <!--====================================================================== -->
+  <xsd:element name="VerifyHashRequest" type="VerifyHashRequestType"/>
+  <xsd:complexType name="VerifyHashRequestType">
+    <xsd:sequence>
+      <xsd:element name="HashInfo" type="VerifyHashInfoRequestType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="VerifyHashInfoRequestType">
+    <xsd:sequence>
+      <xsd:element name="HashData" type="HashDataType"/>
+      <xsd:element name="HashAlgorithm" type="xsd:anyURI"/>
+      <xsd:element name="FriendlyName" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="HashValue" type="xsd:base64Binary"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Hash Verification Response                                         = -->
+  <!--====================================================================== -->
+  <xsd:element name="VerifyHashResponse" type="VerifyHashResponseType"/>
+  <xsd:complexType name="VerifyHashResponseType">
+    <xsd:sequence>
+      <xsd:element name="VerificationResult" type="VerificationResultType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="VerificationResultType">
+    <xsd:sequence>
+      <xsd:element name="FriendlyName" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="Result" type="xsd:boolean"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Infobox Commands                                                   # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Check Available Infoboxes Request                                  = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxAvailableRequest" type="InfoboxAvailableRequestType"/>
+  <xsd:complexType name="InfoboxAvailableRequestType"/>
+  <!--====================================================================== -->
+  <!--= Check Available Infoboxes Response                                 = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxAvailableResponse" type="InfoboxAvailableResponseType"/>
+  <xsd:complexType name="InfoboxAvailableResponseType">
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="InfoboxIdentifier" type="BoxIdentifierType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Create Infobox Request                                             = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxCreateRequest" type="InfoboxCreateRequestType"/>
+  <xsd:complexType name="InfoboxCreateRequestType">
+    <xsd:sequence>
+      <xsd:element name="InfoboxIdentifier" type="BoxIdentifierType"/>
+      <xsd:element name="InfoboxType" type="InfoboxTypeType"/>
+      <xsd:element name="Creator" type="xsd:string"/>
+      <xsd:element name="Purpose" type="xsd:string"/>
+      <xsd:element name="ReadAccessAuthorization" type="AccessAuthorizationType" minOccurs="0"/>
+      <xsd:element name="UpdateAccessAuthorization" type="AccessAuthorizationType" minOccurs="0"/>
+      <xsd:element name="ReadUserConfirmation" type="UserConfirmationType" minOccurs="0"/>
+      <xsd:element name="UpdateUserConfirmation" type="UserConfirmationType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="InfoboxTypeType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="BinaryFile"/>
+      <xsd:enumeration value="AssocArray"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="AccessAuthorizationType">
+    <xsd:sequence>
+      <xsd:element name="RequesterID" type="RequesterIDType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="UserMayChange" type="xsd:boolean" use="required"/>
+  </xsd:complexType>
+  <xsd:simpleType name="RequesterIDSimpleType">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:complexType name="RequesterIDType">
+    <xsd:simpleContent>
+      <xsd:extension base="RequesterIDSimpleType">
+        <xsd:attribute name="AuthenticationClass" type="AuthenticationClassType" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="UserConfirmationType">
+    <xsd:simpleContent>
+      <xsd:extension base="UserConfirmationSimpleType">
+        <xsd:attribute name="UserMayChange" type="xsd:boolean" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:simpleType name="UserConfirmationSimpleType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="none"/>
+      <xsd:enumeration value="info"/>
+      <xsd:enumeration value="confirm"/>
+      <xsd:enumeration value="confirmWithSecret"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="AuthenticationClassType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="anonym"/>
+      <xsd:enumeration value="pseudoanonym"/>
+      <xsd:enumeration value="certified"/>
+      <xsd:enumeration value="certifiedGovAgency"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!--====================================================================== -->
+  <!--= Create Infobox Response                                            = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxCreateResponse" type="InfoboxCreateResponseType"/>
+  <xsd:complexType name="InfoboxCreateResponseType"/>
+  <!--====================================================================== -->
+  <!--= Delete Infobox Request                                             = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxDeleteRequest" type="InfoboxDeleteRequestType"/>
+  <xsd:complexType name="InfoboxDeleteRequestType">
+    <xsd:sequence>
+      <xsd:element name="InfoboxIdentifier" type="BoxIdentifierType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Delete Infobox Response                                            = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxDeleteResponse" type="InfoboxDeleteResponseType"/>
+  <xsd:complexType name="InfoboxDeleteResponseType"/>
+  <!--====================================================================== -->
+  <!--= Read Infobox Request                                               = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxReadRequest" type="InfoboxReadRequestType"/>
+  <xsd:complexType name="InfoboxReadRequestType">
+    <xsd:sequence>
+      <xsd:element name="InfoboxIdentifier" type="BoxIdentifierType"/>
+      <xsd:choice>
+        <xsd:element name="BinaryFileParameters" type="InfoboxReadParamsBinaryFileType"/>
+        <xsd:element name="AssocArrayParameters" type="InfoboxReadParamsAssocArrayType"/>
+      </xsd:choice>
+      <xsd:element name="BoxSpecificParameters" type="AnyChildrenType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="InfoboxReadParamsBinaryFileType">
+    <xsd:attribute name="ContentIsXMLEntity" type="xsd:boolean" use="optional" default="false"/>
+  </xsd:complexType>
+  <xsd:complexType name="InfoboxReadParamsAssocArrayType">
+    <xsd:choice>
+      <xsd:element name="ReadKeys">
+        <xsd:complexType>
+          <xsd:attribute name="SearchString" type="WildCardSearchStringType" use="required"/>
+          <xsd:attribute name="UserMakesUnique" type="xsd:boolean" use="optional" default="false"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ReadPairs">
+        <xsd:complexType>
+          <xsd:attribute name="SearchString" type="WildCardSearchStringType" use="required"/>
+          <xsd:attribute name="UserMakesUnique" type="xsd:boolean" use="optional" default="false"/>
+          <xsd:attribute name="ValuesAreXMLEntities" type="xsd:boolean" use="optional" default="false"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ReadValue">
+        <xsd:complexType>
+          <xsd:attribute name="Key" type="BoxIdentifierType" use="required"/>
+          <xsd:attribute name="ValueIsXMLEntity" type="xsd:boolean" use="optional" default="false"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:element name="IdentityLinkDomainIdentifier" type="xsd:anyURI"/>
+  <!--====================================================================== -->
+  <!--= Read Infobox Response                                              = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxReadResponse" type="InfoboxReadResponseType"/>
+  <xsd:complexType name="InfoboxReadResponseType">
+    <xsd:choice>
+      <xsd:element name="BinaryFileData" type="Base64XMLContentType"/>
+      <xsd:element name="AssocArrayData" type="InfoboxReadDataAssocArrayType"/>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="InfoboxReadDataAssocArrayType">
+    <xsd:choice>
+      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="Key" type="BoxIdentifierType"/>
+      </xsd:sequence>
+      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="Pair" type="InfoboxAssocArrayPairType"/>
+      </xsd:sequence>
+    </xsd:choice>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Update Infobox Request                                             = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxUpdateRequest" type="InfoboxUpdateRequestType"/>
+  <xsd:complexType name="InfoboxUpdateRequestType">
+    <xsd:sequence>
+      <xsd:element name="InfoboxIdentifier" type="BoxIdentifierType"/>
+      <xsd:choice>
+        <xsd:element name="BinaryFileParameters" type="Base64XMLContentType"/>
+        <xsd:element name="AssocArrayParameters" type="InfoboxUpdateParamsAssocArrayType"/>
+      </xsd:choice>
+      <xsd:element name="BoxSpecificParameters" type="AnyChildrenType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="InfoboxUpdateParamsAssocArrayType">
+    <xsd:choice>
+      <xsd:element name="UpdateKey">
+        <xsd:complexType>
+          <xsd:attribute name="Key" type="xsd:token" use="required"/>
+          <xsd:attribute name="NewKey" type="xsd:token" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UpdateValue" type="InfoboxAssocArrayPairType"/>
+      <xsd:element name="DeletePair">
+        <xsd:complexType>
+          <xsd:attribute name="Key" type="xsd:token" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Update Infobox Response                                            = -->
+  <!--====================================================================== -->
+  <xsd:element name="InfoboxUpdateResponse" type="InfoboxUpdateResponseType"/>
+  <xsd:complexType name="InfoboxUpdateResponseType"/>
+  <!--###################################################################### -->
+  <!--# Null-Operation                                                     # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Null-Operation ReQuest                                             = -->
+  <!--====================================================================== -->
+  <xsd:element name="NullOperationRequest" type="NullOperationRequestType"/>
+  <xsd:complexType name="NullOperationRequestType"/>
+  <!--====================================================================== -->
+  <!--= Null-Operation Response                                            = -->
+  <!--====================================================================== -->
+  <xsd:element name="NullOperationResponse" type="NullOperationResponseType"/>
+  <xsd:complexType name="NullOperationResponseType"/>
+  <!--###################################################################### -->
+  <!--# Get Properties                                                     # -->
+  <!--###################################################################### -->
+  <xsd:element name="GetPropertiesRequest">
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="GetPropertiesRequestType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="GetPropertiesRequestType"/>
+  <!--====================================================================== -->
+  <!--= Get Properties Response                                            = -->
+  <!--====================================================================== -->
+  <xsd:element name="GetPropertiesResponse" type="GetPropertiesResponseType"/>
+  <xsd:complexType name="GetPropertiesResponseType">
+    <xsd:sequence>
+      <xsd:element name="ViewerMediaType" type="MimeTypeType" maxOccurs="unbounded"/>
+      <xsd:element name="XMLSignatureTransform" type="xsd:anyURI" maxOccurs="unbounded"/>
+      <xsd:element name="KeyboxIdentifier" type="QualifiedBoxIdentifierType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="Binding" type="BindingType" maxOccurs="unbounded"/>
+      <xsd:element name="ProtocolVersion" type="xsd:token" maxOccurs="unbounded"/>
+      <xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="BindingType">
+    <xsd:complexContent>
+      <xsd:extension base="AnyChildrenType">
+        <xsd:attribute name="Identifier" type="xsd:token" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="QualifiedBoxIdentifierType">
+    <xsd:simpleContent>
+      <xsd:extension base="BoxIdentifierType">
+        <xsd:attribute name="Signature" type="xsd:boolean" use="required"/>
+        <xsd:attribute name="Encryption" type="xsd:boolean" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Get Token Status                                                   # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= Get Token Status Request                                           = -->
+  <!--====================================================================== -->
+  <xsd:element name="GetStatusRequest" type="GetStatusRequestType"/>
+  <xsd:complexType name="GetStatusRequestType">
+    <xsd:sequence minOccurs="0">
+      <xsd:element name="TokenStatus" type="TokenStatusType"/>
+      <xsd:element name="MaxDelay" type="xsd:nonNegativeInteger"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= Get Token Status Response                                          = -->
+  <!--====================================================================== -->
+  <xsd:element name="GetStatusResponse" type="GetStatusResponseType"/>
+  <xsd:complexType name="GetStatusResponseType">
+    <xsd:sequence>
+      <xsd:element name="TokenStatus" type="TokenStatusType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="TokenStatusType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ready"/>
+      <xsd:enumeration value="removed"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!--###################################################################### -->
+  <!--# CardManagement                                                     # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= CardManagement Request                                             = -->
+  <!--====================================================================== -->
+  <xsd:element name="CardManagementRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="CardAction" type="CardActionElement" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="CardActionElement">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="Action" type="CardActionType" use="required" />
+        <xsd:attribute name="ApplicationIdentifier" type="ApplicationIdentifierType" use="required" />
+        <xsd:attribute name="Name" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= CardManagement Response                                            = -->
+  <!--====================================================================== -->
+  <xsd:element name="CardManagementResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Result" type="ResultElement" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="ResultApplElement">
+    <xsd:attribute name="ApplicationIdentifier" type="ApplicationIdentifierType" use="required" />
+    <xsd:attribute name="Name" type="xsd:string" use="required" />
+    <xsd:attribute name="Status" type="CardActionResponseType" use="required" />
+    <xsd:attribute name="RetryCount" type="xsd:integer" use="optional" />
+  </xsd:complexType>
+  <xsd:complexType name="ResultElement">
+    <xsd:attribute name="CardAction" type="CardActionType" use="required" />
+    <xsd:attribute name="ApplicationIdentifier" type="ApplicationIdentifierType" use="required" />
+    <xsd:attribute name="Result" type="CardActionResponseType" use="required" />
+    <xsd:attribute name="RetryCount" type="xsd:integer" use="optional" />
+  </xsd:complexType>
+  <xsd:simpleType name="CardActionType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ActivatePIN" />
+      <xsd:enumeration value="ChangePIN" />
+      <xsd:enumeration value="ReadPINStatus" />
+      <xsd:enumeration value="UnblockPIN" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="ApplicationIdentifierType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SecureSignatureApplication" />
+      <xsd:enumeration value="CertifiedApplication" />
+      <xsd:enumeration value="InfoboxApplication" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CardActionResponseType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OK" />
+      <xsd:enumeration value="Error" />
+      <xsd:enumeration value="Blocked" />
+      <xsd:enumeration value="Activ" />
+      <xsd:enumeration value="Inactive" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!--###################################################################### -->
+  <!--# CardChannel                                                        # -->
+  <!--###################################################################### -->
+  <!--====================================================================== -->
+  <!--= CardChannel Request                                                = -->
+  <!--====================================================================== -->
+  <xsd:element name="CardChannelRequest">
+    <xsd:complexType>
+      <xsd:sequence minOccurs="1" maxOccurs="1">
+        <xsd:element name="Script" type="ScriptElement" minOccurs="1" maxOccurs="1" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="ScriptElement">
+    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+      <xsd:element name="Reset" type="ResetType" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="CommandAPDU" type="CommandAPDUType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ResetType">
+    <xsd:attribute name="cold" type="ResetColdType" use="optional" />
+  </xsd:complexType>
+  <xsd:simpleType name="ResetColdType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="true" />
+      <xsd:enumeration value="false" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="CommandAPDUType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="sequence" type="xsd:integer" use="required" />
+        <xsd:attribute name="of" type="xsd:integer" use="required" />
+        <xsd:attribute name="expectedSW" type="xsd:string" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <!--====================================================================== -->
+  <!--= CardChannel Response                                               = -->
+  <!--====================================================================== -->
+  <xsd:element name="CardChannelResponse">
+    <xsd:complexType>
+      <xsd:sequence minOccurs="1" maxOccurs="1">
+        <xsd:element name="Response" type="APDUResponseElement" minOccurs="1" maxOccurs="1" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="APDUResponseElement">
+    <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+      <xsd:element name="ATR" type="APDUATRType" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="ResponseAPDU" type="ResponseAPDUType" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="APDUATRType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="rc" type="xsd:integer" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:complexType name="ResponseAPDUType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="sequence" type="xsd:integer" use="required" />
+        <xsd:attribute name="rc" type="xsd:integer" use="required" />
+        <xsd:attribute name="SW" type="xsd:string" use="required" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Bulk Request                                                       # -->
+  <!--###################################################################### -->
+  <xsd:element name="BulkRequest" type="BulkRequestType"/>
+  <xsd:complexType name="BulkRequestType">
+    <xsd:choice>
+      <xsd:element name="CreateSignatureRequest" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+             <xsd:element ref="CreateCMSSignatureRequest"/>
+             <xsd:element ref="CreateXMLSignatureRequest"/>
+          </xsd:choice>
+          <xsd:attribute name="displayName" type="xsd:string" use="optional"/>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="VerifySignatureRequest" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+            <xsd:element ref="VerifyCMSSignatureRequest"/>
+            <xsd:element ref="VerifyXMLSignatureRequest"/>
+          </xsd:choice>
+          <xsd:attribute name="displayName" type="xsd:string" use="optional"/>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="EncryptRequest" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+            <xsd:element ref="EncryptCMSRequest"/>
+            <xsd:element ref="EncryptXMLRequest"/>
+          </xsd:choice>
+          <xsd:attribute name="displayName" type="xsd:string" use="optional"/>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DecryptRequest" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+            <xsd:element ref="DecryptCMSRequest"/>
+            <xsd:element ref="DecryptXMLRequest"/>
+          </xsd:choice>
+          <xsd:attribute name="displayName" type="xsd:string" use="optional"/>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Bulk Response                                                      # -->
+  <!--###################################################################### -->
+  <xsd:element name="BulkResponse" type="BulkResponseType"/>
+  <xsd:complexType name="BulkResponseType">
+    <xsd:choice>
+      <xsd:element name="CreateSignatureResponse" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+            <xsd:element ref="CreateCMSSignatureResponse"/>
+            <xsd:element ref="CreateXMLSignatureResponse"/>
+            <xsd:element ref="ErrorResponse"/>
+          </xsd:choice>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="VerifySignatureResponse" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+            <xsd:element ref="VerifyCMSSignatureResponse"/>
+            <xsd:element ref="VerifyXMLSignatureResponse"/>
+            <xsd:element ref="ErrorResponse"/>
+          </xsd:choice>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="EncryptResponse" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+            <xsd:element ref="EncryptCMSResponse"/>
+            <xsd:element ref="EncryptXMLResponse"/>
+            <xsd:element ref="ErrorResponse"/>
+          </xsd:choice>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="DecryptResponse" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:choice>
+            <xsd:element ref="DecryptCMSResponse"/>
+            <xsd:element ref="DecryptXMLResponse"/>
+            <xsd:element ref="ErrorResponse"/>
+          </xsd:choice>
+          <xsd:attribute name="id" type="xsd:ID" use="optional"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+  <!--###################################################################### -->
+  <!--# Error Response                                                     # -->
+  <!--###################################################################### -->
+  <xsd:element name="ErrorResponse" type="ErrorResponseType"/>
+  <xsd:complexType name="ErrorResponseType">
+    <xsd:sequence>
+      <xsd:element name="ErrorCode" type="ErrorCodeType"/>
+      <xsd:element name="Info" type="xsd:string"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="ErrorCodeType">
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="1000"/>
+      <xsd:maxInclusive value="99999"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <!--###################################################################### -->
+  <!--# Auxiliary Types                                                    # -->
+  <!--###################################################################### -->
+  <xsd:simpleType name="BoxIdentifierType">
+    <xsd:restriction base="xsd:token"/>
+  </xsd:simpleType>
+  <xsd:simpleType name="MimeTypeType">
+    <xsd:restriction base="xsd:token"/>
+  </xsd:simpleType>
+  <xsd:simpleType name="WildCardSearchStringType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[^\*/]*(\*[^\*/]*)?(/[^\*/]*(\*[^\*/]*)?)*"/>
+      <xsd:pattern value="\*\*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="InfoboxAssocArrayPairType">
+    <xsd:complexContent>
+      <xsd:extension base="Base64XMLContentType">
+        <xsd:attribute name="Key" type="xsd:string" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="AnyChildrenType" mixed="false">
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:any namespace="##any" processContents="lax"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="AnyMixedChildrenType" mixed="true">
+    <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+      <xsd:any namespace="##any" processContents="lax"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="XMLContentType" mixed="true">
+    <xsd:complexContent mixed="true">
+      <xsd:extension base="AnyMixedChildrenType">
+        <xsd:attribute ref="xml:space" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Base64XMLLocRefOptRefContentType">
+    <xsd:complexContent>
+      <xsd:extension base="Base64XMLLocRefContentType">
+        <xsd:attribute name="Reference" type="xsd:anyURI" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Base64XMLLocRefReqRefContentType">
+    <xsd:complexContent>
+      <xsd:extension base="Base64XMLLocRefContentType">
+        <xsd:attribute name="Reference" type="xsd:anyURI" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Base64XMLOptRefContentType">
+    <xsd:complexContent>
+      <xsd:extension base="Base64XMLContentType">
+        <xsd:attribute name="Reference" type="xsd:anyURI" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Base64OptRefContentType">
+    <xsd:complexContent>
+      <xsd:extension base="Base64ContentType">
+        <xsd:attribute name="Reference" type="xsd:anyURI" use="optional"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="Base64ContentType">
+    <xsd:choice minOccurs="0">
+      <xsd:element name="Base64Content" type="xsd:base64Binary"/>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="Base64XMLContentType">
+    <xsd:choice minOccurs="0">
+      <xsd:element name="Base64Content" type="xsd:base64Binary"/>
+      <xsd:element name="XMLContent" type="XMLContentType"/>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="Base64XMLLocRefContentType">
+    <xsd:choice minOccurs="0">
+      <xsd:element name="Base64Content" type="xsd:base64Binary"/>
+      <xsd:element name="XMLContent" type="XMLContentType"/>
+      <xsd:element name="LocRefContent" type="xsd:anyURI"/>
+    </xsd:choice>
+  </xsd:complexType>
+  <xsd:complexType name="DataObjectAssociationType">
+    <xsd:sequence>
+      <xsd:element name="MetaInfo" type="MetaInfoType" minOccurs="0"/>
+      <xsd:element name="Content" type="Base64XMLLocRefReqRefContentType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

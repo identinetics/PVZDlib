@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="urn:document" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:document" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="XMLDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Paragraph" maxOccurs="unbounded">
+          <xs:complexType mixed="true">
+            <xs:attribute name="ParaId" type="xs:ID" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

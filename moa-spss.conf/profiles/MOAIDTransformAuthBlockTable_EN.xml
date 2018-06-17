@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VerifyTransformsInfoProfile xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#">
+	<dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+		<dsig:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116">
+			<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" xmlns:pr="http://reference.e-government.gv.at/namespace/persondata/20020228#" exclude-result-prefixes="pr saml">
+				<xsl:output method="xml" xml:space="default"/>
+				<xsl:template match="/" xmlns="http://www.w3.org/1999/xhtml">
+					<html>
+						<head>
+							<title>Signing the authentication data</title>
+							<style type="text/css" media="screen">
+              					.normalstyle { font-size: medium; } 
+              					.italicstyle { font-size: medium; font-style: italic; }
+								.titlestyle{ text-decoration:underline; font-weight:bold; font-size: medium; } 
+								.h4style{ font-size: large; }                                                                                      
+              				</style>
+						</head>
+						<body>
+							<h4 class="h4style">Authentication Data:</h4>
+							<p class="titlestyle">Personal Data</p>
+							<table class="parameters">
+								<xsl:if test="normalize-space(//@Issuer)">
+									<tr>
+										<td class="italicstyle">Name:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//@Issuer"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="string(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue)">
+									<tr>
+										<td class="italicstyle">Date of Birth:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,9,2)"/>
+											<xsl:text>.</xsl:text>
+											<xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,6,2)"/>
+											<xsl:text>.</xsl:text>
+											<xsl:value-of select="substring(//saml:Attribute[@AttributeName='Geburtsdatum']/saml:AttributeValue,1,4)"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="//saml:Attribute[@AttributeName='OIDTextualDescription']">
+									<tr>
+										<td class="italicstyle">Role:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='OIDTextualDescription']/saml:AttributeValue"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="//saml:Attribute[@AttributeName='mandateReferenceValue']">
+									<tr>
+										<td class="italicstyle">Mandate:</td>
+										<td class="normalstyle">
+											<xsl:text>I log in as representative. In the next step a list of available mandates is shown. Here I select one mandate.</xsl:text>
+										</td>
+									</tr>
+								</xsl:if>
+							</table>
+							<p class="titlestyle">Application Data</p>
+							<table class="parameters">
+								<tr>
+									<td class="italicstyle">Name:</td>
+									<td class="normalstyle">
+										<xsl:value-of select="//saml:Attribute[@AttributeName='oaFriendlyName']/saml:AttributeValue"/>
+									</td>
+								</tr>
+								<tr>
+									<td class="italicstyle">Country:</td>
+									<td class="normalstyle">Austria</td>
+								</tr>
+							</table>
+							<p class="titlestyle">Technical Parameters</p>
+							<table class="parameters">
+								<tr>
+									<td class="italicstyle">URL:</td>
+									<td class="normalstyle">
+										<xsl:value-of select="//saml:Attribute[@AttributeName='OA']/saml:AttributeValue"/>
+									</td>
+								</tr>
+								<xsl:if test="//saml:Attribute[@AttributeName='Geschaeftsbereich']">
+									<tr>
+										<td class="italicstyle">Sector:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='Geschaeftsbereich']/saml:AttributeValue"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="//saml:Attribute[@AttributeName='mandateReferenceValue']">
+									<tr>
+										<td class="italicstyle">
+											Mandate Reference:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='mandateReferenceValue']"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="//saml:Attribute[@AttributeName='IdentityLinkDomainIdentifierType']">
+									<tr>
+										<td class="italicstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='IdentityLinkDomainIdentifierType']"/>:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='wbPK']/saml:AttributeValue/pr:Identification/pr:Type"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="//saml:Attribute[@AttributeName='bPK'] or //saml:Attribute[@AttributeName='wbPK']">
+									<tr>
+										<td class="italicstyle">Identifier:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='bPK']/saml:AttributeValue/pr:Identification/pr:Value"/>
+											<xsl:value-of select="//saml:Attribute[@AttributeName='wbPK']/saml:AttributeValue/pr:Identification/pr:Value"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="//saml:Attribute[@AttributeName='OIDTextualDescription']">
+									<tr>
+										<td class="italicstyle">OID:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='OID']/saml:AttributeValue"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<xsl:if test="//saml:Attribute[@AttributeName='HPI']">
+									<tr>
+										<td class="italicstyle">HPI:</td>
+										<td class="normalstyle">
+											<xsl:value-of select="//saml:Attribute[@AttributeName='HPI']/saml:AttributeValue"/>
+										</td>
+									</tr>
+								</xsl:if>
+								<tr>
+									<td class="italicstyle">Date:</td>
+									<td class="normalstyle">
+										<xsl:value-of select="substring(//@IssueInstant,9,2)"/>
+										<xsl:text>.</xsl:text>
+										<xsl:value-of select="substring(//@IssueInstant,6,2)"/>
+										<xsl:text>.</xsl:text>
+										<xsl:value-of select="substring(//@IssueInstant,1,4)"/>
+									</td>
+								</tr>
+								<tr>
+									<td class="italicstyle">Time:</td>
+									<td class="normalstyle">
+										<xsl:value-of select="substring(//@IssueInstant,12,2)"/>
+										<xsl:text>:</xsl:text>
+										<xsl:value-of select="substring(//@IssueInstant,15,2)"/>
+										<xsl:text>:</xsl:text>
+										<xsl:value-of select="substring(//@IssueInstant,18,2)"/>
+									</td>
+								</tr>
+							</table>
+						</body>
+					</html>
+				</xsl:template>
+			</xsl:stylesheet>
+		</dsig:Transform>
+		<dsig:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+	</dsig:Transforms>
+</VerifyTransformsInfoProfile>

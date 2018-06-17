@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--MOA SPSS 1.3 Configuration File created by MOA SPSS Configuration Mapper-->
+<cfg:MOAConfiguration xmlns:cfg="http://reference.e-government.gv.at/namespace/moaconfig/20021122#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+	<cfg:SignatureVerification>
+		<cfg:CertificateValidation>
+			<cfg:PathConstruction>
+				<cfg:AutoAddCertificates>true</cfg:AutoAddCertificates>
+				<cfg:UseAuthorityInformationAccess>true</cfg:UseAuthorityInformationAccess>
+				<cfg:CertificateStore>
+					<cfg:DirectoryStore>
+						<cfg:Location>certstore</cfg:Location>
+					</cfg:DirectoryStore>
+				</cfg:CertificateStore>
+			</cfg:PathConstruction>
+			<cfg:PathValidation>
+				<cfg:ChainingMode>
+					<cfg:DefaultMode>pkix</cfg:DefaultMode>
+					<cfg:TrustAnchor>
+						<cfg:Identification>
+							<dsig:X509IssuerName>CN=A-Trust-nQual-0,OU=A-Trust-nQual-0,O=A-Trust,C=AT</dsig:X509IssuerName>
+							<dsig:X509SerialNumber>536</dsig:X509SerialNumber>
+						</cfg:Identification>
+						<cfg:Mode>chaining</cfg:Mode>
+					</cfg:TrustAnchor>
+				</cfg:ChainingMode>
+				<cfg:TrustProfile>
+					<cfg:Id>MOAIDBuergerkartePersonenbindung</cfg:Id>
+					<cfg:TrustAnchorsLocation>trustProfiles/MOAIDBuergerkartePersonenbindungOhneTestkarten</cfg:TrustAnchorsLocation>
+				</cfg:TrustProfile>
+				<cfg:TrustProfile>
+					<cfg:Id>MOAIDBuergerkarteAuthentisierungsDaten</cfg:Id>
+					<cfg:TrustAnchorsLocation>trustProfiles/MOAIDBuergerkarteAuthentisierungsDatenOhneTestkarten</cfg:TrustAnchorsLocation>
+				</cfg:TrustProfile>
+				<!--cfg:TrustProfile>
+					<cfg:Id>MOAIDBuergerkartePersonenbindungMitTestkarten</cfg:Id>
+					<cfg:TrustAnchorsLocation>trustProfiles/MOAIDBuergerkartePersonenbindungMitTestkarten</cfg:TrustAnchorsLocation>
+				</cfg:TrustProfile>
+				<cfg:TrustProfile>
+					<cfg:Id>MOAIDBuergerkarteAuthentisierungsDatenMitTestkarten</cfg:Id>
+					<cfg:TrustAnchorsLocation>trustProfiles/MOAIDBuergerkarteAuthentisierungsDatenMitTestkarten</cfg:TrustAnchorsLocation>
+				</cfg:TrustProfile>
+				<cfg:TrustProfile>
+					<cfg:Id>C-PEPS-Test</cfg:Id>
+					<cfg:TrustAnchorsLocation>trustProfiles/C-PEPS-Test</cfg:TrustAnchorsLocation>
+				</cfg:TrustProfile>
+				<cfg:TrustProfile>
+					<cfg:Id>C-PEPS</cfg:Id>
+					<cfg:TrustAnchorsLocation>trustProfiles/C-PEPS</cfg:TrustAnchorsLocation>
+				</cfg:TrustProfile-->
+			</cfg:PathValidation>
+			<cfg:RevocationChecking>
+				<cfg:EnableChecking>true</cfg:EnableChecking>
+				<cfg:MaxRevocationAge>0</cfg:MaxRevocationAge>
+				<cfg:ServiceOrder>
+					<cfg:Service>CRL</cfg:Service>
+					<cfg:Service>OCSP</cfg:Service>
+				</cfg:ServiceOrder>
+				<cfg:Archiving>
+					<cfg:EnableArchiving>false</cfg:EnableArchiving>
+					<cfg:ArchiveDuration>365</cfg:ArchiveDuration>
+					<cfg:Archive>
+						<cfg:DatabaseArchive>
+							<cfg:JDBCURL>jdbc:url</cfg:JDBCURL>
+							<cfg:JDBCDriverClassName>fully.qualified.classname</cfg:JDBCDriverClassName>
+						</cfg:DatabaseArchive>
+					</cfg:Archive>
+				</cfg:Archiving>
+				<cfg:CrlRetentionIntervals>
+					<!-- Retention Intervall (5 Jahre) fuer a-sign-corporate-light-03, damit Personenbindung trotz abgelaufenem Personenbindungszertifikat pruefbar bleibt -->
+					<cfg:CA>
+						<cfg:X509IssuerName>CN=a-sign-corporate-light-03,OU=a-sign-corporate-light-03,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</cfg:X509IssuerName>
+						<cfg:Interval>1825</cfg:Interval>
+					</cfg:CA>					
+					<!-- Retention Intervall (5 Jahre) fuer a-sign-corporate-light-02, damit Personenbindung trotz abgelaufenem Personenbindungszertifikat pruefbar bleibt -->
+					<cfg:CA>
+						<cfg:X509IssuerName>CN=a-sign-corporate-light-02,OU=a-sign-corporate-light-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</cfg:X509IssuerName>
+						<cfg:Interval>1825</cfg:Interval>
+					</cfg:CA>
+				</cfg:CrlRetentionIntervals>
+			</cfg:RevocationChecking>
+		</cfg:CertificateValidation>
+		<cfg:VerifyTransformsInfoProfile>
+			<cfg:Id>MOAIDTransformAuthBlockTable_DE_2.0</cfg:Id>
+			<cfg:Location>profiles/MOAIDTransformAuthBlockTable_DE_2.0.xml</cfg:Location>
+		</cfg:VerifyTransformsInfoProfile>
+		<cfg:VerifyTransformsInfoProfile>
+			<cfg:Id>MOAIDTransformAuthBlockTable_DE</cfg:Id>
+			<cfg:Location>profiles/MOAIDTransformAuthBlockTable_DE.xml</cfg:Location>
+		</cfg:VerifyTransformsInfoProfile>
+		<cfg:VerifyTransformsInfoProfile>
+			<cfg:Id>MOAIDTransformAuthBlockTable_EN</cfg:Id>
+			<cfg:Location>profiles/MOAIDTransformAuthBlockTable_EN.xml</cfg:Location>
+		</cfg:VerifyTransformsInfoProfile>
+	</cfg:SignatureVerification>
+</cfg:MOAConfiguration>

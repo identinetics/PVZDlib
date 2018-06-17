@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VerifyXMLSignatureRequest xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#">
+  <DateTime>2004-08-18T17:00:00+02:00</DateTime>
+  <VerifySignatureInfo>
+    <VerifySignatureEnvironment Reference="http://localhost:8080/referencedData/XMLDocument.signed.xml"/>
+    <VerifySignatureLocation xmlns:doc="urn:document" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">/doc:XMLDocument/dsig:Signature</VerifySignatureLocation>
+  </VerifySignatureInfo>
+  <ReturnHashInputData/>
+  <TrustProfileID>Test-Signaturdienste</TrustProfileID>
+</VerifyXMLSignatureRequest>

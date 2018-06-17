@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CreateXMLSignatureRequest xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#">
+  <KeyIdentifier>KG_allgemein</KeyIdentifier>
+  <SingleSignatureInfo SecurityLayerConformity="false">
+    <DataObjectInfo Structure="enveloping" ChildOfManifest="true">
+      <DataObject>
+        <XMLContent>Diese Daten sind signiert.</XMLContent>
+      </DataObject>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <FinalDataMetaInfo>
+            <MimeType>text/plain</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+  </SingleSignatureInfo>
+</CreateXMLSignatureRequest>

@@ -1,0 +1,470 @@
+##############
+2.0.3
+##############
+- Neues Endpunkt zum Auslesen des Zertifikats einer Schlüsselgruppe hinzugefügt 
+- Libraries aktuallisert
+    > javax.xml.bind.jaxb-api 2.2.12
+    > xerces.xercesImpl 2.11.0
+    > xalan 2.7.2
+    > serializer 2.7.2
+
+
+##############
+2.0.2
+##############
+- Libraries aktuallisert
+  - iaik-tsl Version 1.1 (Implementiert ETSI TS119612 V1.2.1)
+  - iaik_moa Version 1.51
+  - iaik_jce_full_MOA Version 5.2
+  - iaik_cms_MOA Version 5.0
+- Update der Standard Trustprofile
+
+##############
+2.0.1
+##############
+
+- Sicherheitsupdates:
+  - Update axis-iaik.jar
+- Sonstiges:
+  - kleinere Anpassungen
+
+##############
+2.0.0
+##############
+
+- Signaturerstellung:
+  - Unterstuetzung von XAdES Version 1.4.2
+  - Unterstuetzung von CMS/CAdES Signaturen Version 2.2.1
+- Signaturpruefung:
+  - Trust-service Status List (TSL) Unterstuetzung               
+- Update der Standard Trustprofile und Standard Konfigurationen                                   
+- Sicherheitsupdates
+  - Angabe einer Whitelist um das Aufloesen externer Referenzen von den angegebenen Quellen zu aktivieren.
+- Libraries aktualisiert bzw. hinzugefuegt:
+	iaik-moa:           Version 1.5
+	iaik-tsl			Version 1.0
+
+##############
+1.5.1
+##############
+
+- Sicherheitsupdates
+  - Defaultmaessiges Deaktiveren des Aufloesens von externen Referenzen
+  - Angabe einer Blacklist in der Konfiguration um den Intranetbereich zu schützen, so das Aufloesen externer Referenzen aktiviert wird
+- Update der Standard Trustprofile und Standard Konfigurationen
+- Standard Trustprofil "OfficialSignature" fuer Amtssignaturen hinzugefuegt                                                  
+- Libraries aktualisiert:
+	iaik-moa:           Version 1.32
+	iaik-ixsil:			Version 1.2.2.5 
+	Axis:				Version 1.0_IAIK
+
+##############
+1.5.0
+##############
+
+- Fixed Bug #548 (http://egovlabs.gv.at/tracker/index.php?func=detail&aid=548&group_id=6&atid=105)
+- IAIK Libraries aktualisiert:
+	iaik-moa:           Version 1.29
+	iaik_jce_full:		Version 4.0_MOA
+	iaik_cms:			Version 4.1_MOA
+
+
+##############
+1.4.8
+##############
+
+- IAIK Libraries aktualisiert:
+	iaik-moa:           Version 1.28 (Unterstï¿½tzung XAdES Versionen)
+	
+##############
+1.4.7
+##############
+
+- Update Konfiguration:
+	Im Element ServiceOrder unter dem Element RevocationChecking kann nun auch nur ein
+	Service eingetragen werden (bspw. nur CRL)
+- IAIK Libraries aktualisiert:
+	iaik-moa:           Version 1.27
+##############
+1.4.6
+##############
+
+- Keine ï¿½nderung in MOA-SPSS
+
+##############
+1.4.5
+##############
+
+- IAIK Libraries aktualisiert:
+	iaik-moa:           Version 1.26
+   iaik-ecc:           Version 2.19
+   iaik-jce:           Version 3.18_MOA
+	iaikPkcs11Provider: Version 1.2.6
+	iaikPkcs11Wrapper:  Version 1.2.17
+	
+- ï¿½berprï¿½fung von ArchiveCutOff und Implementierung eines Retention Intervalls fï¿½r CRLs.
+- Hinzufï¿½gen der Mï¿½glichkeit Retention Intervalle fï¿½r bestimmte CAs zu konfigurieren.
+  Dadurch wurde auch das Konfigurations Schema geï¿½ndert.
+- Weitere ï¿½nderung des Konfigurations Schemas: Bei der ServiceOrder fï¿½r das Revocation
+  Checking kann nun auch nur jeweils ein Dienst (CRL oder OCSP) angegeben werden.
+
+##############
+1.4.4
+##############
+
+- IAIK Libraries aktualisiert:
+	iaik-moa:           Version 1.24
+	iaik-ixsil:			Version 1.2.2.4
+
+##############
+1.4.3-1
+##############
+
+- Fix von falscher Schemabenennung in Constants.java des common-Projekts.
+
+##############
+1.4.3
+##############
+
+- Unnï¿½tige Abhï¿½ngigkeit zu JSSE-Implementierung von Sun wurden entfernt, welcher den Einsatz von MOA SP/SS in   
+  Java-Laufzeitumgebungen anderer Hersteller als Sun (z.B. IBM) erschwert.
+
+- Ein Konfigurationsparameter fï¿½r MOA SP wurde eingefï¿½hrt (cfg:SignatureVerification/cfg:PermitFileURIs) welcher
+  file-URIs erlauben oder verbieten soll.
+
+- Das Herauslï¿½sen des Verarbeitungsrequests aus dem SOAP-Request endete in einer
+  ClassCastException, wenn zwischen dem Body-Element des SOAP-Envelopes und dem 
+  Request white spaces vorhanden sind bzw. dieses Element nicht unmittelbar nach
+  dem Body-Element steht. Das Herauslï¿½sen ist nun gegen white spaces robust. 
+
+- Bei der Signaturverifikation (zusï¿½tzlich zu den bisherigen) folgende Algorithmen unterstï¿½tzt:
+   1.  Added the following signature algorithms for XML signatures: 
+     o  http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+     o  http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+     o  http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224
+     o  http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
+     o  http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
+     o  http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
+     o  http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160
+   2.  Added the following hash algorithms for XML signatures: 
+     o  http://www.w3.org/2001/04/xmldsig-more#sha224
+     o  http://www.w3.org/2001/04/xmldsig-more#sha384
+     o  http://www.w3.org/2001/04/xmlenc#sha512
+   3.  Added the following signature algorithms for verifying CMS signatures: 
+     o  SHA224withRSA
+     o  SHA384withRSA
+     o  SHA512withRSA
+     o  SHA224withECDSA
+     o  SHA256withECDSA
+     o  SHA384withECDSA
+     o  SHA512withECDSA
+     o  RIPEMD160withECDSAPlain
+   4.  Added the following hash algorithms for CMS signatures: 
+     o  SHA-224
+     o  SHA-384
+     o  SHA-512
+
+- IAIK Libraries aktualisiert:
+   Versionsnummern:
+     iaik-cms:           Version 4.01_MOA    
+     iaik-moa:           Version 1.23
+     iaik-ecc:           Version 2.16
+  
+##############
+1.4.2
+##############
+
+- IAIK Libraries aktualisiert:
+   Versionsnummern:
+     iaik-jce:           Version 3.16_MOA
+     iaik-cms:           Version 4.0_MOA
+
+##############
+1.4.2 beta1
+##############
+
+- Performance-Verbesserungen bei der Verwendnung von externen Referenzen. Diese 
+  werden nur mehr einmal gelesen und dann gecashed
+
+- Das Lesen von Streams wurde beschleunigt 
+
+- Axis wird wieder in Version 1.0 eingesetzt, da es sonst bei Verwendung von 
+  eingebetteten Dokumenten (Stylesheets usf.) zu Verlusten von Namespace-
+  Deklarationen kommt (dsig, xsi).
+
+##############
+1.4.1
+##############
+
+- Die Projektstruktur wurde eimem Maven Build-Prozess unterlegt. Der Sourcocde 
+  ab dieser Version unter http://egovlabs.gv.at/scm/?group_id=6 verfï¿½gbar.
+
+##############
+1.4.0
+##############
+
+- Unterstï¿½tzung von SOAP with Attachments. LocRefContent kann nun auch ï¿½ber SOAP
+  attachments ï¿½bergeben werden. Dadurch kï¿½nnen alle notwendigen Teile fï¿½r einen 
+  Request platzsparend in einem Schritt ï¿½bermittelt werden.
+  
+- Axis Libraries aktualisiert (auf Version 1.4)
+
+- Ermï¿½glichung von Signaturpositionen die sich am Ende des Dokuments befinden 
+  (CreateSignatureLocation=-1).
+  
+- IAIK Libraries aktualisiert:
+	   Versionsnummern:
+	     iaik-jce:           Version 3.142_MOA
+	     iaik-cms:           Version 3.2
+	     iaikPkcs11Provider: Version 1.2.4
+	     iaikPkcs11Wrapper:  Version 1.2.16
+	     ixsil:              Version IXSIL-1.2.2.3
+	     ecc:                Version v2.15
+	     iaik-moa:           Version 1.20
+	     
+- Neue Mindestanforderung an Java: Version 1.4.0 (1.3.* wird nicht mehr 
+  unterstï¿½tzt)
+
+##############
+1.3.1D01
+##############
+
+- IAIK-MOA: CRL wird nun auch akzeptiert, wenn im CLRSigner-Zertifikat KeyUsage
+            crlSign-Bit nicht gesetzt ist, allerdings nur wenn das Zertifikat 
+            ein Trust-Anchor ist.
+- IAIK-MOA: Eine indirekte CRL wird nun auch akzeptiert, wenn die 
+            "IssuingDistributionPoint"-Extension fehlt 
+            
+- Logging: commons-logging-1.0.4-Libraries (unterstï¿½tzt auch Tomcat 5*)
+
+##############
+1.3.0
+##############
+
+- "E-CARD"-Release
+- Update der Zertifikatsspeicher und Trustprofile
+- Update PKI auf OCSP (auch schon in 1.3.0D01 enthalten)
+- Update IAIK-Libraries (ab sofort wieder in der Distribution enthalten)
+	Versionsnummern:
+		iaik-jce:     Version 3.13_3.13_NONEwithRSA (MOA-SPSS kann nun auch mit 
+                  JDK1.5 verwendet werden)
+  	iaik-cms:     Version 3.2
+  	iaikPkcs11Provider: Version 1.1.9
+  	iaikPkcs11Wrapper:  Version 1.2.14
+  	ixsil:        Version IXSIL-1_2_2
+  	ecc:          Version 2.0
+
+##############
+1.3.0D01
+##############
+
+- Default-Wert fï¿½r Archivierungsdauer von Widerrufsinformation von 0 auf 365
+  Tage geï¿½ndert.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=305.
+
+- Default-Reihenfolge der Verwendung von Widerrufspunkten von (CRL, OCSP) auf
+  (OCSP, CRL) geï¿½ndert.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=304.
+
+- XML-Schema fï¿½r die Konfiguration von MOA SP/SS komplett ï¿½berarbeitet.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=271.
+
+- ï¿½nderungen der Semantik des Elements VerifyXMLSignatureRequest/ReturnHashInputData
+  bzw. des Attributs VerifyXMLSignatureRequest/SignatureManifestCheckParams/
+  @ReturnReferenceInputData. Es werden nunmehr auch die Hash-Eingangsdaten bzw.
+  die Referenz-Eingangsdaten fï¿½r dsig:Reference-Elemente in XMLDSIG-Manifesten
+  zurï¿½ckgeliefert.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=232.
+
+- TCP-Verbindungen zur Auflï¿½sung von externen Referenzen wurden bisher nicht 
+  sauber geschlossen. Damit kam es bei sehr komplexen XML-Signaturen unter
+  Umstï¿½nden zu einem Ressourcen-Problem, da zu viele TCP-Verbindungen gleich-
+  zeitig geï¿½ffnet wurden. Dieses Probem wurde behoben.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=283.
+
+- Trustprofil um eine Menge explizit erlaubter Signatorzertifikate erweitert.
+  Dadurch ist es nun mï¿½glich, nicht nur generell allen von einer als Vertrauens-
+  anker gesetzten CA ausgestellten Zertifikate zu vertrauen, sondern diese Zerti-
+  fikate weiter auf eine taxativ aufgezï¿½hlte Liste von Signatorzertifikaten ein-
+  zuschrï¿½nken.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=267.
+
+- MOA SS Webservice Clients, die sich mit einem Zertifikat ausweisen, kï¿½nnen nun
+  auch auf die Key-Groups des anonymen Key-Group-Mappings zugreifen.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=224.
+
+- MOA SS fit fï¿½r Mehrfachsignaturen, d.h. mehrere XML-Signaturen in einem XML-
+  Dokument gemacht. Bisher scheiterte das an den fix vergebenen Id-Attributen
+  innerhalb der dsig:Signature-Struktur.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=214.
+  
+- MOA SP so verï¿½ndert, dass die Prï¿½fungen zum Signaturmanifest laut SL 1.2 jeden-
+  falls durchgefï¿½hrt werden, auch wenn das Element SignatureManifestCheckParams
+  in VerifyXMLSignatureRequest nicht angegeben wird.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=269. 
+
+- Verwendete JSSE Bibliothek auf Version 1.0.3 aktualisiert, da frï¿½here Versionen
+  einen sicherheitskritischen Fehler enthalten.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=124.   
+
+##############
+1.2.1
+##############
+
+- Packaging umgestellt. Ab dieser Release werden die Kryptographiebibliotheken
+  des IAIK nicht mehr mit den Distributionen von MOA SP/SS mitgeliefert, sondern
+  sind vom Kunden selbst zu besorgen.
+
+##############
+1.2.0
+##############
+
+- Fehler beim validierenden Parsen des SignatureEnvironments eines Signaturer-
+  stellungsrequests behoben. War das Debug-Level ungleich debug, kam es bisher
+  zu einem Fehler.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=220.
+  
+- Default-Wert fï¿½r das Konfigurationsattribut cfg:CRLDistributionPoint/
+  cfg:DistributionPoint/@reasonCodes so verï¿½ndert, dass bei Weglassen des
+  Attributs alle Reason-Codes gesetzt werden.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=244. 
+  
+- Commons Logging Bibliothek auf die Version 1.0.4 aktualisiert, damit Logging
+  auch beim Betrieb unter Tomcat 5 funktioniert.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=245.
+  
+- Werden bei der Zusammenstellung eines Signaturprï¿½frequests ï¿½ber das MOA API
+  keine Supplements angegeben (null), kommt es nunmehr zu keinem Fehler mehr.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=247.    
+
+##############
+1.2.0D04
+##############
+
+- Update des MOA-Kerns von IAIK. Gepatched wurde darin die fehlerhafte Kodierung
+  des Signaturwerts fï¿½r ECDSA-Signaturen. Bisher wurde das Paar (r,s) fehlerhafter
+  Weise in eine ASN.1-Struktur eingepackt.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=218. 
+
+##############
+1.2.0D03
+##############
+
+- Update auf eine neuere Version der XML-Signaturbibliothek sowie damit ver-
+  bunden ein Update auf neuere Versionen von Xalan (2.5.1) sowie Xerces (2.4.0).
+  Grund: Mit der neuen Xerces-Version funktioniert nun auch das Parsen einer
+  XML-Personenbindung mit ECDSA-Schlï¿½sseln.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=215.
+  
+- Update des MOA-Kerns von IAIK. Es werden nun ECDSA-Signaturen, welche den
+  Signaturalgorithmus mit "http://www.w3.org/2004/01/xmldsig-more#"
+  kennzeichnen, erfolgreich von MOA SP erkannt und geprï¿½ft. Ebenso erstellt
+  MOA SP nun ECDSA-Signaturen mit dem erwï¿½hnten Signaturalgorithmus.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=217.  
+
+- Prï¿½fung des Signaturmanifests funktioniert nun auch bei vorhandener EC14N
+  Transformation. Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=197.
+
+- Das Element SignerInfo/QualifiedCertificate der Antwort auf eine XML-
+  Signaturprï¿½fung erscheint nun im korrekten Namespace.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=189.
+
+- Eine falsche Fehlermeldung im Zusammenhang mit Ergï¿½nzungsobjekten wurde
+  korrigiert. Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=174.
+
+- Fehlender Typ des Elements TrustProfileID im XML-Schema wurde ergï¿½nzt.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=163.
+
+- Stack Overflow bei Prï¿½fung bestimmter XML-Signaturen tritt nun nicht mehr
+  auf. Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=132.
+
+- Unprï¿½zise Fehlermeldungen verbessert.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=127.
+  Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=74.
+
+
+##############
+1.2.0D02
+##############
+
+- Im Befehl CreateXMLSignatureRequest kann nun in FinalDataMetaInfo das 
+  zusï¿½tzliche Element "Type" angegeben werden. Der Textinhalt dieses Elements
+  wird als Type-Attribut der korrespondierenden dsig:Reference gesetzt. Siehe
+  https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=54.
+  
+- Die Verwendung von EC14N-Transformationen ohne InclusiveNamespaces funktioniert
+  nun auch. Siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=44.  
+  
+- Signaturerstellung mit DSA-Schlï¿½ssel funktioniert nun. Siehe
+  https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=52.  
+
+##############
+1.2.0D01
+##############
+
+- In den Befehlen CreateXMLSignatureRequest sowie VerifyXMLSignatureRequest kann
+  nun in allen Fï¿½llen, in denen bisher entweder Base64Content oder XMLContent 
+  angegeben werden konnte, auch eine dritte Spielart verwendet werden, nï¿½mlich
+  LocRefContent. LocRefContent hat als Text-Inhalt eine URL, von der MOA den
+  Content bezieht
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=41).
+
+##############
+1.1.0
+##############
+
+- Einfach verwendbare Scripts fï¿½r Starten/Stopen sowie Install/Uninstall als
+  Service unter Windows in die Auslieferung aufgenommen 
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=36).
+
+- Drei neue Fragen in die FAQ aufgenommen
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=34,
+  https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=35,
+  https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=37).
+
+- Zertifikatsspeicher der Default-Konfiguration enthï¿½lt nun alle CA-Zertifikate 
+  A-Trust sowie das Root-Zertifikats des Mobilkom-Bï¿½rgerkarten-Versuchs
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=33).
+
+- Konfigurationsparameter "checkRevocation" ist hat nun Default-Wert "false"
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=32).
+
+- Fehlerhafte Eintrï¿½ge in den minimalen Default-Konfigurationsfiles behoben
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=30,
+  https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=31).
+
+- Ein CreateXMLSignatureRequest, der nicht den Default-Namespace verwendet, sondern
+  ein ns-Prï¿½fix verwendet, wird nun auch korrekt verarbeitet
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=19).
+
+- Wird eine Enveloped Signature erzeugt, wird nun das korrekte XML-Dokument mit der
+  erzeugten Signatur in der Antwort zurï¿½ckgeliefert 
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=12).
+
+- WSDL-File, das ï¿½ber die URI <MOA-SPSS-Basis-URL>/services/SignatureCreation?wsdl 
+  bzw. <MOA-SPSS-Basis-URL>/services/SignatureVerification?wsdl abgefragt werden 
+  kann, ist nun aktuell (MOA-SPSS-Schema 1.1) und enthï¿½lt einen korrekten Verweis
+  auf das MOA-SPSS-Schema 1.1 
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=6).
+
+- Problem mit Auflï¿½sung von LDAP-URLs beim Einsatz als Webservice in Tomcat behoben. 
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=2).
+
+- Bei der Prï¿½fung auf Security-Layer-Konformitï¿½t wird nun das korrekte Resultat
+  zurï¿½ckgeliefert, wenn die Signatur keine impliziten Transformationsparameter 
+  enthï¿½lt
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=3).
+
+- Unterstï¿½tzung anderer Datenbanken als postgreSQL und mySQL fï¿½r das CRL-Archiv
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=7).
+
+- Diverse Fehler in der Dokumentation beseitigt 
+  (siehe https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=8,
+  https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=9,
+  https://forge.cio.gv.at/bugzilla/show_bug.cgi?id=29).  
+
+##############
+1.0.9
+##############
+
+- Erste ï¿½ffentliche Release

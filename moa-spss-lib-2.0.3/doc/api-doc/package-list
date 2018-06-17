@@ -1,0 +1,15 @@
+at.gv.egovernment.moa.spss
+at.gv.egovernment.moa.spss.api
+at.gv.egovernment.moa.spss.api.cmssign
+at.gv.egovernment.moa.spss.api.cmsverify
+at.gv.egovernment.moa.spss.api.common
+at.gv.egovernment.moa.spss.api.impl
+at.gv.egovernment.moa.spss.api.xmlbind
+at.gv.egovernment.moa.spss.api.xmlsign
+at.gv.egovernment.moa.spss.api.xmlverify
+at.gv.egovernment.moa.spss.tsl.config
+at.gv.egovernment.moa.spss.tsl.connector
+at.gv.egovernment.moa.spss.tsl.exception
+at.gv.egovernment.moa.spss.tsl.timer
+at.gv.egovernment.moa.spss.tsl.utils
+at.gv.egovernment.moa.spss.util

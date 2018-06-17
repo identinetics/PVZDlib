@@ -1,0 +1,197 @@
+License for Open Source Projects
+
+Stiftung SIC Java Crypto-Software Development Kit Licence Agreement for
+Free Licenses Valid from February 19, 2010, amended May 13, 2011
+
+The Stiftung SIC (Stiftung Secure Information and Communication
+Technologies, Inffeldgasse16a, A-8010 Graz, Austria / Europe) hereafter
+referred to as "Stiftung SIC" offers to grant licences for the SOFTWARE
+defined below according to the following conditions:
+
+1. DEFINITIONS
+
+a. "LICENSEE" refers to the person, organisation or company, to whom the
+licenses are granted under this license agreement.
+
+b. The term "SOFTWARE" refers to IAIK Java Crypto Software in any form
+(source code, object code or other) including documentation. The
+SOFTWARE is the sole property of Stiftung SIC and protected by Austrian,
+International Copyright Law, e.g. the Revised Berne Convention, and the
+US Copyright Act.
+
+c. "IAIK Java Crypto Software" means either IAIK-JCE, iSaSiLk or any
+other Java-based Crypto-Software development kit which usually consists
+of source code (if applicable; for source licences only), Java byte code
+or any other form of object code. The Software and additional tools are
+distributed in documentation, manuals, user guides, sample application
+code, tools - including any revisions, patches and updates delivered or
+downloaded by the LICENSEE.
+
+d. "IAIK Java Crypto Software Runtime Modules" means the runtime object
+code modules provided with, or derived from, an IAIK-Java-Crypto
+Software Development Kit, which are usually distributed as a
+Java-Archive in JAR or ZIP-Format, or in any other format suitable for
+use by application programmes or other software.
+
+e. "IAIK-Crypto Software based Application" means any computer programme
+created by the LICENSEE using any of the IAIK-Toolkits, with the
+exception of server software, which is considered as a different
+category.
+
+f. "Server software" means IAIK-Crypto Software based applications run
+or published on a server (like but not limited to a web server).
+Examples for server software are applets, midlets, servlets, CGI-scripts
+or software that is run on a server.
+
+g. "To publish" means that an application is retrievable or accessible
+from a certain server, but not installed on another machine.
+
+h. "DERIVED SOFTWARE" refers to software (excluding any of our SOFTWARE)
+in any form (source code, object code or other) that uses the IAIK Java
+Crypto Software Runtime Modules. It also includes parts where LICENSEE
+acts as a licensor or sub-licensor.
+
+i. “Open Source Software Development” means development under an
+ACCEPTED LICENSE.
+
+j. "ACCEPTED LICENSE" means the following licenses:
+
+j1. GPL Version 2, June 1991 (http: //www.fsf.org/licenses/gpl.html).
+
+j2. European Union Public License (EUPL) Version 1.1, January 2009
+(http://www.osor.eu/eupl) - for distribution under compatible licenses
+defined in the licenses above or under any other license, the LICENSEE
+needs explicit permission by Stiftung SIC.
+
+2. GRANTING of LICENCES Stiftung SIC grants free licenses of the
+SOFTWARE for development of free of charge open source software. The
+SOFTWARE may be distributed bundled with the free of charge open source
+software in binary form only. The type of open source development is
+generally unrestricted; the only exception is a product that contains or
+is an API or a service of which most of the functionality is provided by
+the SOFTWARE. The derived product must not offer features that are
+similar to that of the SOFTWARE. This means, this license does not allow
+developing a product that contains or is a wrapper around the SOFTWARE.
+
+The LICENSEE and his licensees are granted a non-exclusive,
+non-transferable license to run and redistribute the IAIK Java Crypto
+Software Runtime Modules in unmodified, binary form under the following
+conditions.
+
+ * The LICENSEE and his licensees are not permitted to charge any
+   royalties or fees for DERIVED SOFTWARE.
+
+ * The LICENSEE of "IAIK Java Crypto Software Runtime Modules", has to
+   make the source code of his product publicly available under an
+   ACCEPTED LICENSE.
+
+ * The LICENSEE is further hereby obliged and authorized to bind his
+   licensees to all these conditions.
+
+If LICENSEE licenses DERIVED SOFTWARE under any other free software
+licensing scheme that is similar to an ACCEPTED LICENSE, it may be
+possible to grant a free license. Stiftung SIC will decide on this
+individually after inspecting the intended use and license conditions.
+
+This free license shall NOT be construed or otherwise interpreted as any
+kind of express or implied representation that this SOFTWARE is
+licensable under an ACCEPTED LICENSE or any free license other than the
+one laid out in this document.
+
+3. LIMITATIONS for all LICENCES: LICENSEES must not attempt to reverse
+engineer, decompile, disassemble, reverse, translate or in any other
+manner decode the computer programmes in the IAIK-Toolkit in order to
+derive the source code there from.
+
+ATTENTION: THIS LICENSE AGREEMENT DOES NOT INCLUDE LICENSING OF THE
+INCLUDED ALGORITHMS, when appropriate. Please see
+http://jce.iaik.tugraz.at/sic/sales/patent_issues_algorithms for a
+summary of the licence/patent status situation of algorithms used in
+IAIK-JCE. It is the sole responsibility of LICENSEES to ensure the
+legality of using the IAIK-Crypto software in their countries. Stiftung
+SIC declares that to the best of its knowledge all parts of the
+IAIK-Toolkits have been developed by Austrian citizens, except for the
+HTTP implementation (w3c_http.jar) delivered with the iSaSiLk
+distribution and free third party libraries (like Apache Xalan or
+Xerces) that may be delivered with the toolkits for convenience. The
+implementation of the Camellia cipher algorithm core has been provided
+by NTT (Nippon Telegraph and Telephone Corporation) under BSD licence
+terms
+(see http://jce.iaik.tugraz.at/sic/sales/patent_issues_algorithms).
+
+4. TERMS of LICENSE: Free licenses for development of free of charge
+open source software under ACCEPTED LICENSES are perpetual. Stiftung SIC
+has no obligation to continue making free updates or new versions
+available for LICENSEE
+
+5. DELIVERY: Free licenses are made available by download only.
+
+6. WARRANTY: Stiftung SIC guarantees that the SOFTWARE is free of any
+computer virus or other malicious hidden routines that would
+intentionally cause damage to or corrupt data, storage media or
+equipment.
+
+The SOFTWARE is provided "as is" and except for the declaration and
+warranty stated in this Section, Stiftung SIC makes no representations,
+conditions or warranties, either express or implied, relative to the
+IAIK-Toolkit or services provided hereunder, including all implied
+conditions or warranties of merchantability and fitness for a particular
+purpose and all conditions with respect to intellectual property
+infringement.
+
+7. PROPRIETARY INFORMATION and CONFIDENTIALITY: The LICENSEE
+acknowledges that the SOFTWARE remains the property of, and is
+confidential to, Stiftung SIC and incorporates trade secrets of Stiftung
+SIC, and that Stiftung SIC shall have the exclusive right to any
+copyrights or patents in respect of the SOFTWARE. The LICENSEE agrees to
+maintain the confidentiality of the SOFTWARE. The LICENSEE further
+agrees that (with the exception of paragraph 2 above), he shall not make
+any disclosure of the SOFTWARE (including copies thereof or methods or
+concepts utilised therein) to any person or entity, other than employees
+of the LICENSEE, to whom such disclosure is necessary in order to use
+the SOFTWARE as provided herein. The LICENSEE shall appropriately notify
+each employee to whom any such disclosure is made. Such disclosure must
+be made in confidence and shall be kept in confidence by the employee in
+question. The LICENSEE agrees to use diligent and determined efforts to
+secure and protect the SOFTWARE and copies thereof in a manner
+consistent with their proprietary character and the maintenance of
+LICENSOR`s rights therein, and without limitation thereof, to take
+appropriate action, by instruction or agreement with its employees who
+are permitted access to the SOFTWARE or copies thereof, or otherwise, to
+satisfy its obligations as hereby stated.
+
+8. TERMINATION: Stiftung SIC may terminate this Agreement without prior
+notice, if the LICENSEE 1. neglects or fails to perform or observe, or
+correct a breach of its obligations to Stiftung SIC; 2. goes out of
+business, files a bankruptcy petition or has such a petition filed
+involuntarily against it or becomes insolvent; 3. develops, sells,
+licenses or distributes or attempts to develop, sell, license or
+distribute any software based on the IAIK-Toolkit which is outside the
+scope of the limited rights granted herein, to any third party. In the
+event of such a termination, the LICENSEE shall immediately delete all
+electronic versions from his systems and ensure that all backup copies
+are destroyed as well.
+
+9. LIABILITY: To the maximum extent allowed by applicable law Stiftung
+SIC shall not be liable for any damages whatsoever (including, without
+limitation, damages for loss of business profits, business interruption,
+loss of business information, or other pecuniary loss) arising out of
+the use of or inability to use the IAIK-Toolkit, even if Stiftung SIC
+has been advised of the possibility of such damages.
+
+10. EXPORT RESTRICTIONS: In some countries, the IAIK-Toolkits may be
+subject to export and import restrictions. Their re-export may require
+the approval of the competent authorities. The LICENSEE shall be liable
+for the observance of any control regulation and explicitly agrees to
+hold Stiftung SIC fully harmless.
+
+11. WAIVER: Invalidity, on legal grounds, of any term of this Agreement
+does not render the Agreement as a whole invalid.
+
+12. SURVIVAL: Irrespective of expiration or termination of this
+Agreement, the provisions of Articles 2, 4, and 8 shall survive the
+termination or the expiry of this Agreement.
+
+13. GOVERNING LAW, ARBITRATION: This Agreement is governed by Austrian
+law.
+

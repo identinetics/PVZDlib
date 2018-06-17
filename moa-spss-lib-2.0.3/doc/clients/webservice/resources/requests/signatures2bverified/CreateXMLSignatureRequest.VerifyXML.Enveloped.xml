@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CreateXMLSignatureRequest xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+  <KeyIdentifier>KG_allgemein</KeyIdentifier>
+  <SingleSignatureInfo SecurityLayerConformity="false">
+    <DataObjectInfo Structure="detached">
+      <DataObject Reference=""/>
+      <CreateTransformsInfoProfile>
+        <CreateTransformsInfo>
+          <dsig:Transforms>
+            <dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+          </dsig:Transforms>
+          <FinalDataMetaInfo>
+            <MimeType>text/xml</MimeType>
+          </FinalDataMetaInfo>
+        </CreateTransformsInfo>
+      </CreateTransformsInfoProfile>
+    </DataObjectInfo>
+    <CreateSignatureInfo>
+      <CreateSignatureEnvironment Reference="http://localhost:8080/referencedData/XMLDocument.xml"/>
+      <CreateSignatureEnvironmentProfile>
+        <CreateSignatureLocation Index="4" xmlns:doc="urn:document">/doc:XMLDocument</CreateSignatureLocation>
+      </CreateSignatureEnvironmentProfile>
+    </CreateSignatureInfo>
+  </SingleSignatureInfo>
+</CreateXMLSignatureRequest>

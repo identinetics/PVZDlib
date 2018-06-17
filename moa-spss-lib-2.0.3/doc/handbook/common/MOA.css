@@ -1,0 +1,617 @@
+body
+{ 
+  font-family: "Times New Roman", Times, serif;
+  font-size: medium;
+  font-weight: normal;
+  margin-left: 2.5em;
+  margin-right: 2.5em;
+  background-color: white;
+  text: #000000;
+  link: #990000;
+  vlink: #666666; 
+  alink: #cc9966;
+}
+
+
+
+p
+{ 
+  margin-top: 0pt;
+  margin-bottom: 0.5em;
+  text-align: justify
+}
+
+pre 
+{ 
+  font-family: "Courier New", monospace;
+  font-size: 90%;
+  background-color: #cccccc;
+  color: #000000;
+  margin-left:1.5%;
+  margin-right:1.5%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border: #008000 none;
+}
+
+hr 
+{
+  color: #000080;
+  background-color: #000080;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+table.fixedWidth
+{
+  width: 97%;
+  margin-left:1.5%;
+  margin-right:1.5%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+
+table.varWidth
+{
+  margin-left:1.5%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+th
+{
+  text-align: left;
+}
+
+h1
+{ 
+  color: #000000; 
+  text-align: left;
+  font-size: 167%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  background-color:#999;
+}
+
+h2
+{ 
+  color: #000000;
+  font-size: 150%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  background-color:#999;
+}
+
+h3
+{ 
+  color: #000000;
+  font-size: 133%; 
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  background-color:#999;
+}
+
+h4
+{
+  color: #000000;
+  font-size: 116%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  background-color:#999;
+}
+
+h5
+{ 
+  color: #000000;
+  font-size: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  background-color:#999;
+}
+
+h6
+{ 
+  color: #000000;
+  font-size: 83%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  background-color:#999;
+}
+
+code
+{
+  font-family: "Courier New", Courier, monospace;
+  font-size: 90%;
+  color: #000000
+}
+
+dd
+{
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+  text-align: justify
+
+}
+
+dt 
+{
+  margin-top: 0.8em;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000080
+}
+
+ol
+{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em
+}
+
+ol.alpha
+{
+  list-style-type: lower-alpha
+}
+
+li
+{
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  text-align: justify
+}
+
+a:hover
+{
+  color: #990000
+}
+
+
+.title
+{
+  text-align: left;
+  font-size: 200%;
+  color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  background-color:#999;
+}
+
+.subtitle 
+{  
+  text-align: left;
+  font-size: 133%;
+  color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em
+}
+
+.glossaryTerm 
+{  
+  font-style: italic;
+  color: #006699
+}
+
+.example
+{ 
+  font-family: "Courier New", monospace;
+  background-color: #CCFFFF;
+  color: #000000;
+  margin: 0pt 0pt;
+  border: #008000 none
+}
+
+.schema
+{ 
+  font-family: "Courier New", monospace;
+  background-color: #FFFFCC;
+  color: #000000;
+  margin: 0pt 0pt;
+  border: #008000 none
+}
+
+.documentinfo
+{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 100%;
+}
+
+.ol-contents
+{
+  font-size: 100%;
+  margin-top: 0.0em;
+  margin-bottom: 0.0em;
+}
+
+.li-contents
+{
+  font-size: 100%;
+  margin-top: 0.0em;
+  margin-bottom: 0.0em;
+}
+
+.logoTitle 
+{ 
+  text-align: center;
+  font-size: 200%;
+  color: #000080;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.logoTable 
+{ 
+  margin-bottom: 0px;
+  margin-left: 0px
+}
+
+.superscript
+{ 
+  vertical-align: super;
+  font-size: 66%;
+}
+
+.term
+{ 
+  font-style: italic; 
+}
+
+.comment
+{
+  color: #000000;
+  background: #ffff00;
+  font-style: italic
+}
+
+.addedErrata12
+{  
+  color: #FF0000; 
+  background-color: #FFEEEE;
+  text-decoration: underline
+}
+
+.deletedErrata12
+{
+  color: #999999;
+  background-color: #EEEEEE;
+  text-decoration: line-through
+}
+
+.added12
+{  
+  color: #FF0000; 
+  text-decoration: underline
+; background-color: #F8F0FF
+}
+
+.deleted12
+{
+  color: #999999;
+  text-decoration: line-through
+; background-color: #f8f0ff
+}
+
+.rfc2119Keyword 
+{ 
+  font-variant: small-caps;
+  font-style: normal;
+}
+
+.remark {  font-style: italic}
+
+li.faq
+{
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.faq-question
+{ 
+  color: #000080;
+  font-size: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  margin-bottom: 0.4em;
+}
+
+
+/*body
+{ 
+  font-family: "Times New Roman", Times, serif;
+  font-size: medium;
+  font-weight: normal;
+  margin-left: 2.5em;
+  margin-right: 2.5em;
+}
+
+p
+{ 
+  margin-top: 0pt;
+  margin-bottom: 0.5em;
+  text-align: justify
+}
+
+pre 
+{ 
+  font-family: "Courier New", monospace;
+  font-size: 90%;
+  background-color: #cccccc;
+  color: #000000;
+  margin-left:1.5%;
+  margin-right:1.5%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border: #008000 none;
+}
+
+hr 
+{
+  color: #000080;
+  background-color: #000080;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+table.fixedWidth
+{
+  width: 97%;
+  margin-left:1.5%;
+  margin-right:1.5%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+
+table.varWidth
+{
+  margin-left:1.5%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+th
+{
+  text-align: left;
+}
+
+h1
+{ 
+  color: #000080; 
+  text-align: left;
+  font-size: 167%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal
+}
+
+h2
+{ 
+  color: #000080;
+  font-size: 150%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal
+}
+
+h3
+{ 
+  color: #000080;
+  font-size: 133%; 
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal
+}
+
+h4
+{
+  color: #000080;
+  font-size: 116%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal
+}
+
+h5
+{ 
+  color: #000080;
+  font-size: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal
+}
+
+h6
+{ 
+  color: #000080;
+  font-size: 83%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal
+}
+
+code
+{
+  font-family: "Courier New", Courier, monospace;
+  font-size: 90%;
+  color: #000000
+}
+
+dd
+{
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+  text-align: justify
+
+}
+
+dt 
+{
+  margin-top: 0.8em;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000080
+}
+
+ol
+{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em
+}
+
+ol.alpha
+{
+  list-style-type: lower-alpha
+}
+
+li
+{
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  text-align: justify
+}
+
+a:hover
+{
+  color: #990000
+}
+
+
+.title
+{
+  text-align: left;
+  font-size: 167%;
+  color: #000080;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em
+}
+
+.subtitle 
+{  
+  text-align: left;
+  font-size: 133%;
+  color: #000080;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em
+}
+
+.glossaryTerm 
+{  
+  font-style: italic;
+  color: #006699
+}
+
+.example
+{ 
+  font-family: "Courier New", monospace;
+  background-color: #CCFFFF;
+  color: #000000;
+  margin: 0pt 0pt;
+  border: #008000 none
+}
+
+.schema
+{ 
+  font-family: "Courier New", monospace;
+  background-color: #FFFFCC;
+  color: #000000;
+  margin: 0pt 0pt;
+  border: #008000 none
+}
+
+.documentinfo
+{
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 100%;
+}
+
+.ol-contents
+{
+  font-size: 100%;
+  margin-top: 0.0em;
+  margin-bottom: 0.0em;
+}
+
+.li-contents
+{
+  font-size: 100%;
+  margin-top: 0.0em;
+  margin-bottom: 0.0em;
+}
+
+.logoTitle 
+{ 
+  text-align: center;
+  font-size: 133%;
+  color: #000080;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.logoTable 
+{ 
+  margin-bottom: 0px;
+  margin-left: 0px
+}
+
+.superscript
+{ 
+  vertical-align: super;
+  font-size: 66%;
+}
+
+.term
+{ 
+  font-style: italic; 
+}
+
+.comment
+{
+  color: #000000;
+  background: #ffff00;
+  font-style: italic
+}
+
+.addedErrata12
+{  
+  color: #FF0000; 
+  background-color: #FFEEEE;
+  text-decoration: underline
+}
+
+.deletedErrata12
+{
+  color: #999999;
+  background-color: #EEEEEE;
+  text-decoration: line-through
+}
+
+.added12
+{  
+  color: #FF0000; 
+  text-decoration: underline
+; background-color: #F8F0FF
+}
+
+.deleted12
+{
+  color: #999999;
+  text-decoration: line-through
+; background-color: #f8f0ff
+}
+
+.rfc2119Keyword 
+{ 
+  font-variant: small-caps;
+  font-style: normal;
+}
+
+.remark {  font-style: italic}
+
+li.faq
+{
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.faq-question
+{ 
+  color: #000080;
+  font-size: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  margin-bottom: 0.4em;
+}
+*/

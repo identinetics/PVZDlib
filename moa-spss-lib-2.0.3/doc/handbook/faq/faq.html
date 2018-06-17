@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>MOA SS und SP - FAQ</title>
+  <link rel="stylesheet" href="../common/MOA.css" type="text/css">
+</head>
+<body link="#990000"> 
+  <table class="logoTable" width="100%" border="0" cellspacing="0" cellpadding="10">
+    <tr>
+     <td align="center" class="logoTitle" width="267"><img src="../common/LogoBKA.png" alt="Logo BKA" width="267" height="37" align="left"></td>
+      <td align="center" class="logoTitle">Dokumentation</td>
+      <td align="center" class="logoTitle" width="123"><img src="../common/LogoEGIZ.png" alt="Logo EGIZ" width="230" height="81" align="right"></td>
+    </tr>
+  </table>
+  <hr/> 
+  <p class="title"><a href="../index.html">MOA: Serversignatur (SS) und Signaturpr&uuml;fung (SP)</a></p>
+  <p class="subtitle">FAQ</p> 
+  <hr/>
+  <h1>Inhalt</h1>
+  <ol>
+    <li>
+      <p><a href="#allgemeines">Allgemeines</a></p>
+    </li>
+    <li>
+      <p><a href="#uebersicht_fragen">&Uuml;bersicht der Fragen </a></p>
+    </li>
+    <li>
+      <p><a href="#antworten">Antworten</a></p>
+    </li>
+  </ol>
+<hr/>
+  <h1><a name="allgemeines"></a>1 Allgemeines</h1>
+  <p> Dieses Dokument enth&auml;lt eine Reihe von h&auml;ufig gestellten Fragen zu Installation, Konfiguration und Verwendung von MOA Serversignatur (SS) und Signaturpr&uuml;fung (SP). </p>
+  <h1><a name="uebersicht_fragen" id="uebersicht_fragen"></a>2 &Uuml;bersicht der Fragen </h1>
+  <h2> Installation</h2>
+  <ol>
+    <li>Beim Starten von MOA SPSS tritt folgende Exception auf: <code>java.lang.ClassCastException: iaik.asn1.structures.Name</code>. Was kann der Fehler sein? [<a href="#installation_1">Zur Antwort</a>]</li>
+    <li>Ich m&ouml;chte MOA SS/SP in einer Umgebung betreiben, die einen Internet-Zugang nur &uuml;ber einen Proxy erlaubt. Funktioniert das? [<a href="#installation_1">Zur Antwort</a>] </li>
+  </ol>
+  <h2>Konfiguration</h2>
+  <ol>
+    <li>Ich m&ouml;chte gerne die CRL-Archivierung von MOA verwenden, m&ouml;chte aber eine andere als die in der Konfiguration erw&auml;hnte postgreSQL-Datenbank verwenden. Geht das? [<a href="#konfiguration_1">Zur Antwort</a>]</li>
+    <li>Ich m&ouml;chte ein Zertifikat (z.B. einer Zwischen-Zertifizierungsstelle) manuell in den internen Zertifikatsspeicher von MOA SP importieren. Wie funktioniert das? [<a href="#konfiguration_2">Zur Antwort</a>]</li>
+    <li>Meine bestehende Konfigurationsdatei funktioniert mit MOA SP/SS 1.3 oder h&ouml;her nicht mehr. Was ist passiert?
+      [<a href="#konfiguration_3">Zur Antwort</a>]</li>
+    <li>Welche Netzwerkverbindungen  (incoming / outgoing)  werden durch MOA SP/SS ben&ouml;tigt? [<a href="#konfiguration_4">Zur Antwort</a>]</li>
+  </ol>
+<h2>Verwendung</h2>
+  <ol>
+    <li>Bei der Pr&uuml;fung einer Signatur liefert die Pr&uuml;fung des Zertifikatsstatus den Code 1. Was kann der Fehler sein? [<a href="#verwendung_1">Zur Antwort</a>]  </li>
+  </ol>
+  <h1><a name="antworten" id="antworten"></a>3 Antworten</h1>
+  <h2>Installation</h2>
+  <ol>
+    <li class="faq"><div class="faq-question"><a name="installation_1"></a>Beim Starten von MOA SPSS tritt folgende Exception auf: <code>java.lang.ClassCastException: iaik.asn1.structures.Name</code>. Was kann der Fehler sein?</div>
+	<p>Auf Grund einer mangelhaften Implementierung in einigen Versionen des JDK 1.3.1 kann es beim Betrieb von MOA zu folgendem Problem kommen: Sun macht in der Implementierung von <code>PKCS7.getCertificate()</code> einen Downcast vom Interface<code> java.security.Principal</code> auf die eigene Implementierung, was zu einer <span class="term">ClassCastException</span> f&uuml;hrt, wenn der JCE-Provider von Sun nicht an erster Stelle in der List der Security-Provider installiert ist. MOA geht nun aber so vor, dass der JCE-Provider des IAIK an die erste Stelle installiert wird, wenn er zum Zeitpunkt der Konfiguration noch nicht installiert war. Wird dann von irgendeinem ClassLoader der jar-Verifier ben&uuml;tzt, wird <code>PKCS7.getCertificate()</code> verwendet, und es kommt zu einer <span class="term">ClassCastException</span>. </p>
+    <p>Wird MOA &uuml;ber die API-Schnittstelle verwendet, ist ein Workaround die manuelle Installation des IAIK-JCE-Providers nach dem Sun JCE-Provider (etwa an die letzte Stelle), bevor die MOA-Konfiguration aufgerufen wird. Bei Verwendung der Webservices ist die M&ouml;glichkeit der statischen Konfiguration der JCE-Provider mittels Angabe in der Datei <code>$JAVA_HOME/jre/lib/security/java.security</code> der einzige bekannte Workaround. Hierzu m&uuml;ssen die Eintr&auml;ge </p>
+    <pre> security.provider.1=sun.security.provider.Sun
+   security.provider.2=com.sun.rsajca.Provider </pre>
+    <p>durch folgenden Eintrag erg&auml;nzt werden:</p>
+      <pre>security.provider.3=iaik.security.provider.IAIK</pre>
+    </li>
+    <li class="faq">
+	  <div class="faq-question"><a name="installation_2" id="installation_2"></a>Ich m&ouml;chte MOA SS/SP in einer Umgebung betreiben, die einen Internet-Zugang nur &uuml;ber einen Proxy erlaubt. Funktioniert das?</div>
+	  <p>Ja, zumindest f&uuml;r Zugriffe &uuml;ber HTTP. Sie m&uuml;ssen dazu die nachfolgenden JAVA System-Properties setzen:</p>
+	  <pre>http.proxyHost=&lt;proxyhost&gt;
+http.proxyPort=&lt;proxyport&gt;
+http.nonProxyHosts=&quot;&lt;exceptionhosts&gt;&quot;</pre>
+	  <p><code>&lt;proxyhost&gt;</code> gibt den Namen oder die IP-Adresse des Proxies an.</p>
+	  <p><code>&lt;proxyport&gt;</code> gibt den Port des Proxies an.</p>
+	  <p><code>&lt;exceptionhosts&gt;</code> enth&auml;lt eine Liste von Rechnernamen, die nicht &uuml;ber den Proxy laufen sollen. Jedenfalls m&uuml;ssen sie hier <code>localhost</code> angeben. Einzelne Namen sind durch eine Pipe (<code>|</code>) zu trennen. Bitte beachten Sie, dass IP-Addressen nicht angegeben werden d&uuml;rfen, sowie die verpflichtend zu verwendenen Anf&uuml;hrungszeichen.<br>
+      </p>
+    </li>
+  </ol>
+  <h2>Konfiguration</h2>
+  <ol>
+    <li class="faq"><div class="faq-question"><a name="konfiguration_1" id="konfiguration_1"></a>Ich m&ouml;chte gerne die CRL-Archivierung von MOA verwenden, m&ouml;chte aber eine andere als die in der Konfiguration erw&auml;hnte postgreSQL-Datenbank verwenden. Geht das?</div>
+	<p>Ja, das ist m&ouml;glich. Wenn Sie eine mySQL-Datenbank verwenden m&ouml;chten, sind folgende Ma&szlig;nahmen zu treffen:</p>
+	<ul>
+	  <li><a href="http://www.mysql.com/downloads/api-jdbc.html">Laden</a> Sie den mySQL-JDBC-Connector herunter und f&uuml;gen Sie das im Download enthaltene jar-File <code>mysql-connector-java-3.x.x-stable-bin.jar</code> zum Klassenpfad f&uuml;r MOA SPSS hinzu.</li>
+	  <li>Geben Sie im MOA-Konfigurationsfile mit Hilfe des generischen Konfigurationsparameters <code>DataBaseArchiveParameter.JDBCUrl</code> eine g&uuml;ltige JDBC-URL zu Ihrer mySQL-Datenbank angeben. Hinweise zum Format dieser URL f&uuml;r mySQL finden Sie <a href="http://www.mysql.com/documentation/connector-j/index.html">hier</a>. </li>
+	</ul>
+    <p>Wenn Sie eine andere Datenbank verwenden m&ouml;chten, beispielsweise Oracle, gehen Sie sinngem&auml;&szlig; wie oben vor und setzen zus&auml;tzlich noch folgenden Schritt:</p>
+    <ul>
+      <li>Geben Sie im MOA-Konfigurationsfile mit Hilfe des generischen Konfigurationsparameters <code>DataBaseArchiveParameter.JDBCDriverClass</code> den vollst&auml;ndig qualifizierten Klassennamen des JDBC-Treibers an, der die Verbindung zu Ihrer Datenbank herstellt.      </li>
+    </ul>
+    </li>
+    <li class="faq">
+	  <div class="faq-question"><a name="konfiguration_2" id="konfiguration_2"></a>Ich m&ouml;chte ein Zertifikat (z.B. einer Zwischen-Zertifizierungsstelle) manuell in den internen Zertifikatsspeicher von MOA SP importieren. Wie funktioniert das?</div>
+	  <p>Sie k&ouml;nnen f&uuml;r diesen Zweck ein mit MOA SP/SS mitgeliefertes Kommandozeilen-Tool verwenden, das Sie im Verzeichnis <code>$MOA_SPSS_INST/tools</code> finden. Wechseln Sie zu diesem Verzeichnis und rufen Sie die Script-Datei <code>certtools.bat</code> bzw. <code>certtools.sh</code> (je nach Betriebssystem) auf. Achten Sie darauf, dass die Umgebungsvariable <code>$JAVA_HOME</code> korrekt gesetzt ist. Die Syntax f&uuml;r dieses Tool lautet:</p>
+      <pre>certtool -add &lt;cert&gt; &lt;store&gt;</pre>
+      <p><code>&lt;cert&gt;</code> bezeichnet dabei Pfad und Dateiname des zu importierenden X509-Zertifikats. Das Zertifikat muss DER-kodiert vorliegen.</p>
+      <p><code>&lt;store&gt;</code> bezeichnet den Pfad des internen Zertifikatsspeichers von MOA SP. Wenn Sie nach der Installationsanleitung vorgegangen sind, lautet dieser Pfad <code>$CATALINA_HOME/conf/moa-spss/certstore</code>.</p>
+    </li>
+	<li class="faq">
+	  <div class="faq-question"><a name="konfiguration_3" id="konfiguration_3"></a>
+	    Meine bestehende Konfigurationsdatei
+        funktioniert mit MOA SP/SS 1.3 oder h&ouml;her nicht mehr. Was ist passiert?</div>
+	  <p>Mit dem Wechsel auf Version 1.3 verwendet MOA SP/SS ein neues, &uuml;bersichtlicheres Format f&uuml;r die
+      XML-Konfigurationsdatei. </p>
+	  <p>Wenn Sie von einer &auml;lteren Version von MOA SP/SS auf die Version 1.3 wechseln und Ihre bestehende
+	    Konfiguration beibehalten wollen, steht Ihnen ein einfaches Kommandozeilenwerkzeug zur Verf&uuml;gung, mit
+	    dem Sie Ihre Konfigurationsdatei vom bisherigen auf das neue Format migrieren k&ouml;nnen.</p>
+		<p>Informationen zur Verwendung des Werkzeugs finden Sie in <a href="../config/config.html#&#252;bersicht_zentraledatei_aktualisierung">Abschnitt 1.2.1</a> des Konfigurationshandbuchs. </p>
+	</li>
+	<li class="faq">
+    	<div class="faq-question"><a name="konfiguration_4" id="konfiguration_4"></a>Welche Netzwerkverbindungen (incoming / outgoing) werden durch MOA SP/SS ben&ouml;tigt?</div>
+        <p> Die nachfolgende Tabelle gibt eine Aufstellung der ben&ouml;tigten Netzberbindungen und eine kurze Beschreibung &uuml;ber deren Funktion.</p>
+        <table border="1" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="105" height="34" valign="middle"><strong>Service</strong></td>
+            <td width="275" valign="middle"><strong>URL</strong></td>
+            <td width="63" valign="middle"><strong>Port</strong></td>
+            <td width="87" valign="middle"><strong>Richtung</strong></td>
+            <td width="702" valign="middle"><strong>Beschreibung</strong></td>
+          </tr>
+          <tr>
+            <td valign="middle"><p>MOA-SP/SS</p></td>
+            <td align="center" valign="middle">*</td>
+            <td align="center" valign="middle">80, 443</td>
+            <td align="center" valign="middle">eingehend</td>
+            <td valign="middle"><p>Verbindungen zum Signature-Creation und Signature-Verification Service </p></td>
+          </tr>
+          <tr>
+            <td valign="middle"><p>Referenzen / TSL</p></td>
+            <td align="center" valign="middle">*</td>
+            <td align="center" valign="middle">80, 443</td>
+            <td align="center" valign="middle">ausgehend</td>
+            <td valign="middle">Zum Aufl&ouml;sen von externen Referenzen, welche in den Requests enthalten sind und zum Download der Trust-Status Listen (TSL).<br>
+              <strong>Hinweis: </strong>Werden externe Referenzen &uuml;ber andere Protokolle bezogen m&uuml;ssen die jeweiligen Ports ebenfalls freigeschalten werden.</td>
+          </tr>
+          <tr>
+            <td height="26" valign="middle">LDAP</td>
+            <td align="center" valign="middle">*</td>
+            <td align="center" valign="middle">389, 636</td>
+            <td align="center" valign="middle">ausgehend</td>
+            <td valign="middle">Zertifikatspr&uuml;fung</td>
+          </tr>
+          <tr>
+            <td width="105" valign="middle"><p>OSCP / CRL</p></td>
+            <td width="275" align="center" valign="middle">*</td>
+            <td width="63" align="center" valign="middle">80, 443</td>
+            <td width="87" align="center" valign="middle">ausgehend</td>
+            <td width="702" valign="middle"><p>Zertifikatspr&uuml;fung</p></td>
+          </tr>
+        </table>
+        <br>
+    </li>
+  </ol>
+<h2>Verwendung</h2>
+  <ol>
+    <li class="faq"><div class="faq-question"><a name="verwendung_1" id="verwendung_1"></a>Bei der Pr&uuml;fung einer Signatur liefert die Pr&uuml;fung des Zertifikatsstatus den Code 1. Was kann der Fehler sein? </div>
+	<p>Dieser Fehlercode bedeutet: Es konnte keine formal korrekte Zertifikatskette vom Signatorzertifikat zu einem vertrauensw&uuml;rdigen Wurzelzertifikat konstruiert werden. Das kann grunds&auml;tzlich eine der beiden folgenden Ursachen haben:</p>
+	<ul>
+	  <li>Keines der Zertifikate in der Kette vom Signatorzertifikat bis zu einem selbstsignierten Wurzelzertifikat ist im anzuwendenden <span class="term">TrustProfile</span> enthalten. </li>
+	  <li>Die Zertifikatskette konnte nicht bis zu einem im anzuwendenden <span class="term">TrustProfile</span> enthaltenen vertrauensw&uuml;rdigen Zertifikat gebildet werden. </li>
+    </ul>
+    <p>Pr&uuml;fen Sie also zun&auml;chst, ob sie im anzuwendenden <span class="term">TrustProfile</span> ein passendes vertrauensw&uuml;rdiges Zertifikat konfiguriert haben. Das kann beispielsweise das Zertifikat jener CA sein, die das Signatorzertifikat ausgestellt hat, oder aber auch das Zertifikat einer CA weiter oben in der Hierarchie des Zertifizierungsdiensteanbieters, beispielsweise das selbstsignierte Wurzelzertifikat.</p>
+    <p>Wenn diese Pr&uuml;fung das Problem nicht behebt, gelingt des MOA SP vermutlich nicht, ein f&uuml;r die Bildung der Zertifikatskette notwendiges Zertifikat zu lokalisieren. M&ouml;gliche Gr&uuml;nde sowie L&ouml;sungsm&ouml;glichkeiten daf&uuml;r sind:</p>
+    <ul>
+      <li>Das aktuell letzte Zertifikat in der bereits gebildeten Zertifikatskette besitzt zwar die Zertifikatserweiterung <span class="term">AuthorityInformationAccess</span> mit einem Hinweis auf das n&auml;chste Zertifikat der zu bildenden Kette, das darin per URL referenzierte Zertifikat kann jedoch nicht geladen werden. Pr&uuml;fen Sie daher zun&auml;chst, ob MOA SP/SS per HTTP oder LDAP Zugriffe nach au&szlig;en t&auml;tigen darf. </li>
+      <li>Das aktuell letzte Zertifikat in der bereits gebildeten Zertifikatskette besitzt keine Zertifikatserweiterung <span class="term">AuthorityInformationAccess</span> mit einem Hinweis auf das n&auml;chste Zertifikat der zu bildenden Kette, und auch im internen Zertifikatsspeicher von MOA SP ist das n&auml;chste Zertifikat nicht enthalten. Ist Ihnen das n&auml;chste Zertifikat bekannt (z.B. durch manuellen Download von der Webseite des Zertifizierungsdiensteanbieters), k&ouml;nnen Sie es manuell in den internen Zertifikatsspeicher importieren. Eine Anleitung dazu finden Sie <a href="#konfiguration_2">hier</a>. <br>
+      </li>
+    </ul>
+    </li>
+  </ol>
+</body>
+</html>

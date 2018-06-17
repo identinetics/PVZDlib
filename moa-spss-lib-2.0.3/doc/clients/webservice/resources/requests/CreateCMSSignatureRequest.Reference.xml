@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CreateCMSSignatureRequest xmlns="http://reference.e-government.gv.at/namespace/moa/20020822#" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+	<KeyIdentifier>KG_allgemein</KeyIdentifier>
+	<SingleSignatureInfo SecurityLayerConformity="false">
+		<DataObjectInfo Structure="detached">
+			<DataObject>
+				<MetaInfo>
+                	<MimeType>text/plain</MimeType>
+                </MetaInfo>
+                <Content Reference="http://localhost:8080/moa-spss-handbook-referencedData/Text.txt"/>
+			</DataObject>			
+		</DataObjectInfo>
+	</SingleSignatureInfo>
+</CreateCMSSignatureRequest>
