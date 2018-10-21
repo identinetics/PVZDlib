@@ -39,6 +39,7 @@ class GitHandler:
             raise ValidationError('rejected deletion request for non existing EntityDescriptor: '+ file)
         shutil.move(file_to_delete, self.deletedpath)
         self.repo.index.add([os.path.join(self.deletedpath, os.path.basename(file))])
+        #TODO: remove previously added ED in 'accepted'
         self.repo.index.commit('deleted')
 
     def move_to_accepted(self, file, sigdata):

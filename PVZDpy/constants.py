@@ -11,10 +11,13 @@ DATA_HEADER_B64BZIP = '{signed data format: base64(bzip2)}\n'
 
 PROJLIB = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-#XML namespaces for etree
-XMLNS_DSIG = '{http://www.w3.org/2000/09/xmldsig#}'
-XMLNS_MD = '{urn:oasis:names:tc:SAML:2.0:metadata}'
-XMLNS_PVZD = '{http://egov.gv.at/pvzd1.xsd}'
+#XML namespaces for lxml.etree
+XMLNS_DSIG = 'http://www.w3.org/2000/09/xmldsig#'
+XMLNS_DSIG_PREFIX = '{%s}' % XMLNS_DSIG
+XMLNS_MD = 'urn:oasis:names:tc:SAML:2.0:metadata'
+XMLNS_MD_PREFIX = '{%s}' % XMLNS_MD
+XMLNS_PVZD = 'http://egov.gv.at/pvzd1.xsd'
+XMLNS_PVZD_PREFIX = '{%s}' % XMLNS_PVZD
 
 # loglevles valid for this project
 LOGLEVELS = {'CRITICAL': 50, 'ERROR': 40, 'WARNING': 30, 'INFO': 20, 'DEBUG': 10}
