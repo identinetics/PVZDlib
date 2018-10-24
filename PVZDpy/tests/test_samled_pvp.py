@@ -1,4 +1,5 @@
 import json
+import lxml.etree
 import pytest
 from PVZDpy.userexceptions import *
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
@@ -7,8 +8,12 @@ from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 path_prefix = 'testdata/'
 
 @pytest.fixture
-def orgids1():
-    return []
+def domains7():
+    return ['*.identinetics.com']
+
+@pytest.fixture
+def orgids7():
+    return ['AT:VKZ:XFN-318886a']
 
 @pytest.fixture
 def poldir1():
@@ -17,80 +22,87 @@ def poldir1():
     return d
 
 @pytest.fixture
-def signerCert1():
-    with open(path_prefix+'signercert1.pem') as fd:
+def signerCert7():
+    with open(path_prefix+'signercert7_rh.pem') as fd:
         return fd.read()
 
-
-#@pytest.fixture
-#def ed1():
-#    return SAMLEntityDescriptorPVP(path_prefix+'01_idp_valid_cert.xml', poldir1())
-
-
 @pytest.fixture
-def ed2():
-    return SAMLEntityDescriptorPVP(path_prefix+'02_idp_valid_xml_invalid_cert.xml', poldir1())
+def ed(file_index: int):
+    path = (
+        '00',
+        '01_idp_valid_cert.xml',
+        '02_idp_valid_xml_invalid_cert.xml',
+        '03_idp_valid_unsigned_c14n.xml',
+        '04_idp_delete.xml',
+        '05_idp_cert_untrusted_root.xml',
+        '06_idp_valid_expired_cert.xml',
+        '07_idp_identinetics.xml',
+        '08_idp_invalidXml.xml',
+        '09_idp_invalidXsd.xml',
+        '10_idp_signed.xml',
+        '11_idp_unauthz_signator.xml'
+    )
+    return SAMLEntityDescriptorPVP(path_prefix + path[file_index], poldir1())
 
-
-@pytest.fixture
-def ed4():
-    return SAMLEntityDescriptorPVP(path_prefix+'04_idp_delete.xml', poldir1())
-
-
-@pytest.fixture
-def ed5():
-    return SAMLEntityDescriptorPVP(path_prefix + '05_idp_cert_untrusted_root.xml', poldir1())
-
-
-@pytest.fixture
-def ed6():
-    return SAMLEntityDescriptorPVP(path_prefix + '06_idp_valid_expired_cert.xml', poldir1())
 
 
 def test_checkCerts():
-    # ed1().checkCerts()  ## need to create valid cert that does not expire too soon
+    ed(1).checkCerts()
     with pytest.raises(CertInvalidError):
-        ed5().checkCerts()
+        ed(5).checkCerts()
     with pytest.raises(CertExpiredError):
-        ed6().checkCerts()
+        ed(6).checkCerts()
 
 
-#def test_create_delete():
+def test_create_delete():
+    delete_requ = SAMLEntityDescriptorPVP.create_delete('https://idp.example.com/idp.xml')
+    with open(path_prefix+'04_idp_delete.xml') as fd:
+        assert delete_requ == fd.read()
 
 
 def test_getAllowedDomainsForOrgs():
-    allowed_domains = ed2().getAllowedDomainsForOrgs(orgids1())
-    assert allowed_domains == []
+    allowed_domains = ed(7).getAllowedDomainsForOrgs(orgids7())
+    assert allowed_domains == domains7()
 
 
 def test_getOrgIDs():
-    orgids = ed2().getOrgIDs(signerCert1())
+    orgids = ed(2).getOrgIDs(signerCert7())
     assert orgids == ['AT:VKZ:XFN-318886a']
 
-    # with pytest.raises(UnauthorizedSignerError):
 
 def test_isDeletionRequest():
-    assert ed2().isDeletionRequest() == False
-    assert ed4().isDeletionRequest() == True
+    assert ed(2).isDeletionRequest() == False
+    assert ed(4).isDeletionRequest() == True
 
 
 #def test_modify_and_write_ed():
+#    ed = ed(1)
+#    ed.tree
 
 
 def test_validate_schematron():
-    ed2().validate_schematron()
+    ed(2).validate_schematron()
 
 
 def test_validate_xsd():
-    ed2().validate_xsd()
+    ed(2).validate_xsd()
+    with pytest.raises(lxml.etree.XMLSyntaxError):
+        ed(8).validate_xsd()
+    with pytest.raises(InvalidSamlXmlSchemaError):
+        ed(9).validate_xsd()
 
 
-#def test_validateDomainNames():
+def test_validateDomainNames():
+    with pytest.raises(InvalidFQDNError):
+        ed(1).validateDomainNames(domains7())
+    ed(7).validateDomainNames(domains7())
 
-
-#def test_validateSignature():
-
+def test_validateSignature():
+    with pytest.raises(ValidationError):
+        ed(1).validateSignature()
+    ed(10).validateSignature()
+    ed(11).validateSignature()
 
 def test_verify_filename():
     with pytest.raises(InputValueError):
-        ed2().verify_filename()
+        ed(2).verify_filename()

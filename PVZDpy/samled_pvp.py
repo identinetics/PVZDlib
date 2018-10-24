@@ -1,7 +1,8 @@
 import logging, os, re, sys
 import lxml.etree
-from .constants import *
 from OpenSSL import crypto
+from urllib.parse import urlparse
+from .constants import *
 from .samlentitydescriptor import SAMLEntityDescriptor
 from .userexceptions import *
 from .xy509cert import XY509cert
@@ -50,7 +51,7 @@ class SAMLEntityDescriptorPVP:
             except crypto.X509StoreContextError as e:
                 raise CertInvalidError(('Certificate validation failed. ' + str(e) + ' ' +
                                         cert.getIssuer_str()))
-        logging.debug('Entity certificates valid for ' + ed.get_entityid())
+        logging.debug('Entity certificates valid for ' + self.ed.get_entityid())
 
     @staticmethod
     def create_delete(entityid) -> str:
@@ -124,9 +125,9 @@ class SAMLEntityDescriptorPVP:
 
     def validateDomainNames(self, allowedDomains) -> bool:
         """ check that entityId and endpoints contain only hostnames from allowed domains"""
-        if ed.tree.tag != XMLNS_MD + 'EntityDescriptor':
+        if self.ed.tree.getroot().tag != XMLNS_MD_PREFIX+'EntityDescriptor':
             raise MissingRootElemError('Request object must contain EntityDescriptor as root element')
-        entityID_url = self.ed.tree.attrib['entityID']
+        entityID_url = self.ed.tree.getroot().attrib['entityID']
         entityID_hostname = urlparse(entityID_url).hostname
         if not self._isInAllowedDomains(entityID_hostname, allowedDomains):
             raise InvalidFQDNError('FQDN of entityID %s not in allowed domains: %s' %
@@ -144,7 +145,7 @@ class SAMLEntityDescriptorPVP:
     def validateSignature(self) -> str:
         # verify whether the signature is valid
 
-        #xml_sig_verifyer = XmlSigVerifyer(testhint='PEPrequest');
+        xml_sig_verifyer = XmlSigVerifyer(testhint='PEPrequest');
         xml_sig_verifyer_response = xml_sig_verifyer.verify(self.ed_path)
         #if self.verbose:
         #    cert = XY509cert(signerCertificateEncoded, inform='DER') # TODO: check encoding

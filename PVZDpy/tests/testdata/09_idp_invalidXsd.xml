@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+                     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                     entityID="https://gondor.magwien.gv.at/idp">
+    <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo>
+                <ds:X509Data>
+                    <ds:X509Certificate>
+                        -----BEGIN CERTIFICATE-----
+                        MIIFxjCCBK6gAwIBAgICAlswDQYJKoZIhvcNAQELBQAwgZgxCzAJBgNVBAYTAkFU
+                        MQ0wCwYDVQQIEwRXaWVuMScwJQYDVQQKEx5CdW5kZXNtaW5pc3Rlcml1bSBmdWVy
+                        IElubmVyZXMxDjAMBgNVBAsTBUlULU1TMRkwFwYDVQQDExBQb3J0YWx2ZXJidW5k
+                        LUNBMSYwJAYJKoZIhvcNAQkBFhdibWktaXYtMi1lLWNhQGJtaS5ndi5hdDAeFw0x
+                        NTA3MTUwNzU2MTNaFw0xNzA4MDMwNzU2MTNaMIGEMQswCQYDVQQGEwJBVDEhMB8G
+                        A1UEChMYTWFnaXN0cmF0IGRlciBTdGFkdCBXaWVuMQ4wDAYDVQQLEwVNQSAxNDEd
+                        MBsGA1UEAxMUZ29uZG9yLm1hZ3dpZW4uZ3YuYXQxIzAhBgkqhkiG9w0BCQEWFHBv
+                        c3RAbWExNC53aWVuLmd2LmF0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+                        AQEA2wvSx495pwJlN6ILaz+/0TQKARv7U0vJLggmQBheYhka5nEt6Oq9d2Zd6/Ql
+                        TLSVcNp0GCZ3f1kMj842MatnGqAPdmtnSEQTLsOb6hKOC1ZE1g2yKJYxM7iyjsb+
+                        ZVCnfDZegn+P5n06Gzzh8UlQvD5h/lGVE//PZAu35oY2IpSAkvFEke8sT9ZdqFGW
+                        dcLFnzpt8JHbvfHLgWC63N/7UbVuLBQ/no0ynJBlUB+RGm1G+HkZl1SxNg9ul4Sa
+                        kil/IiXadA+Cc9XEaV/W0dV2HEzkS8mtSY75bjMs0jiepwxAzKwi09Sfo8xrs8Vy
+                        G6hkwF63+PyqtL5V3MS2LOR/awIDAQABo4ICKjCCAiYwCQYDVR0TBAIwADALBgNV
+                        HQ8EBAMCBeAwLAYJYIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRp
+                        ZmljYXRlMB0GA1UdDgQWBBQwexiDS7rYLmA4t03y7Gj1xoV6MTCB0QYDVR0jBIHJ
+                        MIHGgBSmHvReGkO0iN6iyL1oZQPFMG9m06GBqqSBpzCBpDELMAkGA1UEBhMCQVQx
+                        DTALBgNVBAgTBFdpZW4xDTALBgNVBAcTBFdpZW4xJzAlBgNVBAoTHkJ1bmRlc21p
+                        bmlzdGVyaXVtIGZ1ZXIgSW5uZXJlczEOMAwGA1UECxMFSVQtTVMxFjAUBgNVBAMT
+                        DVBvcnRhbFJvb3QtQ0ExJjAkBgkqhkiG9w0BCQEWF2JtaS1pdi0yLWUtY2FAYm1p
+                        Lmd2LmF0ggEBMB8GA1UdEQQYMBaBFHBvc3RAbWExNC53aWVuLmd2LmF0MCIGA1Ud
+                        EgQbMBmBF2JtaS1pdi0yLWUtY2FAYm1pLmd2LmF0MEUGA1UdHwQ+MDwwOqA4oDaG
+                        NGh0dHA6Ly9wb3J0YWwuYm1pLmd2LmF0L3JlZi9wa2kvcG9ydGFsQ0EvUG9ydGFs
+                        Vi5jcmwwTwYIKwYBBQUHAQEEQzBBMD8GCCsGAQUFBzAChjNodHRwOi8vcG9ydGFs
+                        LmJtaS5ndi5hdC9yZWYvcGtpL3BvcnRhbENBL2luZGV4Lmh0bWwwDgYHKigACgEB
+                        AQQDAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQACkWwa0E3XcQRO0Z77wCqQpWyalFv6
+                        TH9OD9GQkXsg5P24Uqrm6Cpfq0wd612EfC5y4hqTz2nOqNHo6lcvoMOQimjimZTp
+                        4tLcMgqTt5NxniEKsRhH/4OKMrtaK7/erwn/8PyK7zT+NwTXo2UhTLW1eO8E2irI
+                        tZ1jyN8fuj1J3OfoEJ3H+NSxWuSxr7pbNy7HvnPtGqPOlpgw4nhRQM5OP0CJxSbw
+                        O1hpBM5vd+yEauXZrCxv7AZCL7SqkRvIV2D4wnr9ddAsH2eGwXfKVgXKD46Z+S8L
+                        9CL/EUQdlEULqI5PlQ9qJWKp5P5UMvBd0SM0Tvd6WnJYA11vS6LM0bHG
+                        -----END CERTIFICATE-----
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                Location="https://gondor.magwien.gv.at/idp/idp/unused"/>
+    </md:IDPSSODescriptor>
+</md:EntityDescriptor>

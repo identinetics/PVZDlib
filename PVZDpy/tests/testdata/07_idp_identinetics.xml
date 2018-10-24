@@ -1,0 +1,61 @@
+<md:EntityDescriptor entityID="https://idp.identinetics.com/idp.xml"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+  <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:Extensions>
+      <alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+      <alg:SigningMethod MinKeySize="256" MaxKeySize="511" Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/>
+      <alg:SigningMethod MinKeySize="2048" MaxKeySize="4096" Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/> <!-- blacklisted: http://www.w3.org/2000/09/xmldsig#rsa-sha1 -->
+      <mdui:UIInfo>
+        <mdui:DisplayName xml:lang="en">Test Driver IdP</mdui:DisplayName>
+        <mdui:Description xml:lang="en">Saml2Test Test Driver IdP</mdui:Description>
+      </mdui:UIInfo>
+      <mdui:DiscoHints>
+        <mdui:DomainHint>https://github.com/rohe/fedlab/</mdui:DomainHint>
+        <mdui:IPHint>81.217.70.0/8</mdui:IPHint>
+        <mdui:GeolocationHint>geo:92.3308,17.0516</mdui:GeolocationHint>
+      </mdui:DiscoHints>
+    </md:Extensions>
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>
+            MIICqjCCAZICAQIwDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAwwMUFZaRC1UZXN0
+            LUNBMB4XDTE4MTAyNDE3Mzk0OVoXDTI4MTAyMTE3Mzk0OVowHzEdMBsGA1UEAwwU
+            aWRwLmlkZW50aW5ldGljcy5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+            AoIBAQDgqgqwT4eub2psHDM0u4v/5doigPZRBjOOxpHZ8fWuf1rm74rfGznheiJD
+            EhbJev6EOExMQcjFGnifjMkbHyH2E/B9cMGccI7AbjEZS9/EqXP7UXn6nzAGrlKQ
+            J8tQVGQ5svJ6Rtgo6iDkYPiE1QUOx1S4leUNqtavQm5oVODqyYtAFm9rL5UZoopq
+            XgacvCt7L+YU8PttjBCxzz5638KhWFxXpNnAsRDs0Dqrir8AlYwpqrvinX5Om8Ul
+            w+reOmKRvkiz9KHKR9Nd98EH6JIpxLBPi0vJ8PoMhzfLh9zV3dx5clFa7y+htrvl
+            h95r4R7BoOSTmE4AAUTVSXL+i0YXAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAIOd
+            TuYZIMgo3sQBjVL1OFOZrFb87AZf4V+7gDeRkRhFpNaLI8ptXKlUVfMf+xxvM45s
+            +dXSrKHRtwRirKFfoqL6lQKr2mV/CAzul/X88QuriyMnj5xFxuI1WGcQylUQFuo7
+            HZdwbVDO/wtNyXgncch5yfAw3MYAfplVJinSE0Y7saqauRnYDc1upv6d9LE/XmS3
+            dx2vXZTcRaWGnFZK2ecnkMEAAI9vOJZ8MMKdVeecl6Y3/FshCUamKxNwVJ2bROfQ
+            jXpoJzStXcsAQUHDgDq9UdXqXolXmL0WLVERVG138b1FoVn/XETy9R3uwski+M4B
+            LK+Jlr689onB6la5yYE=
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.identinetics.com/slo/post"/>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.identinetics.com/slo/redirect"/>
+    <md:ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.identinetics.com/mni/post"/>
+    <md:ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.identinetics.com/mni/redirect"/>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.identinetics.com/sso/redirect"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.identinetics.com/sso/post"/>
+    <md:AssertionIDRequestService Binding="urn:oasis:names:tc:SAML:2.0:bindings:URI" Location="https://idp.identinetics.com/airs"/>
+  </md:IDPSSODescriptor>
+  <md:Organization>
+    <md:OrganizationName xml:lang="en">Saml2Test Harness</md:OrganizationName>
+    <md:OrganizationDisplayName xml:lang="en">Saml2Test Harness</md:OrganizationDisplayName>
+    <md:OrganizationURL xml:lang="en">https://github.com/rohe/saml2test/</md:OrganizationURL>
+  </md:Organization>
+  <md:ContactPerson contactType="technical">
+    <md:GivenName>Testiani</md:GivenName>
+    <md:SurName>Testosteroni</md:SurName>
+    <md:EmailAddress>testiani@identinetics.com</md:EmailAddress>
+  </md:ContactPerson>
+</md:EntityDescriptor> 
