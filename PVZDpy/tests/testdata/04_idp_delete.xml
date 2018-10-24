@@ -1,0 +1,35 @@
+<md:EntityDescriptor  entityID="https://idp.example.com/idp.xml"
+    xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    xmlns:pvzd="http://egov.gv.at/pvzd1.xsd"
+    pvzd:disposition="delete">
+  <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo>
+        <ds:X509Data>
+           <ds:X509Certificate>
+MIIDBjCCAe4CCQCkqGMWrXdXhjANBgkqhkiG9w0BAQsFADBFMQswCQYDVQQGEwJB
+VTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0
+cyBQdHkgTHRkMB4XDTE4MTAyMzIwNDUxOFoXDTQ2MDMyMDIwNDUxOFowRTELMAkG
+A1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0
+IFdpZGdpdHMgUHR5IEx0ZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
+AMzh/ghDBmeI5irFFmvHlKJtKKTEZmPEwjnWSG0yTv4PaDygVWPuz7CYQ2KBIYnW
+Du+88STWU+Xq/h0A0bX0yUsOARuMlPglEeQ3qVu9qs5uHen+sRFHcXFN+6lgDhWH
+tdEkjWlnmX1GsrA54RQM8zv+L2BUHs6Lryg74iromkhUGgcH/tIXTT++q1Evsd/A
+OfhuCDMiAp9nOXfDyJdOD4lu2EnhYnI4psBcZhW/9VM0U8lhOJ7e5+S40Xc6+4Q+
+p8FaQgCFrxt8tgT/ETR0tH5vOp0zqE0FIscS6IpzTNUgxwfN9UsfKgFnJ049aw1P
+rdm3ZvbvHjFzxjKzt+IfHHMCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAaVqLjYX+
+MtEXsaPih9XidrAPur7R3HCnupYHK2tlF/7EW8IqmUy2lAXgAMHSY+vgA2Zmzsb6
+KovZmzx272bWPHd9ZcNsTgHYL3UpROhrfwVBjKGA3XGzLhhnwBA1tvwfxBQ9bo0z
+VoASMrgERZ0jL5BVrDtoVwoJhOhH0mdflQJkFzV0Z2oSQkqTgu1T5cgsuNiQRVdT
+GMAQ4so/VOLLooXo5sm+OE2Jty9Wb1l2yCvfcwKybphHgcbhKVYVzXM/VnvRP/q1
+awd7lv65CAdBcQ9KrliwRGFxGZ2uZ22TWLiI7v1ee0+sde83D9UnrCxoRrWePs5W
+kuIJbFVD5dUJdA==
+           </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/idp/unused"/>
+  </md:IDPSSODescriptor>
+</md:EntityDescriptor>

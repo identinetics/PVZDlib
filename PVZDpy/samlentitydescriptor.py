@@ -9,6 +9,10 @@ __author__ = 'r2h2'
 
 
 class SAMLEntityDescriptor:
+    """
+    Instance of plain SAML EntityDescriptor without deployment profile specific extensions
+    (exception: pvzd:pvptype attribute)
+    """
     def __init__(self,
                  ed_path=None,
                  createfromcertstr=None, entityid=None, samlrole=None):
@@ -87,7 +91,7 @@ class SAMLEntityDescriptor:
         return m.group(1)
 
 
-    def get_filename(self) -> str:
+    def get_filename_from_entityid(self) -> str:
         """ remove non-alpha characters, uppercase first char after no-alpha;
             add _ after hostname and .xml as extension
         """
@@ -108,16 +112,6 @@ class SAMLEntityDescriptor:
             else:
                 upper = True
         return r + '.xml'
-
-
-    def verify_filename(self, filename):
-        """ verify if filename maps the entityID. _Not_ call on object creation """
-        basefn = os.path.basename(filename)
-        # file name must have the format "VKZ.compressedEntityId.xml". check right substring:
-        if not re.search(self.get_filename()+'$', basefn):
-            raise InputValueError('Invalid format for EntitiyDescriptor filename "%s". The file name '
-                                  'for entityID %s must end with "%s" - see PAtool documentation.' % \
-                                  (basefn, self.get_entityid(), self.get_filename()))
 
 
     def cert2entitydescriptor(self, cert_str, entityid, samlrole):
