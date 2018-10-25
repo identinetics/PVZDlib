@@ -28,7 +28,7 @@ class SAMLEntityDescriptor:
             if not os.path.isfile(self.ed_path_abs) or os.path.getsize(self.ed_path_abs) == 0:
                 raise EmptySamlEDError(self.ed_path_abs + ' empty or missing')
             assert self.ed_path_abs[-4:] == '.xml', 'input file must have the extension .xml'
-            self.tree = lxml.etree.parse(self.ed_path_abs)
+            self.tree = self.get_entitydescriptor(lxml.etree.parse(self.ed_path_abs))
             self.xml_str = lxml.etree.tostring(self.tree, encoding='utf-8', pretty_print=False).decode('utf-8')
         elif createfromcertstr is not None:  # case 2
             if entityid is None or samlrole is None:
@@ -36,9 +36,19 @@ class SAMLEntityDescriptor:
             self.xml_str = self.cert2entitydescriptor(createfromcertstr, entityid, samlrole)
             self.rootelem = lxml.etree.fromstring(self.xml_str.encode('utf-8'))
             self.tree = self.rootelem.getroottree()
-        if self.tree.getroot().tag != XMLNS_MD_PREFIX+'EntityDescriptor':
-            raise InputValueError('XML file must have md:EntityDescriptor as root element')
 
+    def get_entitydescriptor(self, tree) -> lxml.etree.ElementTree:
+        if tree.getroot().tag == XMLNS_MD_PREFIX+'EntityDescriptor':
+            return tree
+        elif tree.getroot().tag == XMLNS_MD_PREFIX + 'EntitiesDescriptor':
+            if len(tree.getroot()) == 1:
+               return lxml.etree.ElementTree(tree.getroot()[0])
+            elif len(tree.getroot()) > 1:
+                raise MultipleEntitiesNotAllowed
+            else:
+                raise InputValueError('Missing md:EntityDescriptor')
+        else:
+            raise InputValueError('XML file must have md:EntityDescriptor as root element')
 
     def get_entityid(self):
         return self.tree.getroot().attrib['entityID']

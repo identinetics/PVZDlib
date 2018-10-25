@@ -50,6 +50,10 @@ class InvalidSamlXmlSchemaError(Exception):
     pass
 
 
+class MultipleEntitiesNotAllowed(Exception):
+    """ More than 1 EntitiyDescriptor is not allowed in a request """
+    pass
+
 class ValidationError(Exception):
     """ application-level validation failure """
     pass

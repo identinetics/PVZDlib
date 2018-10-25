@@ -40,7 +40,9 @@ def ed(file_index: int):
         '08_idp_invalidXml.xml',
         '09_idp_invalidXsd.xml',
         '10_idp_signed.xml',
-        '11_idp_unauthz_signator.xml'
+        '11_idp_unauthz_signator.xml',
+        '12_idp_entitiesdescriptor.xml',
+        '13_idp_entitiesdescriptor_2idps.xml',
     )
     return SAMLEntityDescriptorPVP(path_prefix + path[file_index], poldir1())
 
@@ -52,6 +54,9 @@ def test_checkCerts():
         ed(5).checkCerts()
     with pytest.raises(CertExpiredError):
         ed(6).checkCerts()
+    ed(12).checkCerts()
+    with pytest.raises(MultipleEntitiesNotAllowed):
+        ed(13).checkCerts()
 
 
 def test_create_delete():
