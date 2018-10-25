@@ -1,5 +1,9 @@
-import logging, os, re, sys
+import datetime
+import logging
 import lxml.etree
+import os
+import re
+import sys
 from OpenSSL import crypto
 from urllib.parse import urlparse
 from .constants import *
@@ -97,6 +101,9 @@ class SAMLEntityDescriptorPVP:
             raise UnauthorizedSignerError('Signer certificate not found in policy directory')
         return org_ids
 
+    def get_xml_str(self):
+        return self.ed.get_xml_str()
+
     def isDeletionRequest(self):
         tree = lxml.etree.parse(self.ed_path)
         rootelem_attr = tree.getroot().attrib
@@ -117,8 +124,50 @@ class SAMLEntityDescriptorPVP:
     def modify_and_write_ed(self, fd):
         self.ed.modify_and_write_ed(fd)
 
-    def set_registrationinfo(self, authority):
-        reginfo = self.ed.tree.xpath
+    def set_registrationinfo(self, authority, fixed_date_for_unittest=False):
+        def insert_if_missing(
+                tree: lxml.etree.ElementTree,
+                xpath_insert_parent: str,
+                xpath_new_element: str,
+                new_element: lxml.etree.Element,
+                namespaces: dict):
+            if len(tree.xpath(xpath_new_element, namespaces=namespaces)) == 0:
+                parent_element = tree.xpath(xpath_insert_parent, namespaces=namespaces)
+                parent_element[0].insert(0, new_element)  # append only for 1st
+
+        def delete_if_existing(
+                tree: lxml.etree.ElementTree,
+                xpath_parent: str,
+                xpath_remove_element: str,
+                namespaces: dict):
+            if len(tree.xpath(xpath_remove_element, namespaces=namespaces)) > 0:
+                parent_element = tree.xpath(xpath_parent, namespaces=namespaces)
+                remove_elem = lxml.etree.Element(xpath_remove_element, namespaces=namespaces)
+                parent_element[0].remove(xpath_remove_element)
+
+        delete_if_existing(self.ed.tree,
+                          '//md:EntityDescriptor/md:Extensions',
+                          '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
+                          {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
+        new = lxml.etree.Element(XMLNS_MD_PREFIX + "Extensions")
+        insert_if_missing (self.ed.tree,
+                          '//md:EntityDescriptor',
+                          '//md:EntityDescriptor/md:Extensions',
+                          new,
+                          {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
+        new = lxml.etree.Element(XMLNS_MDRPI_PREFIX + "RegistrationInfo")
+        new.set(XMLNS_MDRPI_PREFIX+'registrationAuthority', authority)
+        if fixed_date_for_unittest:
+            now = datetime.datetime(1900, 1, 1, 0, 0, 0, 0)
+        else:
+            now = datetime.datetime.now()
+        now_iso8601 = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        new.set(XMLNS_MDRPI_PREFIX+'registrationInstant', now_iso8601)
+        insert_if_missing (self.ed.tree,
+                          '//md:EntityDescriptor/md:Extensions',
+                          '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
+                          new,
+                          {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
 
     def validate_schematron(self):
         pass  # TODO: implement

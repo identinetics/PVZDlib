@@ -1,6 +1,7 @@
 import json
 import lxml.etree
 import pytest
+from PVZDpy.constants import *
 from PVZDpy.userexceptions import *
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 
@@ -84,6 +85,12 @@ def test_isDeletionRequest():
 #    ed = ed(1)
 #    ed.tree
 
+def test_set_registrationinfo():
+    ed1=ed(1)
+    # make expected equal to actual with fake registrationInstant = "1900-01-01T00:00:00Z"
+    ed1.set_registrationinfo(SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
+    with open(path_prefix+'14_01_plus_reginfo.xml') as fd:
+        assert ed1.get_xml_str() == fd.read()
 
 def test_validate_schematron():
     ed(2).validate_schematron()
