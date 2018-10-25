@@ -29,7 +29,7 @@ def signerCert7():
 @pytest.fixture
 def ed(file_index: int):
     path = (
-        '00',
+        'idpExampleCom_idpXml.xml',
         '01_idp_valid_cert.xml',
         '02_idp_valid_xml_invalid_cert.xml',
         '03_idp_valid_unsigned_c14n.xml',
@@ -111,3 +111,4 @@ def test_validateSignature():
 def test_verify_filename():
     with pytest.raises(InputValueError):
         ed(2).verify_filename()
+    ed(0).verify_filename()

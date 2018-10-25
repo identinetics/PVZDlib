@@ -37,6 +37,53 @@ class SAMLEntityDescriptor:
             self.rootelem = lxml.etree.fromstring(self.xml_str.encode('utf-8'))
             self.tree = self.rootelem.getroottree()
 
+        def cert2entitydescriptor(self, cert_str, entityid, samlrole):
+            if samlrole == 'IDP':
+                entityDescriptor = """\
+    <md:EntityDescriptor entityID="{eid}" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+        xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+        xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+        xmlns:pvzd="http://egov.gv.at/pvzd1.xsd"
+        pvzd:pvptype="R-Profile">
+      <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:KeyDescriptor use="signing">
+          <ds:KeyInfo>
+            <ds:X509Data>
+               <ds:X509Certificate>
+    {pem}
+               </ds:X509Certificate>
+            </ds:X509Data>
+          </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/idp/unused"/>
+      </md:IDPSSODescriptor>
+    </md:EntityDescriptor>""".format(eid=entityid, pem=cert_str)
+            elif samlrole == 'SP':
+                entityDescriptor = """\
+    <md:EntityDescriptor entityID="{eid}" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+        xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+        xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+        xmlns:pvzd="http://egov.gv.at/pvzd1.xsd"
+        pvzd:pvptype="R-Profile">
+      <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:KeyDescriptor use="signing">
+          <ds:KeyInfo>
+            <ds:X509Data>
+               <ds:X509Certificate>
+    {pem}
+               </ds:X509Certificate>
+            </ds:X509Data>
+          </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/acs/unused" index="0" isDefault="true"/>
+      </md:SPSSODescriptor>
+    </md:EntityDescriptor>""".format(eid=entityid, pem=cert_str)
+            else:
+                raise EntityRoleNotSupportedError(
+                    "Only IDP and SP entity roles implemented, but %s given" % self.args.samlrole)
+            return entityDescriptor
+
+
     def get_entitydescriptor(self, tree) -> lxml.etree.ElementTree:
         if tree.getroot().tag == XMLNS_MD_PREFIX+'EntityDescriptor':
             return tree
@@ -52,53 +99,6 @@ class SAMLEntityDescriptor:
 
     def get_entityid(self):
         return self.tree.getroot().attrib['entityID']
-
-
-    def get_xml_str(self):
-        xml_str = lxml.etree.tostring(self.tree, encoding='utf-8', pretty_print=False)
-        return xml_str.decode('utf-8')
-
-
-    def get_signing_certs(self, samlrole='IDP') -> [XY509cert]:
-        x509certs = []
-        #if samlrole not in ('any', 'IDP', 'SP'):
-        #    raise InputValueError("samlrole must be on of 'any', 'IDP', 'SP'")
-        if samlrole not in ('IDP', ):
-            raise InputValueError("samlrole must be 'IDP'")
-        idpssodesc = self.tree.xpath('//md:IDPSSODescriptor', namespaces={'md': XMLNS_MD})
-        if len(idpssodesc) > 0:
-            keydescriptors = idpssodesc[0].findall(XMLNS_MD_PREFIX+'KeyDescriptor')
-            for kd in keydescriptors:
-                if 'use' in kd.attrib and kd.attrib['use'] == 'encryption':
-                    pass
-                else:  # signing certs are those with use="signing" or have no use attribute
-                    for x509cert in kd.iter(XMLNS_DSIG_PREFIX+'X509Certificate'):
-                        x509certs.append(XY509cert(x509cert.text.strip()))
-        return x509certs
-
-    def validate_xsd(self):
-        schema_dir_abs = os.path.join(PROJLIB, 'SAML_MD_Schema')
-        saml_schema_validator = XmlSchemaValidator(schema_dir_abs)
-        retmsg = saml_schema_validator.validate_xsd(self.ed_path_abs)
-        if retmsg is not None:
-            raise InvalidSamlXmlSchemaError('File ' + self.ed_path_abs +
-                                            ' is not schema valid:\n' + retmsg)
-
-    def validate_schematron(self):
-        pass  # TODO: implement
-
-
-    def get_namespace_prefix(self) -> str:
-        """
-        Due to a limitation in the XML signer used here (SecurityLayer 1.2)
-        the XPath expression for the enveloped signature is specified as
-        namespace prefix. getNamespacePrefix extracts the prefix to be used
-        in the XPath when calling the signature.
-        This functions is using a regular expression, YMMV in corner cases.
-        """
-        p = re.compile('\sxmlns:(\w+)\s*=\s*"urn:oasis:names:tc:SAML:2.0:metadata"')
-        m = p.search(self.xml_str)
-        return m.group(1)
 
 
     def get_filename_from_entityid(self) -> str:
@@ -124,52 +124,56 @@ class SAMLEntityDescriptor:
         return r + '.xml'
 
 
-    def cert2entitydescriptor(self, cert_str, entityid, samlrole):
-        if samlrole == 'IDP':
-            entityDescriptor = """\
-<md:EntityDescriptor entityID="{eid}" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
-    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
-    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-    xmlns:pvzd="http://egov.gv.at/pvzd1.xsd"
-    pvzd:pvptype="R-Profile">
-  <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
-    <md:KeyDescriptor use="signing">
-      <ds:KeyInfo>
-        <ds:X509Data>
-           <ds:X509Certificate>
-{pem}
-           </ds:X509Certificate>
-        </ds:X509Data>
-      </ds:KeyInfo>
-    </md:KeyDescriptor>
-    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/idp/unused"/>
-  </md:IDPSSODescriptor>
-</md:EntityDescriptor>""".format(eid=entityid, pem=cert_str)
-        elif samlrole == 'SP':
-            entityDescriptor = """\
-<md:EntityDescriptor entityID="{eid}" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
-    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
-    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-    xmlns:pvzd="http://egov.gv.at/pvzd1.xsd"
-    pvzd:pvptype="R-Profile">
-  <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
-    <md:KeyDescriptor use="signing">
-      <ds:KeyInfo>
-        <ds:X509Data>
-           <ds:X509Certificate>
-{pem}
-           </ds:X509Certificate>
-        </ds:X509Data>
-      </ds:KeyInfo>
-    </md:KeyDescriptor>
-    <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/acs/unused" index="0" isDefault="true"/>
-  </md:SPSSODescriptor>
-</md:EntityDescriptor>""".format(eid=entityid, pem=cert_str)
-        else:
-            raise EntityRoleNotSupportedError("Only IDP and SP entity roles implemented, but %s given" % self.args.samlrole)
-        return entityDescriptor
+    def get_namespace_prefix(self) -> str:
+        """
+        Due to a limitation in the XML signer used here (SecurityLayer 1.2)
+        the XPath expression for the enveloped signature is specified as
+        namespace prefix. getNamespacePrefix extracts the prefix to be used
+        in the XPath when calling the signature.
+        This functions is using a regular expression, YMMV in corner cases.
+        """
+        p = re.compile('\sxmlns:(\w+)\s*=\s*"urn:oasis:names:tc:SAML:2.0:metadata"')
+        m = p.search(self.xml_str)
+        return m.group(1)
+
+
+    def get_signing_certs(self, samlrole='IDP') -> [XY509cert]:
+        x509certs = []
+        #if samlrole not in ('any', 'IDP', 'SP'):
+        #    raise InputValueError("samlrole must be on of 'any', 'IDP', 'SP'")
+        if samlrole not in ('IDP', ):
+            raise InputValueError("samlrole must be 'IDP'")
+        idpssodesc = self.tree.xpath('//md:IDPSSODescriptor', namespaces={'md': XMLNS_MD})
+        if len(idpssodesc) > 0:
+            keydescriptors = idpssodesc[0].findall(XMLNS_MD_PREFIX+'KeyDescriptor')
+            for kd in keydescriptors:
+                if 'use' in kd.attrib and kd.attrib['use'] == 'encryption':
+                    pass
+                else:  # signing certs are those with use="signing" or have no use attribute
+                    for x509cert in kd.iter(XMLNS_DSIG_PREFIX+'X509Certificate'):
+                        x509certs.append(XY509cert(x509cert.text.strip()))
+        return x509certs
+
+
+    def get_xml_str(self):
+        xml_str = lxml.etree.tostring(self.tree, encoding='utf-8', pretty_print=False)
+        return xml_str.decode('utf-8')
 
 
     def modify_and_write_ed(self, fd):
         elemTree = lxml.etree.ElementTree(self.dom)
         elemTree.write(fd, encoding='utf-8', xml_declaration=True)
+
+
+    def validate_schematron(self):
+        pass  # TODO: implement
+
+
+    def validate_xsd(self):
+        schema_dir_abs = os.path.join(PROJLIB, 'SAML_MD_Schema')
+        saml_schema_validator = XmlSchemaValidator(schema_dir_abs)
+        retmsg = saml_schema_validator.validate_xsd(self.ed_path_abs)
+        if retmsg is not None:
+            raise InvalidSamlXmlSchemaError('File ' + self.ed_path_abs +
+                                            ' is not schema valid:\n' + retmsg)
+

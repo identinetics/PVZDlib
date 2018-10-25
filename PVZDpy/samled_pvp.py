@@ -117,6 +117,9 @@ class SAMLEntityDescriptorPVP:
     def modify_and_write_ed(self, fd):
         self.ed.modify_and_write_ed(fd)
 
+    def set_registrationinfo(self, authority):
+        reginfo = self.ed.tree.xpath
+
     def validate_schematron(self):
         pass  # TODO: implement
 
@@ -153,11 +156,11 @@ class SAMLEntityDescriptorPVP:
         return xml_sig_verifyer_response
 
     def verify_filename(self):
-        """ verify if filename maps the entityID. _Not_ call on object creation """
+        """ verify if filename convention maps the entityID. Do _not_ call on object creation """
         basefn = os.path.basename(self.ed_path)
-        # file name must have the format "VKZ.compressedEntityId.xml". check right substring:
-        if not re.search(self.ed_path+'$', basefn):
+        # file name must have the format "*compressedEntityId.xml". Check right substring:
+        if not re.search(str(self.ed.get_filename_from_entityid())+'$', basefn):
             raise InputValueError('Invalid format for EntitiyDescriptor filename "%s". The file name '
                                   'for entityID %s must end with "%s" - see PAtool documentation.' % \
-                                  (basefn, self.get_entityid(), self.ed_path))
+                                  (basefn, self.get_entityid(), self.ed.get_filename_from_entityid()))
 

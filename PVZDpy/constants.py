@@ -18,6 +18,8 @@ XMLNS_MD = 'urn:oasis:names:tc:SAML:2.0:metadata'
 XMLNS_MD_PREFIX = '{%s}' % XMLNS_MD
 XMLNS_PVZD = 'http://egov.gv.at/pvzd1.xsd'
 XMLNS_PVZD_PREFIX = '{%s}' % XMLNS_PVZD
+XMLNS_MDRPI = 'urn:oasis:names:tc:SAML:2.0:metadata:rpi'
+XMLNS_MDRPI_PREFIX = '{%s}' % XMLNS_MDRPI
 
 # loglevles valid for this project
 LOGLEVELS = {'CRITICAL': 50, 'ERROR': 40, 'WARNING': 30, 'INFO': 20, 'DEBUG': 10}
