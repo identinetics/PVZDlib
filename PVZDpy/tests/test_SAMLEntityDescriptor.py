@@ -50,7 +50,7 @@ def test_get_filename_from_entityid():
 # def test_create_delete():
 #     self.fail()
 
-# def test_modify_and_write_ed():
-#     self.fail()
+# def test_write():
+#     tested with wrapper (samled_pvp.py)
 
 

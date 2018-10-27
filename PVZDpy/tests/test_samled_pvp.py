@@ -1,6 +1,7 @@
 import json
 import lxml.etree
 import pytest
+import tempfile
 from PVZDpy.constants import *
 from PVZDpy.userexceptions import *
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
@@ -86,15 +87,15 @@ def test_isDeletionRequest():
     assert ed(4).isDeletionRequest() == True
 
 
-#def test_modify_and_write_ed():
-#    ed = ed(1)
-#    ed.tree
-
 def test_remove_enveloped_signature():
     ed10 = ed(10)
     ed10.remove_enveloped_signature()
-    with open(ed_path(15)) as fd:
-        assert ed10.get_xml_str() == fd.read()
+    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='xml').name
+    ed10.write(fn10_edit)
+    with open(ed_path(15)) as fd15:
+        with open(fn10_edit) as fn10_edit:
+            assert fn10_edit.read() == fd15.read()
+
 
 def test_set_registrationinfo():
     ed1=ed(1)
@@ -102,6 +103,7 @@ def test_set_registrationinfo():
     ed1.set_registrationinfo(SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
     with open(ed_path(14)) as fd:
         assert ed1.get_xml_str() == fd.read()
+
 
 def test_validate_schematron():
     ed(2).validate_schematron()
@@ -120,13 +122,20 @@ def test_validateDomainNames():
         ed(1).validateDomainNames(domains7())
     ed(7).validateDomainNames(domains7())
 
+
 def test_validateSignature():
     with pytest.raises(ValidationError):
         ed(1).validateSignature()
     ed(10).validateSignature()
     ed(11).validateSignature()
 
+
 def test_verify_filename():
     with pytest.raises(InputValueError):
         ed(2).verify_filename()
     ed(0).verify_filename()
+
+
+#def test_write():
+#   test included by test_remove_enveloped_signature
+

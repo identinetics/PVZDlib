@@ -139,9 +139,6 @@ class SAMLEntityDescriptorPVP:
             return True
         return False
 
-    def modify_and_write_ed(self, fd):
-        self.ed.modify_and_write_ed(fd)
-
     def remove_enveloped_signature(self):
         self._delete_element_if_existing(self.ed.tree,
             '/md:EntityDescriptor/ds:Signature',
@@ -214,4 +211,8 @@ class SAMLEntityDescriptorPVP:
             raise InputValueError('Invalid format for EntitiyDescriptor filename "%s". The file name '
                                   'for entityID %s must end with "%s" - see PAtool documentation.' % \
                                   (basefn, self.get_entityid(), self.ed.get_filename_from_entityid()))
+
+    def write(self, new_filename=None):
+        fn = self.ed.ed_pathnew_fd if new_filename is None else new_filename
+        self.ed.write(fn)
 

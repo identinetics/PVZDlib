@@ -160,11 +160,6 @@ class SAMLEntityDescriptor:
         return xml_str.decode('utf-8')
 
 
-    def modify_and_write_ed(self, fd):
-        elemTree = lxml.etree.ElementTree(self.dom)
-        elemTree.write(fd, encoding='utf-8', xml_declaration=True)
-
-
     def validate_schematron(self):
         pass  # TODO: implement
 
@@ -177,3 +172,5 @@ class SAMLEntityDescriptor:
             raise InvalidSamlXmlSchemaError('File ' + self.ed_path_abs +
                                             ' is not schema valid:\n' + retmsg)
 
+    def write(self, filename):
+        self.tree.write(filename, encoding='utf-8', xml_declaration=True)
