@@ -28,7 +28,7 @@ def signerCert7():
         return fd.read()
 
 @pytest.fixture
-def ed(file_index: int):
+def ed_path(file_index: int):
     path = (
         'idpExampleCom_idpXml.xml',
         '01_idp_valid_cert.xml',
@@ -44,9 +44,14 @@ def ed(file_index: int):
         '11_idp_unauthz_signator.xml',
         '12_idp_entitiesdescriptor.xml',
         '13_idp_entitiesdescriptor_2idps.xml',
+        '14_01_plus_reginfo.xml',
+        '15_10_signature_removed.xml',
     )
-    return SAMLEntityDescriptorPVP(path_prefix + path[file_index], poldir1())
+    return path_prefix + path[file_index]
 
+@pytest.fixture
+def ed(file_index: int):
+    return SAMLEntityDescriptorPVP(ed_path(file_index), poldir1())
 
 
 def test_checkCerts():
@@ -62,7 +67,7 @@ def test_checkCerts():
 
 def test_create_delete():
     delete_requ = SAMLEntityDescriptorPVP.create_delete('https://idp.example.com/idp.xml')
-    with open(path_prefix+'04_idp_delete.xml') as fd:
+    with open(ed_path(4)) as fd:
         assert delete_requ == fd.read()
 
 
@@ -85,11 +90,17 @@ def test_isDeletionRequest():
 #    ed = ed(1)
 #    ed.tree
 
+def test_remove_enveloped_signature():
+    ed10 = ed(10)
+    ed10.remove_enveloped_signature()
+    with open(ed_path(15)) as fd:
+        assert ed10.get_xml_str() == fd.read()
+
 def test_set_registrationinfo():
     ed1=ed(1)
     # make expected equal to actual with fake registrationInstant = "1900-01-01T00:00:00Z"
     ed1.set_registrationinfo(SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
-    with open(path_prefix+'14_01_plus_reginfo.xml') as fd:
+    with open(ed_path(14)) as fd:
         assert ed1.get_xml_str() == fd.read()
 
 def test_validate_schematron():
