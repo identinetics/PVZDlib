@@ -173,4 +173,8 @@ class SAMLEntityDescriptor:
                                             ' is not schema valid:\n' + retmsg)
 
     def write(self, filename):
+        # CAVEAT: This function does not take the signed info part of an XML DSig-validated
+        # document, but uses the internal tree represenation initialized with XML-parsing the
+        # signed document. Processing a document after signature valideation mnust not use this
+        # function!
         self.tree.write(filename, encoding='utf-8', xml_declaration=True)

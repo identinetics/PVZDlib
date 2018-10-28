@@ -37,21 +37,21 @@ class GitHandler:
         file_to_delete = os.path.join(self.pepout_dir, file)
         if not os.path.exists(file_to_delete):
             raise ValidationError('rejected deletion request for non existing EntityDescriptor: '+ file)
+        os.makedirs(self.deletedpath, exist_ok=True)
         shutil.move(file_to_delete, self.deletedpath)
         self.repo.index.add([os.path.join(self.deletedpath, os.path.basename(file))])
-        #TODO: remove previously added ED in 'accepted'
+        # remove previously added ED in 'published'
+        self.repo.index.remove([os.path.join(self.publishedpath, os.path.basename(file))])
         self.repo.index.commit('deleted')
 
-    def move_to_accepted(self, file, sigdata):
+    def move_to_published(self, file, sigdata):
         """ the accepted ED is (1) moved to 'published' and (2) copied to a directory for the aggregator
             that must be outside git to prevent any manipulation from a remote repo """
-        logging.debug('moving to accept path')
+        logging.debug('moving to "published" path')
         with open(os.path.join(self.pepout_dir, os.path.basename(file)), mode='w', encoding='utf-8') as fd:
             fd.write(str(sigdata))
         file_abs = os.path.abspath(file)
         self.repo.index.move([file, self.publishedpath])
-        #self.repo.index.remove([file_abs])
-        #os.remove(file_abs)
         self.repo.index.commit('accepted')
 
     def move_to_rejected(self, file):
