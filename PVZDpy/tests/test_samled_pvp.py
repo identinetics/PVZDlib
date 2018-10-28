@@ -6,8 +6,8 @@ from PVZDpy.constants import *
 from PVZDpy.userexceptions import *
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 
-#path_prefix = 'PVZDpy/tests/testdata/'
-path_prefix = 'testdata/'
+#path_prefix = 'PVZDpy/tests/testdata/saml/'
+path_prefix = 'testdata/saml/'
 
 @pytest.fixture
 def domains7():

@@ -3,8 +3,8 @@ import pytest
 from PVZDpy.samlentitydescriptor import SAMLEntityDescriptor
 from PVZDpy.userexceptions import InputValueError
 
-#path_prefix = 'PVZDpy/tests/testdata/'
-path_prefix = 'testdata/'
+#path_prefix = 'PVZDpy/tests/testdata/saml/'
+path_prefix = 'testdata/saml/'
 
 @pytest.fixture
 def cert1():

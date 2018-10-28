@@ -211,6 +211,6 @@ class SAMLEntityDescriptorPVP:
                                   (basefn, self.get_entityid(), self.ed.get_filename_from_entityid()))
 
     def write(self, new_filename=None):
-        fn = self.ed.ed_pathnew_fd if new_filename is None else new_filename
+        fn = self.ed.ed_path if new_filename is None else new_filename
         self.ed.write(fn)
 
