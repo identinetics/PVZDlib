@@ -30,7 +30,8 @@ class AODSFileHandler():
             self.trustedCerts = []
         else:
             if not os.path.isfile(cliClient.args.trustedcerts):
-                raise ValidationError('Trust certs file not found: %s' % self.trustCertsFile)
+                raise ValidationError('Trust certs file not found: %s' %
+                                      cliClient.args.trustedcerts)
             with open(os.path.abspath(cliClient.args.trustedcerts)) as f:
                 self.trustedCerts = json.loads(f.read())
 
