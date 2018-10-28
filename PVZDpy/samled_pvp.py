@@ -168,16 +168,8 @@ class SAMLEntityDescriptorPVP:
             new,
             {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
 
-    def validate_schematron(self):
-        pass  # TODO: implement
-
-    def validate_xsd(self):
-        return self.ed.validate_xsd()
-
     def validateDomainNames(self, allowedDomains) -> bool:
         """ check that entityId and endpoints contain only hostnames from allowed domains"""
-        if self.ed.tree.getroot().tag != XMLNS_MD_PREFIX+'EntityDescriptor':
-            raise MissingRootElemError('Request object must contain EntityDescriptor as root element')
         entityID_url = self.ed.tree.getroot().attrib['entityID']
         entityID_hostname = urlparse(entityID_url).hostname
         if not self._isInAllowedDomains(entityID_hostname, allowedDomains):
@@ -193,6 +185,9 @@ class SAMLEntityDescriptorPVP:
                           (location_hostname, element.tag.split('}')))
         return True
 
+    def validate_schematron(self):
+        pass  # TODO: implement
+
     def validateSignature(self) -> str:
         # verify whether the signature is valid
 
@@ -202,6 +197,9 @@ class SAMLEntityDescriptorPVP:
         #    cert = XY509cert(signerCertificateEncoded, inform='DER') # TODO: check encoding
         #    print('Subject CN: ' + cert.getIssuer_str)
         return xml_sig_verifyer_response
+
+    def validate_xsd(self):
+        return self.ed.validate_xsd()
 
     def verify_filename(self):
         """ verify if filename convention maps the entityID. Do _not_ call on object creation """
