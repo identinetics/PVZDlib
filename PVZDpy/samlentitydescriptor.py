@@ -13,6 +13,7 @@ class SAMLEntityDescriptor:
     Instance of plain SAML EntityDescriptor without deployment profile specific extensions
     (exception: pvzd:pvptype attribute)
     """
+
     def __init__(self,
                  ed_path=None,
                  createfromcertstr=None, entityid=None, samlrole=None):
@@ -33,13 +34,16 @@ class SAMLEntityDescriptor:
         elif createfromcertstr is not None:  # case 2
             if entityid is None or samlrole is None:
                 raise InputValueError('if creating ed from certstr, entityid and samlrole must be given.')
-            self.xml_str = self.cert2entitydescriptor(createfromcertstr, entityid, samlrole)
+            self.xml_str = SAMLEntityDescriptor.cert2ed(createfromcertstr, entityid, samlrole)
             self.rootelem = lxml.etree.fromstring(self.xml_str.encode('utf-8'))
             self.tree = self.rootelem.getroottree()
 
-        def cert2entitydescriptor(self, cert_str, entityid, samlrole):
-            if samlrole == 'IDP':
-                entityDescriptor = """\
+    @staticmethod
+    def cert2ed(cert_str, entityid, samlrole):
+        cert_str_nodelimiters = XY509cert.pem_remove_rfc7468_delimiters(cert_str,
+                                                                        optional_delimiter=True)
+        if samlrole == 'IDP':
+            entityDescriptor = """\
     <md:EntityDescriptor entityID="{eid}" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
         xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
         xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
@@ -57,9 +61,9 @@ class SAMLEntityDescriptor:
         </md:KeyDescriptor>
         <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/idp/unused"/>
       </md:IDPSSODescriptor>
-    </md:EntityDescriptor>""".format(eid=entityid, pem=cert_str)
-            elif samlrole == 'SP':
-                entityDescriptor = """\
+    </md:EntityDescriptor>""".format(eid=entityid, pem=cert_str_nodelimiters)
+        elif samlrole == 'SP':
+            entityDescriptor = """\
     <md:EntityDescriptor entityID="{eid}" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
         xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
         xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
@@ -77,12 +81,11 @@ class SAMLEntityDescriptor:
         </md:KeyDescriptor>
         <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/acs/unused" index="0" isDefault="true"/>
       </md:SPSSODescriptor>
-    </md:EntityDescriptor>""".format(eid=entityid, pem=cert_str)
-            else:
-                raise EntityRoleNotSupportedError(
-                    "Only IDP and SP entity roles implemented, but %s given" % self.args.samlrole)
-            return entityDescriptor
-
+    </md:EntityDescriptor>""".format(eid=entityid, pem=cert_str_nodelimiters)
+        else:
+            raise EntityRoleNotSupportedError(
+                "Only IDP and SP entity roles implemented, but %s given" % self.args.samlrole)
+        return entityDescriptor
 
     def get_entitydescriptor(self, tree) -> lxml.etree.ElementTree:
         if tree.getroot().tag == XMLNS_MD_PREFIX+'EntityDescriptor':
