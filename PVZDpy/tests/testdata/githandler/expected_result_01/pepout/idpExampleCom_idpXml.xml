@@ -1,0 +1,10 @@
+    <!-- DELETE entity descriptor from metadata -->
+    <md:EntityDescriptor entityID="https://idp.example.com/idp.xml" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+        xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+        xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+        xmlns:pvzd="http://egov.gv.at/pvzd1.xsd"
+        pvzd:disposition="delete">
+      <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.example.com/idp.xml/idp/unused"/>
+      </md:IDPSSODescriptor>
+    </md:EntityDescriptor>

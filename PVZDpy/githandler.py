@@ -18,7 +18,7 @@ class GitHandler:
         self.pepout_dir = pepout_dir
         self.rejectedpath = os.path.join(self.repo_dir_abs, GIT_REJECTED)
         self.requestedpath = os.path.join(self.repo_dir_abs, GIT_REQUESTQUEUE)
-        self.deletedpath = os.path.join(self.repo_dir_abs, GIT_DELETED)
+        self.unpublishpath = os.path.join(self.repo_dir_abs, GIT_DELETED)
         self.publishedpath = os.path.join(self.repo_dir_abs, GIT_PUBLISHED)
         self.verbose = verbose
 
@@ -32,34 +32,45 @@ class GitHandler:
         """ :return: list of file names in the git repository given in pubreq  """
         return self.gitcmd.ls_files(GIT_REQUESTQUEUE).split('\n')
 
-    def move_to_deleted(self, file):
-        logging.debug('deleting file from accept directory ')
-        file_to_delete = os.path.join(self.pepout_dir, file)
-        if not os.path.exists(file_to_delete):
-            raise ValidationError('rejected deletion request for non existing EntityDescriptor: '+ file)
-        os.makedirs(self.deletedpath, exist_ok=True)
-        shutil.move(file_to_delete, self.deletedpath)
-        self.repo.index.add([os.path.join(self.deletedpath, os.path.basename(file))])
-        # remove previously added ED in 'published'
-        self.repo.index.remove([os.path.join(self.publishedpath, os.path.basename(file))])
-        self.repo.index.commit('deleted')
+    def move_to_deleted(self, request_name, publish_name):
+        logging.debug('deleting file from published directory ')
+        os.makedirs(self.unpublishpath, exist_ok=True)
+        file_deleted = os.path.join(self.unpublishpath, publish_name)
+        file_pepout = os.path.join(self.pepout_dir, publish_name)
+        file_published = os.path.join(self.publishedpath, publish_name)
+        file_requested = os.path.join(self.requestedpath, request_name)
+        if not os.path.exists(file_pepout):
+            raise ValidationError('rejected deletion request for non existing EntityDescriptor: '
+                                  + file_pepout)
+        self.gitcmd.mv(file_published, file_deleted)
+        os.unlink(file_requested)
+        self.repo.index.add([file_deleted])
+        self.repo.index.commit('unpublished')
 
-    def move_to_published(self, file, sigdata):
-        """ the accepted ED is (1) moved to 'published' and (2) copied to a directory for the aggregator
-            that must be outside git to prevent any manipulation from a remote repo """
-        logging.debug('moving to "published" path')
-        with open(os.path.join(self.pepout_dir, os.path.basename(file)), mode='w', encoding='utf-8') as fd:
+    def move_to_published_and_pepout(self, request_name, publish_name, sigdata):
+        """ the accepted ED is (1) written to 'published' and (2)written to pepout for the
+            aggregator to be outside git to prevent any manipulation from a remote repo.
+            The published file has the canonical name of publish_name. The move is implemented as
+            create + `git add` file at target location + `git rm` at original location.
+        """
+        publish_name = os.path.basename(request_name if publish_name is None else publish_name)
+        logging.debug('moving to published/' + publish_name)
+        with open(os.path.join(self.pepout_dir, publish_name), mode='w', encoding='utf-8') as fd:
             fd.write(str(sigdata))
-        file_abs = os.path.abspath(file)
-        self.repo.index.move([file, self.publishedpath])
+        with open(os.path.join(self.publishedpath, publish_name), mode='w', encoding='utf-8') as fd:
+            fd.write(str(sigdata))
+        os.unlink(os.path.join(self.requestedpath, request_name))
+        self.repo.index.add([os.path.join(self.publishedpath, publish_name)])
         self.repo.index.commit('accepted')
 
-    def move_to_rejected(self, file):
+    def move_to_rejected(self, request_name):
         logging.debug('moving to reject directory ')
-        self.repo.index.move([file, self.rejectedpath])
+        file_requested = os.path.join(self.requestedpath, request_name)
+        file_rejected = os.path.join(self.rejectedpath, request_name)
+        self.gitcmd.mv([file_requested, file_rejected])
 
-    def add_reject_message(self, filename_base, errortext):
-        errfilename = os.path.join(self.rejectedpath, filename_base + '.err')
+    def add_reject_message(self, request_name, errortext):
+        errfilename = os.path.join(self.rejectedpath, request_name + '.err')
         with open(errfilename, 'w') as errorfile:
             errorfile.write(errortext)
         self.repo.index.add([errfilename])
@@ -74,9 +85,9 @@ class GitHandler:
         repo.index.add([os.path.join(self.repo_dir_abs, '*')])
         repo.index.commit('initial testdata loaded')
 
-    def add_request_message(self, filename):
+    def add_request_message(self, request_name):
         """ used for unit tests """
-        base_fn = os.path.basename(filename)
+        base_fn = os.path.basename(request_name)
         target_fn = os.path.join(self.repo_dir_abs, GIT_REQUESTQUEUE, base_fn)
         shutil.copyfile(filename, target_fn)
         self.repo.index.add([target_fn])
