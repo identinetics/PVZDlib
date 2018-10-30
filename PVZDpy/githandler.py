@@ -65,6 +65,7 @@ class GitHandler:
 
     def move_to_rejected(self, request_name):
         logging.debug('moving to reject directory ')
+        request_name = os.path.basename(request_name)
         file_requested = os.path.join(self.requestedpath, request_name)
         file_rejected = os.path.join(self.rejectedpath, request_name)
         self.gitcmd.mv([file_requested, file_rejected])

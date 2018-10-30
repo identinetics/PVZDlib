@@ -109,6 +109,9 @@ class SAMLEntityDescriptorPVP:
     def get_entityid(self):
         return self.ed.get_entityid()
 
+    def get_filename_from_entityid(self) -> str:
+        return self.ed.get_filename_from_entityid()
+
     def getOrgIDs(self, signerCert) -> str:
         """ return associated organizations for signer. There are two possible paths:
                 signer-cert -> portaladmin -> [orgid]
