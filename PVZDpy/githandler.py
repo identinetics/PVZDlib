@@ -55,7 +55,7 @@ class GitHandler:
             The published file has the canonical name of publish_name. The move is implemented as
             create + `git add` file at target location + `git rm` at original location.
         """
-        publish_name = os.path.basename(request_name if publish_name is None else publish_name)
+        publish_name = os.path.basename(publish_name)
         logging.debug('moving to published/' + publish_name)
         with open(join(self.pepout_dir, publish_name), mode='w', encoding='utf-8') as fd:
             fd.write(str(sigdata))
