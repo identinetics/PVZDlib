@@ -62,9 +62,3 @@ def test03_move_to_rejected():
         gh.move_to_rejected('03_invalid_request.xml')
         gh.add_reject_message('03_invalid_request.xml', 'some error message content')
         assert are_dir_trees_equal(tmpdir, expected_result)
-
-
-#def test_reset_repo_with_defined_testdata():
-
-
-#def test_add_request_message(sef):

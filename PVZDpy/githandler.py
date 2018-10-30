@@ -22,11 +22,10 @@ class GitHandler:
         self.publishedpath = os.path.join(self.repo_dir_abs, GIT_PUBLISHED)
         self.verbose = verbose
 
-    def make_repo_dirs(self, repo_dir, pepout_dir=None):
+    @staticmethod
+    def make_repo_dirs(repo_dir):
         for p in (GIT_REQUESTQUEUE, GIT_DELETED, GIT_REJECTED, GIT_POLICYDIR, GIT_PUBLISHED):
             os.makedirs(os.path.join(repo_dir, p), exist_ok=True)
-        if pepout_dir is not None:
-            os.makedirs(pepout_dir, exist_ok=True)
 
     def getRequestQueueItems(self) -> str:
         """ :return: list of file names in the git repository given in pubreq  """
