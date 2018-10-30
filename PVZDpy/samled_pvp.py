@@ -176,13 +176,13 @@ class SAMLEntityDescriptorPVP:
         entityID_url = self.ed.tree.getroot().attrib['entityID']
         entityID_hostname = urlparse(entityID_url).hostname
         if not self._isInAllowedDomains(entityID_hostname, allowedDomains):
-            raise InvalidFQDNError('FQDN of entityID %s not in allowed domains: %s' %
+            raise InvalidFQDNError('FQDN of entityID %s not in domains allowed for signer: %s' %
                                    (entityID_hostname, allowedDomains))
         logging.debug('signer is allowed to use %s as entityID' % entityID_hostname)
         for element in self.ed.tree.xpath('//@location'):
             location_hostname = urlparse(element.attrib['Location']).hostname
             if self._isInAllowedDomains(location_hostname, allowedDomains):
-                raise InvalidFQDNError('%s in %s not in allowed.treeains: %s' %
+                raise InvalidFQDNError('%s in %s not in allowed domains: %s' %
                                        (location_hostname, element.tag, allowedDomains))
             logging.debug('signer is allowed to use %s in %' %
                           (location_hostname, element.tag.split('}')))
