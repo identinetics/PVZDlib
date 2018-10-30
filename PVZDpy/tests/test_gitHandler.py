@@ -1,21 +1,27 @@
 import filecmp
+import git
 import os
+from os.path import join 
 import pytest
 import shutil
 import tempfile
 from PVZDpy.githandler import GitHandler
-from PVZDpy.utilities import are_dir_trees_equal, opj
+from PVZDpy.utilities import are_dir_trees_equal
 
 #path_prefix = 'PVZDpy/tests/testdata/githandler/'
 path_prefix = 'testdata/githandler/'
 
 @pytest.fixture
-def githandler(tmpdir):
-    shutil.rmtree(tmpdir, ignore_errors=True)
-    shutil.copytree(opj(path_prefix, 'start_state'), tmpdir)
-    os.rename(opj(tmpdir, 'repo/git_disabled'), opj(tmpdir, 'repo/.git'))
-    return GitHandler(opj(tmpdir, 'repo'),
-                          opj(tmpdir, 'pepout'),
+def githandler(workdir):
+    shutil.rmtree(workdir, ignore_errors=True)
+    shutil.copytree(join(path_prefix, 'init_state'), workdir)
+    pepout_dir = join(workdir, 'pepout')
+    repo_dir_work = join(workdir, 'repo')
+    repo = git.Repo.init(repo_dir_work)
+    repo.index.add([join(repo_dir_work, '*')])
+    repo.index.commit('initial testdata loaded')
+    return GitHandler(repo_dir_work,
+                      pepout_dir,
                       verbose=True)
 
 

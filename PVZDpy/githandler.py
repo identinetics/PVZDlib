@@ -1,5 +1,8 @@
-import logging, os, shutil
 import git
+import logging
+import os
+from os.path import join
+import shutil
 from .constants import *
 from .userexceptions import *
 __author__ = 'r2h2'
@@ -16,16 +19,16 @@ class GitHandler:
         self.repo_dir = repo_dir
         self.repo_dir_abs = os.path.abspath(repo_dir)
         self.pepout_dir = pepout_dir
-        self.rejectedpath = os.path.join(self.repo_dir_abs, GIT_REJECTED)
-        self.requestedpath = os.path.join(self.repo_dir_abs, GIT_REQUESTQUEUE)
-        self.unpublishpath = os.path.join(self.repo_dir_abs, GIT_DELETED)
-        self.publishedpath = os.path.join(self.repo_dir_abs, GIT_PUBLISHED)
+        self.rejectedpath = join(self.repo_dir_abs, GIT_REJECTED)
+        self.requestedpath = join(self.repo_dir_abs, GIT_REQUESTQUEUE)
+        self.unpublishpath = join(self.repo_dir_abs, GIT_DELETED)
+        self.publishedpath = join(self.repo_dir_abs, GIT_PUBLISHED)
         self.verbose = verbose
 
     @staticmethod
     def make_repo_dirs(repo_dir):
         for p in (GIT_REQUESTQUEUE, GIT_DELETED, GIT_REJECTED, GIT_POLICYDIR, GIT_PUBLISHED):
-            os.makedirs(os.path.join(repo_dir, p), exist_ok=True)
+            os.makedirs(join(repo_dir, p), exist_ok=True)
 
     def getRequestQueueItems(self) -> str:
         """ :return: list of file names in the git repository given in pubreq  """
@@ -34,10 +37,10 @@ class GitHandler:
     def move_to_deleted(self, request_name, publish_name):
         logging.debug('deleting file from published directory ')
         os.makedirs(self.unpublishpath, exist_ok=True)
-        file_deleted = os.path.join(self.unpublishpath, publish_name)
-        file_pepout = os.path.join(self.pepout_dir, publish_name)
-        file_published = os.path.join(self.publishedpath, publish_name)
-        file_requested = os.path.join(self.requestedpath, request_name)
+        file_deleted = join(self.unpublishpath, publish_name)
+        file_pepout = join(self.pepout_dir, publish_name)
+        file_published = join(self.publishedpath, publish_name)
+        file_requested = join(self.requestedpath, request_name)
         if not os.path.exists(file_pepout):
             raise ValidationError('rejected deletion request for non existing EntityDescriptor: '
                                   + file_pepout)
@@ -54,23 +57,23 @@ class GitHandler:
         """
         publish_name = os.path.basename(request_name if publish_name is None else publish_name)
         logging.debug('moving to published/' + publish_name)
-        with open(os.path.join(self.pepout_dir, publish_name), mode='w', encoding='utf-8') as fd:
+        with open(join(self.pepout_dir, publish_name), mode='w', encoding='utf-8') as fd:
             fd.write(str(sigdata))
-        with open(os.path.join(self.publishedpath, publish_name), mode='w', encoding='utf-8') as fd:
+        with open(join(self.publishedpath, publish_name), mode='w', encoding='utf-8') as fd:
             fd.write(str(sigdata))
-        os.unlink(os.path.join(self.requestedpath, request_name))
-        self.repo.index.add([os.path.join(self.publishedpath, publish_name)])
+        os.unlink(join(self.requestedpath, request_name))
+        self.repo.index.add([join(self.publishedpath, publish_name)])
         self.repo.index.commit('accepted')
 
     def move_to_rejected(self, request_name):
         logging.debug('moving to reject directory ')
         request_name = os.path.basename(request_name)
-        file_requested = os.path.join(self.requestedpath, request_name)
-        file_rejected = os.path.join(self.rejectedpath, request_name)
+        file_requested = join(self.requestedpath, request_name)
+        file_rejected = join(self.rejectedpath, request_name)
         self.gitcmd.mv([file_requested, file_rejected])
 
     def add_reject_message(self, request_name, errortext):
-        errfilename = os.path.join(self.rejectedpath, request_name + '.err')
+        errfilename = join(self.rejectedpath, request_name + '.err')
         with open(errfilename, 'w') as errorfile:
             errorfile.write(errortext)
         self.repo.index.add([errfilename])
@@ -82,13 +85,13 @@ class GitHandler:
         shutil.copytree(testdata, self.repo_dir)
         self.make_repo_dirs(self.repo_dir) # add dirs not in test data
         repo = git.Repo.init(self.repo_dir)
-        repo.index.add([os.path.join(self.repo_dir_abs, '*')])
+        repo.index.add([join(self.repo_dir_abs, '*')])
         repo.index.commit('initial testdata loaded')
 
     def add_request_message(self, request_name):
         """ used for unit tests """
         base_fn = os.path.basename(request_name)
-        target_fn = os.path.join(self.repo_dir_abs, GIT_REQUESTQUEUE, base_fn)
+        target_fn = join(self.repo_dir_abs, GIT_REQUESTQUEUE, base_fn)
         shutil.copyfile(filename, target_fn)
         self.repo.index.add([target_fn])
         self.repo.index.commit('add requested')
