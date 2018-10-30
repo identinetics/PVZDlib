@@ -46,6 +46,7 @@ class GitHandler:
                                   + file_pepout)
         self.gitcmd.mv(file_published, file_deleted)
         os.unlink(file_requested)
+        os.unlink(file_pepout)
         self.repo.index.add([file_deleted])
         self.repo.index.commit('unpublished')
 
