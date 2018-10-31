@@ -188,13 +188,13 @@ class SAMLEntityDescriptorPVP:
         """ check that entityId and endpoints contain only hostnames from allowed domains"""
         if not self._isInAllowedDomains(self._get_entityid_hostname(), allowedDomains):
             raise InvalidFQDNinEntityID('FQDN of entityID %s not in domains allowed for signer: %s' %
-                                        (self._get_entityid_hostname(), allowedDomains))
+                                        (self._get_entityid_hostname(), sorted(allowedDomains)))
         logging.debug('signer is allowed to use %s as entityID' % self._get_entityid_hostname())
         for attr_value in self.ed.tree.xpath('//md:*/@Location', namespaces={'md': XMLNS_MD}):
             location_hostname = urlparse(attr_value).hostname
             if not self._isInAllowedDomains(location_hostname, allowedDomains):
                 raise InvalidFQDNInEndpoint('%s in %s not in allowed domains: %s' %
-                                            (location_hostname, attr_value, allowedDomains))
+                                            (location_hostname, attr_value, sorted(allowedDomains)))
             logging.debug('signer is allowed to use %s in %s' % (location_hostname, attr_value))
         return True
 
