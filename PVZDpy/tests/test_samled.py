@@ -27,12 +27,12 @@ def entityid1():
 
 @pytest.fixture
 def result16a():
-    with open(path_prefix+'16a_ed_from_cert.xml') as fd:
+    with open(path_prefix+'18a_ed_from_cert.xml') as fd:
         return fd.read()
 
 @pytest.fixture
 def result16b():
-    with open(path_prefix+'16b_ed_from_cert.xml') as fd:
+    with open(path_prefix+'18b_ed_from_cert.xml') as fd:
         return fd.read()
 
 
