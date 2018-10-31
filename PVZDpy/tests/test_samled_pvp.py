@@ -48,6 +48,7 @@ def ed_path(file_index: int):
         '14_01_plus_reginfo.xml',
         '15_10_signature_removed.xml',
         '16_cert_subject_mismatch_gondorWienGvAt_idp.xml',
+        '17_unauthz_domain_endpoint_gondorWienGvAt_idp.xml',
     )
     return path_prefix + path[file_index]
 
@@ -124,6 +125,8 @@ def test_validateDomainNames():
     with pytest.raises(InvalidFQDNError):
         ed(1).validateDomainNames(domains7())
     ed(7).validateDomainNames(domains7())
+    with pytest.raises(InvalidFQDNError):
+        ed(17).validateDomainNames(domains7())
 
 
 def test_validateSignature():
