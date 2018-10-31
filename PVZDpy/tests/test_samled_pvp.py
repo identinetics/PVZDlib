@@ -91,20 +91,20 @@ def test_isDeletionRequest():
     assert ed(4).isDeletionRequest() == True
 
 
-def test_remove_enveloped_signature():
-    ed10 = ed(10)
-    ed10.remove_enveloped_signature()
-    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='xml').name
-    ed10.write(fn10_edit)
-    with open(ed_path(15)) as fd15:
-        with open(fn10_edit) as fn10_edit:
-            assert fn10_edit.read() == fd15.read()
+#def test_remove_enveloped_signature():
+#    ed10 = ed(10)
+#    ed10.remove_enveloped_signature()
+#    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='xml').name
+#    ed10.write(fn10_edit)
+#    with open(ed_path(15)) as fd15:
+#        with open(fn10_edit) as fn10_edit:
+#            assert fn10_edit.read() == fd15.read()
 
 
 def test_set_registrationinfo():
     ed14=ed(1)
     # make expected equal to actual with fake registrationInstant = "1900-01-01T00:00:00Z"
-    ed14.set_registrationinfo(SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
+    SAMLEntityDescriptorPVP.set_registrationinfo(ed14.ed.tree, SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
     fn14_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test14_edit', suffix='xml').name
     ed14.write(fn14_edit)
     with open(ed_path(14)) as fd1:

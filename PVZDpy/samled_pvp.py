@@ -76,7 +76,8 @@ class SAMLEntityDescriptorPVP:
       </md:IDPSSODescriptor>
     </md:EntityDescriptor>""".format(eid=entityid)
 
-    def _delete_element_if_existing(self,
+    @staticmethod
+    def _delete_element_if_existing(
             tree: lxml.etree.ElementTree,
             xpath_remove_element: str,
             namespaces: dict):
@@ -84,7 +85,8 @@ class SAMLEntityDescriptorPVP:
             remove_elem = tree.xpath(xpath_remove_element, namespaces=namespaces)[0]
             remove_elem.getparent().remove(remove_elem)
 
-    def _insert_if_missing(self,
+    @staticmethod
+    def _insert_if_missing(
             tree: lxml.etree.ElementTree,
             xpath_insert_parent: str,
             xpath_new_element: str,
@@ -93,6 +95,7 @@ class SAMLEntityDescriptorPVP:
         if len(tree.xpath(xpath_new_element, namespaces=namespaces)) == 0:
             parent_element = tree.xpath(xpath_insert_parent, namespaces=namespaces)
             parent_element[0].insert(0, new_element)  # append only for 1st
+            pass
 
     def getAllowedDomainsForOrgs(self, org_ids: list) -> list:
         allowedDomains = []
@@ -151,17 +154,18 @@ class SAMLEntityDescriptorPVP:
             return True
         return False
 
-    def remove_enveloped_signature(self):
-        self._delete_element_if_existing(self.ed.tree,
-            '/md:EntityDescriptor/ds:Signature',
-            {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
+    #def remove_enveloped_signature(self):
+    #    SAMLEntityDescriptorPVP._delete_element_if_existing(self.ed.tree,
+    #        '/md:EntityDescriptor/ds:Signature',
+    #        {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
 
-    def set_registrationinfo(self, authority, fixed_date_for_unittest=False):
-        self._delete_element_if_existing(self.ed.tree,
+    @staticmethod
+    def set_registrationinfo(tree, authority, fixed_date_for_unittest=False):
+        SAMLEntityDescriptorPVP._delete_element_if_existing(tree,
             '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
             {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
         new = lxml.etree.Element(XMLNS_MD_PREFIX + "Extensions")
-        self._insert_if_missing (self.ed.tree,
+        SAMLEntityDescriptorPVP._insert_if_missing (tree,
             '//md:EntityDescriptor',
             '//md:EntityDescriptor/md:Extensions',
             new,
@@ -174,7 +178,7 @@ class SAMLEntityDescriptorPVP:
             now = datetime.now()
         now_iso8601 = now.strftime("%Y-%m-%dT%H:%M:%SZ")
         new.set(XMLNS_MDRPI_PREFIX+'registrationInstant', now_iso8601)
-        self._insert_if_missing (self.ed.tree,
+        SAMLEntityDescriptorPVP._insert_if_missing (tree,
             '//md:EntityDescriptor/md:Extensions',
             '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
             new,
@@ -186,13 +190,12 @@ class SAMLEntityDescriptorPVP:
             raise InvalidFQDNinEntityID('FQDN of entityID %s not in domains allowed for signer: %s' %
                                         (self._get_entityid_hostname(), allowedDomains))
         logging.debug('signer is allowed to use %s as entityID' % self._get_entityid_hostname())
-        for element in self.ed.tree.xpath('//@md:Location', namespaces={'md': XMLNS_MD}):
-            location_hostname = urlparse(element.attrib['Location']).hostname
-            if self._isInAllowedDomains(location_hostname, allowedDomains):
+        for attr_value in self.ed.tree.xpath('//md:*/@Location', namespaces={'md': XMLNS_MD}):
+            location_hostname = urlparse(attr_value).hostname
+            if not self._isInAllowedDomains(location_hostname, allowedDomains):
                 raise InvalidFQDNInEndpoint('%s in %s not in allowed domains: %s' %
-                                            (location_hostname, element.tag, allowedDomains))
-            logging.debug('signer is allowed to use %s in %' %
-                          (location_hostname, element.tag.split('}')))
+                                            (location_hostname, attr_value, allowedDomains))
+            logging.debug('signer is allowed to use %s in %s' % (location_hostname, attr_value))
         return True
 
     def validate_schematron(self):
