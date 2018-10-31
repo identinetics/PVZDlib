@@ -102,11 +102,15 @@ def test_remove_enveloped_signature():
 
 
 def test_set_registrationinfo():
-    ed1=ed(1)
+    ed14=ed(1)
     # make expected equal to actual with fake registrationInstant = "1900-01-01T00:00:00Z"
-    ed1.set_registrationinfo(SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
-    with open(ed_path(14)) as fd:
-        assert ed1.get_xml_str() == fd.read()
+    ed14.set_registrationinfo(SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
+    fn14_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test14_edit', suffix='xml').name
+    ed14.write(fn14_edit)
+    with open(ed_path(14)) as fd1:
+        with open(fn14_edit) as fd2:
+            assert  fd2.read() == fd1.read()
+    os.unlink(fn14_edit)
 
 
 def test_validate_schematron():

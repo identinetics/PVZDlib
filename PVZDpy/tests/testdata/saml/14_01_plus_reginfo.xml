@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" entityID="https://idp.example.com/idp.xml">
   <md:Extensions><ns0:RegistrationInfo xmlns:ns0="urn:oasis:names:tc:SAML:2.0:metadata:rpi" ns0:registrationAuthority="http://www.test.portlaverunbd.gv.at" ns0:registrationInstant="1900-01-01T00:00:00Z"/></md:Extensions><md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
     <md:Extensions>
