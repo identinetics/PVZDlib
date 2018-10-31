@@ -183,14 +183,14 @@ class SAMLEntityDescriptorPVP:
     def validateDomainNames(self, allowedDomains) -> bool:
         """ check that entityId and endpoints contain only hostnames from allowed domains"""
         if not self._isInAllowedDomains(self._get_entityid_hostname(), allowedDomains):
-            raise InvalidFQDNError('FQDN of entityID %s not in domains allowed for signer: %s' %
-                                   (self._get_entityid_hostname(), allowedDomains))
+            raise InvalidFQDNinEntityID('FQDN of entityID %s not in domains allowed for signer: %s' %
+                                        (self._get_entityid_hostname(), allowedDomains))
         logging.debug('signer is allowed to use %s as entityID' % self._get_entityid_hostname())
-        for element in self.ed.tree.xpath('//@location'):
+        for element in self.ed.tree.xpath('//@md:Location', namespaces={'md': XMLNS_MD}):
             location_hostname = urlparse(element.attrib['Location']).hostname
             if self._isInAllowedDomains(location_hostname, allowedDomains):
-                raise InvalidFQDNError('%s in %s not in allowed domains: %s' %
-                                       (location_hostname, element.tag, allowedDomains))
+                raise InvalidFQDNInEndpoint('%s in %s not in allowed domains: %s' %
+                                            (location_hostname, element.tag, allowedDomains))
             logging.debug('signer is allowed to use %s in %' %
                           (location_hostname, element.tag.split('}')))
         return True

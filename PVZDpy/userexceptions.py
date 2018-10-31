@@ -79,8 +79,13 @@ class EdHostnameNotMatchingCertSubject(ValidationError):
     pass
 
 
-class InvalidFQDNError(ValidationError):
-    """ The FQDN is not in the allowed domains """
+class InvalidFQDNinEntityID(ValidationError):
+    """ The entitID's FQDN is not in the allowed domains """
+    pass
+
+
+class InvalidFQDNInEndpoint(ValidationError):
+    """ The FQDN of a location URL is not in the allowed domains """
     pass
 
 
