@@ -47,6 +47,7 @@ def ed_path(file_index: int):
         '13_idp_entitiesdescriptor_2idps.xml',
         '14_01_plus_reginfo.xml',
         '15_10_signature_removed.xml',
+        '16_cert_subject_mismatch_gondorWienGvAt_idp.xml',
     )
     return path_prefix + path[file_index]
 
@@ -64,6 +65,8 @@ def test_checkCerts():
     ed(12).checkCerts()
     with pytest.raises(MultipleEntitiesNotAllowed):
         ed(13).checkCerts()
+    with pytest.raises(EdHostnameNotMatchingCertSubject):
+        ed(16).checkCerts()
 
 
 def test_create_delete():

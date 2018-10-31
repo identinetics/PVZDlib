@@ -74,6 +74,11 @@ class CertInvalidError(ValidationError):
     pass
 
 
+class EdHostnameNotMatchingCertSubject(ValidationError):
+    """ Hostname in EntityID does not match CN in certificate subject """
+    pass
+
+
 class InvalidFQDNError(ValidationError):
     """ The FQDN is not in the allowed domains """
     pass

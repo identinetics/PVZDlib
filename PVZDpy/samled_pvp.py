@@ -31,7 +31,8 @@ class SAMLEntityDescriptorPVP:
     def checkCerts(self):
         """ validate that included signing and encryption certificates meet following conditions:
             * not expired AND
-            * issued by a CA listed as issuer in the related trust store)
+            * issued by a CA listed as issuer in the related trust store) AND
+            * the x509subject's CN matches the hostname of the entityDescriptor
         """
         for cert_pem in self._getCerts('IDP'):   # certs in IDPSSODescriptor elements
             cert = XY509cert(cert_pem)
@@ -43,6 +44,10 @@ class SAMLEntityDescriptorPVP:
             except crypto.X509StoreContextError as e:
                 raise CertInvalidError(('Certificate validation failed. ' + str(e) + ' ' +
                                         cert.getIssuer_str()))
+            if cert.getSubject_str().find('/CN='+self._get_entityid_hostname()) < 0:
+                raise EdHostnameNotMatchingCertSubject(
+                    'Hostname of entityID (%s) not matching CN in cert subject (%s)' %
+                    (self._get_entityid_hostname(), cert.getSubject_str()))
 
         for cert_pem in self._getCerts('SP'):   # certs in SPSSODescriptor elements
             cert = XY509cert(cert_pem)
@@ -112,6 +117,10 @@ class SAMLEntityDescriptorPVP:
     def get_filename_from_entityid(self) -> str:
         return self.ed.get_filename_from_entityid()
 
+    def _get_entityid_hostname(self):
+        entityID_url = self.ed.get_entityid()
+        return urlparse(entityID_url).hostname
+
     def getOrgIDs(self, signerCert) -> str:
         """ return associated organizations for signer. There are two possible paths:
                 signer-cert -> portaladmin -> [orgid]
@@ -173,12 +182,10 @@ class SAMLEntityDescriptorPVP:
 
     def validateDomainNames(self, allowedDomains) -> bool:
         """ check that entityId and endpoints contain only hostnames from allowed domains"""
-        entityID_url = self.ed.tree.getroot().attrib['entityID']
-        entityID_hostname = urlparse(entityID_url).hostname
-        if not self._isInAllowedDomains(entityID_hostname, allowedDomains):
+        if not self._isInAllowedDomains(self._get_entityid_hostname(), allowedDomains):
             raise InvalidFQDNError('FQDN of entityID %s not in domains allowed for signer: %s' %
-                                   (entityID_hostname, allowedDomains))
-        logging.debug('signer is allowed to use %s as entityID' % entityID_hostname)
+                                   (self._get_entityid_hostname(), allowedDomains))
+        logging.debug('signer is allowed to use %s as entityID' % self._get_entityid_hostname())
         for element in self.ed.tree.xpath('//@location'):
             location_hostname = urlparse(element.attrib['Location']).hostname
             if self._isInAllowedDomains(location_hostname, allowedDomains):
@@ -192,8 +199,6 @@ class SAMLEntityDescriptorPVP:
         pass  # TODO: implement
 
     def validateSignature(self) -> str:
-        # verify whether the signature is valid
-
         xml_sig_verifyer = XmlSigVerifyer(testhint='PEPrequest');
         xml_sig_verifyer_response = xml_sig_verifyer.verify(self.ed_path)
         #if self.verbose:
