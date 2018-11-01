@@ -4,6 +4,7 @@ import json
 import xml.etree.ElementTree as ET
 from .constants import DATA_HEADER_B64BZIP
 from .cresignedxml import creSignedXML
+from .invocation.aodsfhinvocation import aodsfhInvocation
 from .wrapperrecord import *
 from .userexceptions import *
 from .xmlsigverifyer import XmlSigVerifyer
@@ -12,27 +13,27 @@ __author__ = 'r2h2'
 
 
 class AODSFileHandler():
-    def __init__(self, cliClient):
-        self._aodsFile = cliClient.args.aods
-        self.verbose = cliClient.args.verbose
-        self.list_trustedcerts = cliClient.args.list_trustedcerts
+    def __init__(self, inv_args: aodsfhInvocation):
+        self._aodsFile = inv_args.aods
+        self.verbose = inv_args.verbose
+        self.list_trustedcerts = inv_args.list_trustedcerts
 
-        if not cliClient.args.noxmlsign and self._aodsFile[-4:] != '.xml':
+        if not inv_args.noxmlsign and self._aodsFile[-4:] != '.xml':
             self._aodsFile += '.xml'
-        if cliClient.args.noxmlsign and self._aodsFile[-5:] != '.json':
+        if inv_args.noxmlsign and self._aodsFile[-5:] != '.json':
             self._aodsFile += '.json'
         if not os.path.isfile(self._aodsFile) and \
-                getattr(cliClient.args, 'subcommand', None) not in ('create', 'scratch'):
+                getattr(inv_args, 'subcommand', None) not in ('create', 'scratch'):
             errmsg = '--- Policy journal not found: ' + self._aodsFile + ' fix path or create'
             logging.error(errmsg)
             raise InvalidArgumentValueError(errmsg)
-        if cliClient.args.trustedcerts is None:
+        if inv_args.trustedcerts is None:
             self.trustedCerts = []
         else:
-            if not os.path.isfile(cliClient.args.trustedcerts):
+            if not os.path.isfile(inv_args.trustedcerts):
                 raise ValidationError('Trust certs file not found: %s' %
-                                      cliClient.args.trustedcerts)
-            with open(os.path.abspath(cliClient.args.trustedcerts)) as f:
+                                      inv_args.trustedcerts)
+            with open(os.path.abspath(inv_args.trustedcerts)) as f:
                 self.trustedCerts = json.loads(f.read())
 
     def _do_list_trustedcerts(self, signerCertificateEncoded):

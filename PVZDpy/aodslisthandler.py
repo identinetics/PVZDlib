@@ -19,9 +19,9 @@ class AodsListHandler:
         The read function will transform it into the policyDict structure.
     '''
 
-    def __init__(self, aodsFileHandler, args):
+    def __init__(self, aodsFileHandler, inv_args):
         self.aodsFileHandler = aodsFileHandler
-        self.args = args
+        self.args = inv_args
         self.lastSeq = None
         self.lastHash = None
         self.prevHash = None
