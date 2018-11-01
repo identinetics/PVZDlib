@@ -48,7 +48,9 @@ class AodsListHandler:
         inputRecSeq = 0
         for inputDataRaw in appendList:
             inputRec = InputRecord(inputDataRaw)
-            wrapperRec = WrapperRecord('elements', inputRec, self.args)
+            wrapperRec = WrapperRecord('elements', inputRec,
+                                       registrant = self.args.registrant,
+                                       submitter = self.args.submitter)
             inputRecSeq += 1
             policyDict = self.aods_read(use='internal')  # get latest version
             logging.debug("%d rectype=%s pk=%s" % (inputRecSeq, inputRec.rec.rectype, inputRec.rec.primarykey))
@@ -66,7 +68,7 @@ class AodsListHandler:
                                    "datetimestamp, registrant, submitter]" ],
                         "delete": False}
         inputRec = InputRecord(inputDataRaw)
-        wrapperRec = WrapperRecord('elements', inputRec, self.args)
+        wrapperRec = WrapperRecord('elements', inputRec)
         seedVal_str = str(datetime.now())
         seedVal_bytes = base64.b64encode(hashlib.sha256(seedVal_str.encode('ascii')).digest())
         if self.args.debug: seedVal_bytes = 'fixedValueForDebugOnly'.encode('ascii')
@@ -140,7 +142,7 @@ class AodsListHandler:
         for w in self.aods['AODS']:
             if use == 'external' and getattr(self.args, 'journal', False):
                 dump_journal_fd.write(json.dumps(w) + '\n')
-            wrap = WrapperRecord('rawStruct', w, self.args)
+            wrap = WrapperRecord('rawStruct', w)
             rec = ContentRecord(wrap.record)
             self.prevHash = self.lastHash
             self.lastHash = wrap.hash

@@ -15,7 +15,7 @@ class WrapperRecord:
         sequence number and delete flag around content records, followed by the datetimestamp,
         registrant and submitter.
     """
-    def __init__(self, argtype, data, inv_args):
+    def __init__(self, argtype, data, registrant='', submitter=''):
         if argtype == 'elements':
             """ create record from input data """
             try:
@@ -24,15 +24,13 @@ class WrapperRecord:
                 self.deleteflag = data.deleteflag
                 self.rec = data.rec
                 self.datetimestamp = datetime.datetime.isoformat(datetime.datetime.utcnow()) + '+00:00'
-                self.args = inv_args
-                self.registrant = self.args.registrant
-                self.submitter = self.args.submitter
+                self.registrant = self.registrant
+                self.submitter = self.submitter
             except Exception as e:
                 logger.error(str(self))
                 raise e
         elif argtype == 'rawStruct':
             rawStruct = data
-            self.args = inv_args
             """ rawStruct: wrapper record read from aods file """
             try:
                 self.hash = rawStruct[0]
