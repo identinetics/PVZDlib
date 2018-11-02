@@ -11,11 +11,11 @@ class aodslhInvocation(AbstractInvocation):
                  shibacl = None,
                  printtrustedcerts = False,
                  registrant = '',
-                 submitter '',
-                 debug= False,
+                 submitter = '',
+                 debug = False,
                  verbose = False,
                  list_trustedcerts = False,
-                 trustedcerts = None);
+                 trustedcerts = None):
 
         self.inputfilename =      inputfilename
         self.noxmlsign =          noxmlsign
@@ -24,9 +24,9 @@ class aodslhInvocation(AbstractInvocation):
         self.poldirjson =         poldirjson
         self.shibacl =            shibacl
         self.printtrustedcerts =  printtrustedcerts
-        self.registrant =         registrants
+        self.registrant =         registrant
         self.submitter =          submitter
         self.debug =              debug
         self.verbose =            verbose
         self.list_trustedcerts =  list_trustedcerts
-        self.trustedcerts =       trustedcertsts
+        self.trustedcerts =       trustedcerts
