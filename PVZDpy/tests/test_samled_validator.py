@@ -1,32 +1,34 @@
 import json
 import lxml.etree
+from os.path import join as opj
+import os
 import pytest
 import tempfile
 from PVZDpy.constants import *
 from PVZDpy.userexceptions import *
-from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
+from PVZDpy.samled_validator import SamlEdValidator
 
 #path_prefix = 'PVZDpy/tests/testdata/saml/'
-path_prefix = 'testdata/saml/'
+path_prefix_testin = 'testdata/saml/'
+path_prefix_testout = 'testout/samled_validator'
+#@pytest.fixture
+#def domains7():
+#    return ['*.identinetics.com']
 
-@pytest.fixture
-def domains7():
-    return ['*.identinetics.com']
+#@pytest.fixture
+#def orgids7():
+#    return ['AT:VKZ:XFN-318886a']
 
-@pytest.fixture
-def orgids7():
-    return ['AT:VKZ:XFN-318886a']
+#@pytest.fixture
+#def signerCert7():
+#    with open(path_prefix_testin+'signercert7_rh.pem') as fd:
+#        return fd.read()
 
 @pytest.fixture
 def poldir1():
-    with open(path_prefix+'poldir1.json') as fd:
+    with open(path_prefix_testin+'poldir1.json') as fd:
         d = json.load(fd)
     return d
-
-@pytest.fixture
-def signerCert7():
-    with open(path_prefix+'signercert7_rh.pem') as fd:
-        return fd.read()
 
 @pytest.fixture
 def ed_path(file_index: int):
@@ -50,102 +52,47 @@ def ed_path(file_index: int):
         '16_cert_subject_mismatch_gondorWienGvAt_idp.xml',
         '17_endpoint_mismatch_idp1IdentineticsCom_idpXml.xml',
     )
-    return path_prefix + path[file_index]
+    return path[file_index]
 
-@pytest.fixture
-def ed(file_index: int):
-    return SAMLEntityDescriptorPVP(ed_path(file_index), poldir1())
+def ed_path_testin(file_index: int):
+    return opj(path_prefix_testin, ed_path(file_index))
 
+def ed_path_testout(file_index: int, test_index: int):
+    os.makedirs(path_prefix_testout, exist_ok=True)
+    return opj(path_prefix_testout, 'test{}_ed{}.json'.format(str(file_index), str(test_index)))
 
-def test_checkCerts():
-    ed(1).checkCerts()
-    with pytest.raises(CertInvalidError):
-        ed(5).checkCerts()
-    with pytest.raises(CertExpiredError):
-        ed(6).checkCerts()
-    ed(12).checkCerts()
-    with pytest.raises(MultipleEntitiesNotAllowed):
-        ed(13).checkCerts()
-    with pytest.raises(EdHostnameNotMatchingCertSubject):
-        ed(16).checkCerts()
+def ed_path_test_expected(file_index: int, test_index: int):
+    return opj(path_prefix_testin, 'samled_val_expected_results',
+               'test{}_ed{}.json'.format(str(file_index), str(test_index)))
 
+#@pytest.fixture
+#def ed(file_index: int):
 
-def test_create_delete():
-    delete_requ = SAMLEntityDescriptorPVP.create_delete('https://idp.example.com/idp.xml')
-    with open(ed_path(4)) as fd:
-        assert delete_requ == fd.read()
+def run_test_with_edpath(file_index: int):
+    ed = SamlEdValidator(poldir1())
+    ed.validate_entitydescriptor(ed_path_new=ed_path_testin(file_index))
+    ed_dict = ed.get_obj_as_dict()
+    with open(ed_path_testout(1, file_index), 'w') as fd:
+        fd.write(json.dumps(ed_dict))
 
+def test01_edval_edpath():
+    for file_index in range(1, 18):
+        run_test_with_edpath(file_index)
 
-def test_getAllowedDomainsForOrgs():
-    allowed_domains = ed(7).getAllowedDomainsForOrgs(orgids7())
-    assert allowed_domains == domains7()
+def run_test_with_xmlstr(file_index: int):
+    ed = SamlEdValidator(poldir1())
+    with open(ed_path_testin(file_index)) as fd:
+        ed.validate_entitydescriptor(ed_str_new=fd.read())
+    ed_dict = ed.get_obj_as_dict()
+    fn1_testout = ed_path_testout(2, file_index)
+    fn2_testexp = ed_path_test_expected(2, file_index)
+    with open(fn1_testout, 'w') as fd1:
+        fd1.write(json.dumps(ed_dict, indent=2, sort_keys=True))
+    with open(fn1_testout) as fd1:
+        with open(fn2_testexp) as fd2:
+            assert fd1.read() == fd2.read()
+    os.unlink(fn1_testout)
 
-
-def test_getOrgIDs():
-    orgids = ed(2).getOrgIDs(signerCert7())
-    assert orgids == ['AT:VKZ:XFN-318886a']
-
-
-def test_isDeletionRequest():
-    assert ed(2).isDeletionRequest() == False
-    assert ed(4).isDeletionRequest() == True
-
-
-#def test_remove_enveloped_signature():
-#    ed10 = ed(10)
-#    ed10.remove_enveloped_signature()
-#    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='xml').name
-#    ed10.write(fn10_edit)
-#    with open(ed_path(15)) as fd15:
-#        with open(fn10_edit) as fn10_edit:
-#            assert fn10_edit.read() == fd15.read()
-
-
-def test_set_registrationinfo():
-    ed14=ed(1)
-    # make expected equal to actual with fake registrationInstant = "1900-01-01T00:00:00Z"
-    SAMLEntityDescriptorPVP.set_registrationinfo(ed14.ed.tree, SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
-    fn14_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test14_edit', suffix='xml').name
-    ed14.write(fn14_edit)
-    with open(ed_path(14)) as fd1:
-        with open(fn14_edit) as fd2:
-            assert  fd2.read() == fd1.read()
-    os.unlink(fn14_edit)
-
-
-def test_validate_schematron():
-    ed(2).validate_schematron()
-
-
-def test_validate_xsd():
-    ed(2).validate_xsd()
-    with pytest.raises(lxml.etree.XMLSyntaxError):
-        ed(8).validate_xsd()
-    with pytest.raises(InvalidSamlXmlSchemaError):
-        ed(9).validate_xsd()
-
-
-def test_validateDomainNames():
-    with pytest.raises(InvalidFQDNinEntityID):
-        ed(1).validateDomainNames(domains7())
-    ed(7).validateDomainNames(domains7())
-    with pytest.raises(InvalidFQDNInEndpoint):
-        ed(17).validateDomainNames(domains7())
-
-
-def test_validateSignature():
-    with pytest.raises(ValidationError):
-        ed(1).validateSignature()
-    ed(10).validateSignature()
-    ed(11).validateSignature()
-
-
-def test_verify_filename():
-    with pytest.raises(InputValueError):
-        ed(2).verify_filename()
-    ed(0).verify_filename()
-
-
-#def test_write():
-#   test included by test_remove_enveloped_signature
-
+def test02_edval_str():
+    for file_index in range(1, 18):
+        run_test_with_xmlstr(file_index)

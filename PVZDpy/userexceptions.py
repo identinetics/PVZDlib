@@ -1,15 +1,19 @@
 __author__ = 'r2h2'
 
-class JSONdecodeError(Exception):
+class PVZDuserexception(Exception):
     pass
 
 
-class HashChainError(Exception):
+class JSONdecodeError(PVZDuserexception):
+    pass
+
+
+class HashChainError(PVZDuserexception):
     pass
 
 
 
-class InputFormatOrValueError(Exception):
+class InputFormatOrValueError(PVZDuserexception):
     pass
 
 
@@ -21,40 +25,40 @@ class InputFormatError(InputFormatOrValueError):
     pass
 
 
-class SecurityLayerUnavailableError(Exception):
+class SecurityLayerUnavailableError(PVZDuserexception):
     """ Security Layer (MOCCA etc.) is inactive (local port 3495 not open) """
     pass
 
 
-class SecurityLayerCancelledError(Exception):
+class SecurityLayerCancelledError(PVZDuserexception):
     """ Security Layer (MOCCA etc.) interaction was cancelled by user """
     pass
 
 
-class InvalidArgumentValueError(Exception):
+class InvalidArgumentValueError(PVZDuserexception):
     pass
 
 
-class EmptySamlEDError(Exception):
+class EmptySamlEDError(PVZDuserexception):
     """ SAML metadata file is empty or does not exist """
     pass
 
 
-class EmptyAODSError(Exception):
+class EmptyAODSError(PVZDuserexception):
     """ Policy Journal file is empty and will not be saved"""
     pass
 
 
-class InvalidSamlXmlSchemaError(Exception):
+class InvalidSamlXmlSchemaError(PVZDuserexception):
     """ Invalid XML schmea for SAML metadata """
     pass
 
 
-class MultipleEntitiesNotAllowed(Exception):
+class MultipleEntitiesNotAllowed(PVZDuserexception):
     """ More than 1 EntitiyDescriptor is not allowed in a request """
     pass
 
-class ValidationError(Exception):
+class ValidationError(PVZDuserexception):
     """ application-level validation failure """
     pass
 

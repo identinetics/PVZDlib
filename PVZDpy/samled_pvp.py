@@ -202,7 +202,7 @@ class SAMLEntityDescriptorPVP:
         pass  # TODO: implement
 
     def validateSignature(self) -> str:
-        xml_sig_verifyer = XmlSigVerifyer(testhint='PEPrequest');
+        xml_sig_verifyer = XmlSigVerifyer();
         xml_sig_verifyer_response = xml_sig_verifyer.verify(self.ed_path)
         #if self.verbose:
         #    cert = XY509cert(signerCertificateEncoded, inform='DER') # TODO: check encoding
