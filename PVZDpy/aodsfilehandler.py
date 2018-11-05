@@ -64,7 +64,7 @@ class AODSFileHandler():
     def readFile(self):
         if self._aodsFile[-4:] == '.xml':
             # verify whether the signature is valid
-            xml_sig_verifyer = XmlSigVerifyer(testhint='aods signature');
+            xml_sig_verifyer = XmlSigVerifyer();
             xml_sig_verifyer_response = xml_sig_verifyer.verify(self._aodsFile)
             # verify whether the signer is authorized
             if xml_sig_verifyer_response.signer_cert_pem not in self.trustedCerts:

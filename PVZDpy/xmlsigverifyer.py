@@ -4,9 +4,8 @@ __author__ = 'r2h2'
 
 
 class XmlSigVerifyer():
-    def __init__(self, testhint=None):
+    def __init__(self):
         self.xml_sig_verifier = XmlSigVerifyerMoasp()
-        self.testhint=testhint
 
     def verify(self, xml_file_name, verify_file_extension=True) -> str:
         """ verify xmldsig and return signerCertificate """
