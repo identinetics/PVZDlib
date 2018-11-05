@@ -28,7 +28,7 @@ class XY509cert:
         hasStartLine = False
         new_cert = ''
         for l in cert_str_normalized.splitlines(True):
-            if l == '-----BEGIN CERTIFICATE-----\n':
+            if l.lstrip() == '-----BEGIN CERTIFICATE-----\n':
                 hasStartLine = True
             elif hasStartLine:
                 l = '\n'.join(textwrap.wrap(l, 64)) + '\n'
