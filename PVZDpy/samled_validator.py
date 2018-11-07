@@ -116,7 +116,7 @@ class SamlEdValidator:
                     org_ids = self.ed.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
                     allowedDomains = self.ed.getAllowedDomainsForOrgs(org_ids)
                     self.ed.validateDomainNames(allowedDomains)
-                    self.orgid = self.ed.get_orgid(allowedDomains)
+                    self.orgid = self.ed.get_orgid()
                     self.orgcn = self.ed.get_orgcn(self.orgid)
                     self.authz_ok = True
                 except(PVZDuserexception) as e:

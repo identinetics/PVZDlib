@@ -134,16 +134,22 @@ class SAMLEntityDescriptorPVP:
             raise UnauthorizedSignerError('Signer certificate not found in policy directory')
         return org_ids
 
-    def get_orgid(self, allowedDomains) -> str:
-        pass
-    #    parent_dn = re.sub('^[^\.]+\.', '', dn)
-    #    wildcard_dn = '*.' + parent_dn
-    #    if dn in allowedDomains or wildcard_dn in allowedDomains:
-    #        return True
-    #    return False
+    def get_orgid(self) -> str:
+        fqdn = self._get_entityid_hostname()
+        domain_rec = self.policyDict["domain"].get(fqdn)
+        if not domain_rec:
+            parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
+            wildcard_fqdn = '*.' + parent_fqdn
+            domain_rec = self.policyDict["domain"].get(wildcard_fqdn)
+        if domain_rec:
+            orgid = domain_rec[0]
+            return orgid
+        else:
+            return None
 
     def get_orgcn(self, orgid) -> str:
-        pass
+        return self.policyDict["organization"].get(orgid)[0]
+
 
     def get_xml_str(self):
         return self.ed.get_xml_str()
