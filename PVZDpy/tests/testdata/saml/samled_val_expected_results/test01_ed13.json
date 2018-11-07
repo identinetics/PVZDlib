@@ -1,0 +1,13 @@
+{
+  "authz_ok": null,
+  "content_val_ok": null,
+  "deletionRequest": null,
+  "entityID": "",
+  "orgcn": "",
+  "orgid": "",
+  "signer_cert_cn": "",
+  "signer_cert_pem": "",
+  "val_mesg_dict": {
+    "Parse XML": "[MultipleEntitiesNotAllowed] "
+  }
+}

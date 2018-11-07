@@ -1,0 +1,11 @@
+{
+  "authz_ok": null,
+  "content_val_ok": true,
+  "deletionRequest": false,
+  "entityID": "https://idp.identinetics.com/idp.xml",
+  "orgcn": "",
+  "orgid": "",
+  "signer_cert_cn": "",
+  "signer_cert_pem": "",
+  "val_mesg_dict": {}
+}
