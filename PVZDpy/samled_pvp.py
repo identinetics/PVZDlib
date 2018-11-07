@@ -124,7 +124,7 @@ class SAMLEntityDescriptorPVP:
         entityID_url = self.ed.get_entityid()
         return urlparse(entityID_url).hostname
 
-    def getOrgIDs(self, signerCert) -> str:
+    def get_orgids_for_signer(self, signerCert) -> str:
         """ return associated organizations for signer. There are two possible paths:
                 signer-cert -> portaladmin -> [orgid]
         """
@@ -133,6 +133,17 @@ class SAMLEntityDescriptorPVP:
         except KeyError:
             raise UnauthorizedSignerError('Signer certificate not found in policy directory')
         return org_ids
+
+    def get_orgid(self, allowedDomains) -> str:
+        pass
+    #    parent_dn = re.sub('^[^\.]+\.', '', dn)
+    #    wildcard_dn = '*.' + parent_dn
+    #    if dn in allowedDomains or wildcard_dn in allowedDomains:
+    #        return True
+    #    return False
+
+    def get_orgcn(self, orgid) -> str:
+        pass
 
     def get_xml_str(self):
         return self.ed.get_xml_str()

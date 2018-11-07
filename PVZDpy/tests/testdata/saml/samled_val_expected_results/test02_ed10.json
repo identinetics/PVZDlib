@@ -1,4 +1,6 @@
 {
+  "authz_ok": false,
+  "content_val_ok": false,
   "deletionRequest": false,
   "entityID": "https://idp.example.com/idp.xml",
   "orgcn": "",
@@ -8,6 +10,5 @@
   "val_mesg_dict": {
     "Entity certificate check": "[CertExpiredError] Certificate is expired",
     "validate Domain Names": "[InvalidFQDNinEntityID] FQDN of entityID idp.example.com not in domains allowed for signer: ['*.identinetics.com']"
-  },
-  "val_ok": false
+  }
 }

@@ -13,12 +13,12 @@ def cert1():
 
 @pytest.fixture
 def ed1():
-    return SAMLEntityDescriptor(ed_path=path_prefix+'03_idp_valid_unsigned_c14n.xml')
+    return SAMLEntityDescriptor(ed_path=path_prefix+'unsigned_ed/03_idp_valid_c14n.xml')
 
 @pytest.fixture
 def xml_str1():
     # xml encoding _must_ be utf-8
-    with open(path_prefix+'03_idp_valid_unsigned_c14n.xml') as fd:
+    with open(path_prefix+'unsigned_ed/03_idp_valid_c14n.xml') as fd:
         return fd.read()
 
 @pytest.fixture
@@ -27,12 +27,12 @@ def entityid1():
 
 @pytest.fixture
 def result16a():
-    with open(path_prefix+'18a_ed_from_cert.xml') as fd:
+    with open(path_prefix+'samled_expected_results/18a_ed_from_cert.xml') as fd:
         return fd.read()
 
 @pytest.fixture
 def result16b():
-    with open(path_prefix+'18b_ed_from_cert.xml') as fd:
+    with open(path_prefix+'samled_expected_results/18b_ed_from_cert.xml') as fd:
         return fd.read()
 
 
