@@ -175,7 +175,7 @@ class SAMLEntityDescriptor:
 
 
     def remove_enveloped_signature(self):
-        lxml_helper.delete_element_if_existing(self.ed.tree,
+        lxml_helper.delete_element_if_existing(self.tree,
             '/md:EntityDescriptor/ds:Signature',
             {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
 
