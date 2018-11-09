@@ -61,14 +61,14 @@ def test_isDeletionRequest():
     assert ed(4).isDeletionRequest() == True
 
 
-#def test_remove_enveloped_signature():
-#    ed10 = ed(10)
-#    ed10.remove_enveloped_signature()
-#    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='xml').name
-#    ed10.write(fn10_edit)
-#    with open(ed_path(15)) as fd15:
-#        with open(fn10_edit) as fn10_edit:
-#            assert fn10_edit.read() == fd15.read()
+def test_remove_enveloped_signature():
+    ed10 = ed(10)
+    ed10.remove_enveloped_signature()
+    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='xml').name
+    ed10.write(fn10_edit)
+    with open(ed_path(17)) as fd17:
+        with open(fn10_edit) as fn10_edit:
+            assert fn10_edit.read() == fd17.read()
 
 
 def test_set_registrationinfo():

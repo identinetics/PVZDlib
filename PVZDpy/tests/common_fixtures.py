@@ -31,8 +31,8 @@ def ed_path(file_index: int):
         'signed_ed/13_idp_entitiesdescriptor_2idps.xml',
         'signed_ed/14_cert_subject_mismatch_gondorWienGvAt_idp.xml',
         'signed_ed/15_endpoint_mismatch_idp1IdentineticsCom_idpXml.xml',
-        '16_01_plus_reginfo.xml',
-        '17_10_signature_removed.xml',
+        'samled_expected_results/16_01_plus_reginfo.xml',
+        'samled_expected_results/17_idp_signed_10_edit.xml',
     )
     return path_prefix_testin + path[file_index]
 

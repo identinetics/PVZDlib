@@ -1,6 +1,7 @@
-import logging, os, re, sys
+import logging, os, re, sys, tempfile
 import lxml.etree
 from .constants import *
+import PVZDpy.lxml_helper as lxml_helper
 from .userexceptions import *
 from .xmlschemavalidator import XmlSchemaValidator
 from .xy509cert import XY509cert
@@ -172,6 +173,11 @@ class SAMLEntityDescriptor:
         xml_str = lxml.etree.tostring(self.tree, encoding='utf-8', pretty_print=False)
         return xml_str.decode('utf-8')
 
+
+    def remove_enveloped_signature(self):
+        lxml_helper.delete_element_if_existing(self.ed.tree,
+            '/md:EntityDescriptor/ds:Signature',
+            {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
 
     def validate_schematron(self):
         pass  # TODO: implement

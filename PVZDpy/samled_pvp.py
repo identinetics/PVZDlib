@@ -7,6 +7,7 @@ import sys
 from OpenSSL import crypto
 from urllib.parse import urlparse
 from .constants import *
+import PVZDpy.lxml_helper as lxml_helper
 from .samlentitydescriptor import SAMLEntityDescriptor
 from .userexceptions import *
 from .xy509cert import XY509cert
@@ -75,27 +76,6 @@ class SAMLEntityDescriptorPVP:
         <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/idp/unused"/>
       </md:IDPSSODescriptor>
     </md:EntityDescriptor>""".format(eid=entityid)
-
-    @staticmethod
-    def _delete_element_if_existing(
-            tree: lxml.etree.ElementTree,
-            xpath_remove_element: str,
-            namespaces: dict):
-        if len(tree.xpath(xpath_remove_element, namespaces=namespaces)) > 0:
-            remove_elem = tree.xpath(xpath_remove_element, namespaces=namespaces)[0]
-            remove_elem.getparent().remove(remove_elem)
-
-    @staticmethod
-    def _insert_if_missing(
-            tree: lxml.etree.ElementTree,
-            xpath_insert_parent: str,
-            xpath_new_element: str,
-            new_element: lxml.etree.Element,
-            namespaces: dict):
-        if len(tree.xpath(xpath_new_element, namespaces=namespaces)) == 0:
-            parent_element = tree.xpath(xpath_insert_parent, namespaces=namespaces)
-            parent_element[0].insert(0, new_element)  # append only for 1st
-            pass
 
     def getAllowedDomainsForOrgs(self, org_ids: list) -> list:
         allowedDomains = []
@@ -171,18 +151,18 @@ class SAMLEntityDescriptorPVP:
             return True
         return False
 
-    #def remove_enveloped_signature(self):
-    #    SAMLEntityDescriptorPVP._delete_element_if_existing(self.ed.tree,
-    #        '/md:EntityDescriptor/ds:Signature',
-    #        {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
+    def remove_enveloped_signature(self):
+        lxml_helper.delete_element_if_existing(self.ed.tree,
+            '/md:EntityDescriptor/ds:Signature',
+            {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
 
     @staticmethod
     def set_registrationinfo(tree, authority, fixed_date_for_unittest=False):
-        SAMLEntityDescriptorPVP._delete_element_if_existing(tree,
+        lxml_helper.delete_element_if_existing(tree,
             '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
             {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
         new = lxml.etree.Element(XMLNS_MD_PREFIX + "Extensions")
-        SAMLEntityDescriptorPVP._insert_if_missing (tree,
+        lxml_helper.insert_if_missing (tree,
             '//md:EntityDescriptor',
             '//md:EntityDescriptor/md:Extensions',
             new,
@@ -195,7 +175,7 @@ class SAMLEntityDescriptorPVP:
             now = datetime.now()
         now_iso8601 = now.strftime("%Y-%m-%dT%H:%M:%SZ")
         new.set(XMLNS_MDRPI_PREFIX+'registrationInstant', now_iso8601)
-        SAMLEntityDescriptorPVP._insert_if_missing (tree,
+        lxml_helper.insert_if_missing (tree,
             '//md:EntityDescriptor/md:Extensions',
             '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
             new,
