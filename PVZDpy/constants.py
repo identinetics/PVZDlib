@@ -1,7 +1,7 @@
 import os
 __author__ = 'r2h2'
 
-GIT_REQUESTQUEUE = 'request_queue'
+GIT_REQUESTQUEUE = 'submitted'
 GIT_DELETED = 'unpublished'
 GIT_REJECTED = 'rejected'
 GIT_POLICYDIR = 'policydir'

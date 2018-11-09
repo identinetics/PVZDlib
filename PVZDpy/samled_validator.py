@@ -26,6 +26,24 @@ class SamlEdValidator:
         self.schematron_ok = None
         self.certcheck_ok = None
 
+    def _format_val_msg(self, exception, exception_str_edited=None):
+        testid_str = ' (test{}) '.format(self.testid) if self.testid else ''
+        e_str = exception_str_edited if exception_str_edited else str(exception)
+        return '[{}] {}{}'.format(exception.__class__.__name__, testid_str, e_str)
+
+    def get_obj_as_dict(self):
+        return {
+            'deletionRequest': self.deletionRequest,
+            'entityID': self.entityID,
+            'orgcn': self.orgcn,
+            'orgid': self.orgid,
+            'signer_cert_cn': self.signer_cert_cn,
+            'signer_cert_pem': self.signer_cert_pem,
+            'val_mesg_dict': self.val_mesg_dict,
+            'content_val_ok': self.content_val_ok,
+            'authz_ok': self.authz_ok,
+        }
+
     def _get_xml_str(self, ed_str='', ed_path='') -> str:
         if (ed_str and ed_path) or (not ed_str and not ed_path):
             raise InputValueError('one and only one argument out of (ed_str, ed_path) is required')
@@ -48,11 +66,6 @@ class SamlEdValidator:
         self.val_mesg_dict = {}
         self.content_val_ok = None
         self.authz_ok = None
-
-    def _format_val_msg(self, exception, exception_str_edited=None):
-        testid_str = ' (test{}) '.format(self.testid) if self.testid else ''
-        e_str = exception_str_edited if exception_str_edited else str(exception)
-        return '[{}] {}{}'.format(exception.__class__.__name__, testid_str, e_str)
 
     def validate_entitydescriptor(self, ed_str_new='', ed_path_new='', sigval=True, testid=None):
         self.testid = testid
@@ -127,17 +140,3 @@ class SamlEdValidator:
                 self.val_mesg_dict['Validate signature'] = self._format_val_msg(e)
 
         fd.close()
-
-
-    def get_obj_as_dict(self):
-        return {
-            'deletionRequest': self.deletionRequest,
-            'entityID': self.entityID,
-            'orgcn': self.orgcn,
-            'orgid': self.orgid,
-            'signer_cert_cn': self.signer_cert_cn,
-            'signer_cert_pem': self.signer_cert_pem,
-            'val_mesg_dict': self.val_mesg_dict,
-            'content_val_ok': self.content_val_ok,
-            'authz_ok': self.authz_ok,
-        }
