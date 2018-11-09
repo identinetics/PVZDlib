@@ -114,12 +114,12 @@ class SAMLEntityDescriptor:
     def get_entityid(self):
         return self.tree.getroot().attrib['entityID']
 
-
-    def get_filename_from_entityid(self) -> str:
+    @staticmethod
+    def get_filename_from_entityid(entityid) -> str:
         """ remove non-alpha characters, uppercase first char after no-alpha;
             add _ after hostname and .xml as extension
         """
-        x = re.sub(r'^https?://', '', self.get_entityid())
+        x = re.sub(r'^https?://', '', entityid)
         r = ''
         upper = False
         in_path = False

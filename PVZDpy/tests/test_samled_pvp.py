@@ -64,7 +64,7 @@ def test_isDeletionRequest():
 def test_remove_enveloped_signature():
     ed10 = ed(10)
     ed10.remove_enveloped_signature()
-    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='xml').name
+    fn10_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test10_edit', suffix='.xml').name
     ed10.write(fn10_edit)
     with open(ed_path(17)) as fd17:
         with open(fn10_edit) as fn10_edit:

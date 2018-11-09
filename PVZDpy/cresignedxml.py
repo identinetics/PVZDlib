@@ -14,16 +14,7 @@ def creSignedXML(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
                                 sig_type=sig_type,
                                 sig_position=sig_position)
 
-
-if __name__ == '__main__':
-    """ main for simplified command-line tests of XML documents with a dummy md:EntityDescriptor as root element """
-    print("args=" + sys.argv[1] + "\n")
-    if sys.argv[1] == 'Enveloping':
-        print("Enveloping signature\n")
-        print(creSignedXML('Test string'))
-    elif sys.argv[1] == 'Enveloped':
-        print("Enveloped signature\n")
-        ed = '''\
+ed = '''\
 <md:EntityDescriptor entityID="https://gondor.magwien.gv.at/idp"
     xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
@@ -38,8 +29,18 @@ if __name__ == '__main__':
     </md:KeyDescriptor>
     <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://gondor.magwien.gv.at/R-Profil-dummy"/>
   </md:IDPSSODescriptor>
-</md:EntityDescriptor>'''
+</md:EntityDescriptor>
+'''
 
-        print(creSignedXML(ed, 'enveloped', sig_position='/md:EntityDescriptor')
+
+if __name__ == '__main__':
+    """ main for simplified command-line tests of XML documents with a dummy md:EntityDescriptor as root element """
+    print("args=" + sys.argv[1] + "\n")
+    if sys.argv[1] == 'Enveloping':
+        print("Enveloping signature\n")
+        print(creSignedXML('Test string'))
+    elif sys.argv[1] == 'Enveloped':
+        print("Enveloped signature\n")
+        print(creSignedXML(ed, 'enveloped', sig_position='/md:EntityDescriptor', verbose=True))
     else:
         print('invalid argument')

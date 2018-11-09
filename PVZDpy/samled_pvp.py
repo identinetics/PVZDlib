@@ -98,7 +98,7 @@ class SAMLEntityDescriptorPVP:
         return self.ed.get_entityid()
 
     def get_filename_from_entityid(self) -> str:
-        return self.ed.get_filename_from_entityid()
+        return SAMLEntityDescriptor.get_filename_from_entityid(self.ed.get_entityid)
 
     def _get_entityid_hostname(self):
         entityID_url = self.ed.get_entityid()
@@ -210,10 +210,11 @@ class SAMLEntityDescriptorPVP:
         """ verify if filename convention maps the entityID. Do _not_ call on object creation """
         basefn = os.path.basename(self.ed_path)
         # file name must have the format "*compressedEntityId.xml". Check right substring:
-        if not re.search(str(self.ed.get_filename_from_entityid())+'$', basefn):
+        fn = SAMLEntityDescriptor.get_filename_from_entityid(self.ed.get_entityid())
+        if not re.search(str(fn)+'$', basefn):
             raise InputValueError('Invalid format for EntitiyDescriptor filename "%s". The file name '
                                   'for entityID %s must end with "%s" - see PAtool documentation.' % \
-                                  (basefn, self.get_entityid(), self.ed.get_filename_from_entityid()))
+                                  (basefn, self.get_entityid(), fn))
 
     def write(self, new_filename=None):
         fn = self.ed.ed_path if new_filename is None else new_filename

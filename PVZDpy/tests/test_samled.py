@@ -68,7 +68,7 @@ def test_get_namespace_prefix():
     assert ed1().get_namespace_prefix() == 'md'
 
 def test_get_filename_from_entityid():
-    assert ed1().get_filename_from_entityid() == 'idpExampleCom_idpXml.xml'
+    assert SAMLEntityDescriptor.get_filename_from_entityid(ed1().get_entityid()) == 'idpExampleCom_idpXml.xml'
 
 def test_validate_xsd():
     ed1().validate_xsd()
