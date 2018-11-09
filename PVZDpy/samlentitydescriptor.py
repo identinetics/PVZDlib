@@ -8,6 +8,16 @@ from .xy509cert import XY509cert
 __author__ = 'r2h2'
 
 
+def SAMLEntityDescriptorFromStrFactory(ed_str):
+    ''' Create SamlEdValidator from string - only for utf-8 (default) XML encoding '''
+    fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml')
+    fd.write(ed_str)
+    fd.flush()
+    ed = SAMLEntityDescriptor(fd.name)
+    fd.close
+    return ed
+
+
 class SAMLEntityDescriptor:
     """
     Instance of plain SAML EntityDescriptor without deployment profile specific extensions
