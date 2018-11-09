@@ -17,7 +17,6 @@ def invocationargs(aods_filename, trustedcerts_filename):
 #     class Args:
 #         def __init__(self, aods_filename, trustedcerts_filename):
 #             self.aods = path_prefix+aods_filename
-#             self.verbose = False
 #             self.list_trustedcerts = False
 #             self.noxmlsign = False
 #             self.trustedcerts = path_prefix+trustedcerts_filename

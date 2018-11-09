@@ -21,8 +21,7 @@ def githandler(workdir):
     repo.index.add([join(repo_dir_work, '*')])
     repo.index.commit('initial testdata loaded')
     return GitHandler(repo_dir_work,
-                      pepout_dir,
-                      verbose=True)
+                      pepout_dir)
 
 
 #def test_make_repo_dirs():

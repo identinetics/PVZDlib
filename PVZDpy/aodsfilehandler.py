@@ -15,7 +15,6 @@ __author__ = 'r2h2'
 class AODSFileHandler():
     def __init__(self, inv_args: aodsfhInvocation):
         self._aodsFile = inv_args.aods
-        self.verbose = inv_args.verbose
         self.list_trustedcerts = inv_args.list_trustedcerts
 
         if not inv_args.noxmlsign and self._aodsFile[-4:] != '.xml':
@@ -57,7 +56,7 @@ class AODSFileHandler():
                 f.write(json.dumps(s))
         else:
             j = json.dumps(s)
-            x = creSignedXML(j, verbose=self.verbose)
+            x = creSignedXML(j)
             with open(self._aodsFile, 'w') as f:
                 f.write(x)
 

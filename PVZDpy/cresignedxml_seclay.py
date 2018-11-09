@@ -65,7 +65,7 @@ def get_seclay_requesttemplate(sigType, sigPosition=None) -> str:
   </sl:SignatureInfo>
 </sl:CreateXMLSignatureRequest> ''' % ('%s', sigPosition)
 
-def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=None, verbose=False):
+def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
     ''' Create XAdES signature using AT Bürgerkarte/Security Layer
         There are two signature types:
             1. envelopingB64BZIP: compress, b64-encode and sign the data (enveloping)
@@ -98,8 +98,6 @@ def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=No
             '-----------HTTP Request End -----------'
         )
         logging.debug(logmsg)
-        #if verbose:
-        #    print(logmsg)
         r = s.send(prepped)
     except requests.exceptions.ConnectionError as e:
         raise ValidationError("Cannot connect to security layer (MOCCA) to create a signature " + e.strerror)

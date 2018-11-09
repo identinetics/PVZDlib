@@ -8,7 +8,7 @@ from .userexceptions import *
 __author__ = 'r2h2'
 
 class GitHandler:
-    def __init__(self, repo_dir, pepout_dir, init=False, verbose=False):
+    def __init__(self, repo_dir, pepout_dir, init=False):
         if init:
             shutil.rmtree(repo_dir, ignore_errors=True)
             self.make_repo_dirs(repo_dir, pepout_dir)
@@ -23,7 +23,6 @@ class GitHandler:
         self.requestedpath = join(self.repo_dir_abs, GIT_REQUESTQUEUE)
         self.unpublishpath = join(self.repo_dir_abs, GIT_DELETED)
         self.publishedpath = join(self.repo_dir_abs, GIT_PUBLISHED)
-        self.verbose = verbose
 
     @staticmethod
     def make_repo_dirs(repo_dir):

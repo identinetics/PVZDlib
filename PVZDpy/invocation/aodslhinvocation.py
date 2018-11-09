@@ -12,8 +12,6 @@ class aodslhInvocation(AbstractInvocation):
                  printtrustedcerts = False,
                  registrant = '',
                  submitter = '',
-                 debug = False,
-                 verbose = False,
                  list_trustedcerts = False,
                  trustedcerts = None):
 
@@ -26,7 +24,5 @@ class aodslhInvocation(AbstractInvocation):
         self.printtrustedcerts =  printtrustedcerts
         self.registrant =         registrant
         self.submitter =          submitter
-        self.debug =              debug
-        self.verbose =            verbose
         self.list_trustedcerts =  list_trustedcerts
         self.trustedcerts =       trustedcerts

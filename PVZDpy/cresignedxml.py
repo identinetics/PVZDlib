@@ -7,13 +7,12 @@ from .cresignedxml_seclay import *
 __author__ = 'r2h2'
 
 
-def creSignedXML(sig_data, sig_type='envelopingB64BZIP', sig_position=None, verbose=False):
+def creSignedXML(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
     ''' Create XML signature '''
 
     return cre_signedxml_seclay(sig_data,
                                 sig_type=sig_type,
-                                sig_position=sig_position,
-                                verbose=verbose)
+                                sig_position=sig_position)
 
 
 if __name__ == '__main__':
@@ -21,7 +20,7 @@ if __name__ == '__main__':
     print("args=" + sys.argv[1] + "\n")
     if sys.argv[1] == 'Enveloping':
         print("Enveloping signature\n")
-        print(creSignedXML('Test string', verbose=True))
+        print(creSignedXML('Test string'))
     elif sys.argv[1] == 'Enveloped':
         print("Enveloped signature\n")
         ed = '''\
@@ -41,6 +40,6 @@ if __name__ == '__main__':
   </md:IDPSSODescriptor>
 </md:EntityDescriptor>'''
 
-        print(creSignedXML(ed, 'enveloped', sig_position='/md:EntityDescriptor', verbose=True))
+        print(creSignedXML(ed, 'enveloped', sig_position='/md:EntityDescriptor')
     else:
         print('invalid argument')

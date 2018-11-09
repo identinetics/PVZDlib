@@ -9,7 +9,7 @@ import localconfig
 __author__ = 'r2h2'
 
 def cre_signedxml_signxml(sig_data, sig_type='envelopingB64BZIP',
-                          sig_position=None, verbose=False,
+                          sig_position=None,
                           sig_cert=None, sig_key=None):
     ''' Create XML signature using py signxml (based on lxml + openssl) '''
     sig_cert = (localconfig.AODSSIGCERT if sig_cert is None else sig_cert)
