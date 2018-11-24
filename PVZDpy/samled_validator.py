@@ -18,6 +18,9 @@ from PVZDpy.xy509cert import XY509cert
     but str from the database
 """
 
+class NoFurtherValidation(Exception):
+    pass
+
 class SamlEdValidator:
     def __init__(self, policydir):
         self._reset_validation_result()
@@ -72,33 +75,57 @@ class SamlEdValidator:
         self._reset_validation_result()
         if not getattr(self, 'policydir', False):
             self.policydir = self.getPolicyDict_from_json()
+        try:
+            self._validate_parse_xml(ed_str_new, ed_path_new)
+            self._create_tempfile_from_edstr()
+            self._validate_instantiate_ed()
+            self._validate_xsd()
+            self.entityID = self.ed.get_entityid()
+            self._validate_saml_profile()
+            self.deletionRequest = self.ed.isDeletionRequest()
+            self._validate_certcheck()
+            self.content_val_ok = self.schematron_ok and self.certcheck_ok
+            if sigval:
+                self._validate_authz()
+            self._discard_tempfile()
+        except NoFurtherValidation:
+            pass
 
+
+    def _validate_parse_xml(self, ed_str_new, ed_path_new):
         try:
             self.ed_str = self._get_xml_str(ed_str_new, ed_path_new)
         except(lxml.etree.XMLSyntaxError) as e:
             self.val_mesg_dict['Parse XML'] = self._format_val_msg(e)
-            return
+            raise NoFurtherValidation
 
-        fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml')
-        fd.write(self.ed_str)
-        fd.flush()
+    def _create_tempfile_from_edstr(self):
+        # make xml available for lxml file parsing (to avoid encoding issues)
+        self.fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml')
+        self.fd.write(self.ed_str)
+        self.fd.flush()
 
+    def _discard_tempfile(self):
+        self.fd.close()
+
+    def _validate_instantiate_ed(self):
         try:
-            self.ed = SAMLEntityDescriptorPVP(fd.name, self.policydir)
+            self.ed = SAMLEntityDescriptorPVP(self.fd.name, self.policydir)
         except(PVZDuserexception) as e:
             self.val_mesg_dict['Parse XML'] = self._format_val_msg(e)
-            return
+            raise NoFurtherValidation
 
+    def _validate_xsd(self):
         try:
             self.ed.validate_xsd()
-            self.entityID = self.ed.get_entityid()
         except(PVZDuserexception) as e:
             msg = str(e)
             fixed_part_pos = msg.find('lineNumber: ')
             fixed_part = msg[fixed_part_pos:]
             self.val_mesg_dict['Validate SAML schema'] = self._format_val_msg(e, fixed_part)
-            return
+            raise NoFurtherValidation
 
+    def _validate_saml_profile(self):
         try:
             self.ed.validate_schematron()
             self.schematron_ok = True
@@ -106,8 +133,7 @@ class SamlEdValidator:
             self.schematron_ok = False
             self.val_mesg_dict['Validate profile'] = self._format_val_msg(e)
 
-        self.deletionRequest = self.ed.isDeletionRequest()
-
+    def _validate_certcheck(self):
         try:
             if  self.ed.isDeletionRequest():
                 self.certcheck_ok = True
@@ -118,25 +144,22 @@ class SamlEdValidator:
             self.certcheck_ok = False
             self.val_mesg_dict['Entity certificate check'] = self._format_val_msg(e)
 
-        self.content_val_ok = self.schematron_ok and self.certcheck_ok
-
-        if sigval:
+    def _validate_authz(self):
+        try:
+            xml_sig_verifyer_response = self.ed.validateSignature()
+            self.signer_cert_pem = xml_sig_verifyer_response.signer_cert_pem
+            self.signer_cert_cn = XY509cert(self.signer_cert_pem).getSubjectCN()
             try:
-                xml_sig_verifyer_response = self.ed.validateSignature()
-                self.signer_cert_pem = xml_sig_verifyer_response.signer_cert_pem
-                self.signer_cert_cn = XY509cert(self.signer_cert_pem).getSubjectCN()
-                try:
-                    org_ids = self.ed.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
-                    allowedDomains = self.ed.getAllowedDomainsForOrgs(org_ids)
-                    self.ed.validateDomainNames(allowedDomains)
-                    self.orgid = self.ed.get_orgid()
-                    self.orgcn = self.ed.get_orgcn(self.orgid)
-                    self.authz_ok = True
-                except(PVZDuserexception) as e:
-                    self.authz_ok = False
-                    self.val_mesg_dict['validate Domain Names'] = self._format_val_msg(e)
+                org_ids = self.ed.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
+                allowedDomains = self.ed.getAllowedDomainsForOrgs(org_ids)
+                self.ed.validateDomainNames(allowedDomains)
+                self.orgid = self.ed.get_orgid()
+                self.orgcn = self.ed.get_orgcn(self.orgid)
+                self.authz_ok = True
             except(PVZDuserexception) as e:
                 self.authz_ok = False
-                self.val_mesg_dict['Validate signature'] = self._format_val_msg(e)
+                self.val_mesg_dict['validate Domain Names'] = self._format_val_msg(e)
+        except(PVZDuserexception) as e:
+            self.authz_ok = False
+            self.val_mesg_dict['Validate signature'] = self._format_val_msg(e)
 
-        fd.close()

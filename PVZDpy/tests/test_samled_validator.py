@@ -9,9 +9,13 @@ from PVZDpy.userexceptions import *
 from PVZDpy.samled_validator import SamlEdValidator
 from PVZDpy.tests.common_fixtures import *
 
+def assert_equal(expected, actual):
+    # workaround because pycharm does not display the full string (despite pytest -vv etc)
+    msg = "'"+actual+"' != '"+expected+"'"
+    assert expected == actual, msg
 
 def ed_path_testin(file_index: int):
-    return opj(path_prefix_testin, ed_path2(file_index))
+    return ed_path(file_index)
 
 def ed_path_testout(file_index: int, test_index: int):
     os.makedirs(path_prefix_testout, exist_ok=True)
@@ -31,7 +35,8 @@ def run_test_with_edpath(file_index: int, sigval=False, test_index=None):
         fd1.write(json.dumps(ed_dict, indent=2, sort_keys=True))
     with open(fn1_testout) as fd1:
         with open(fn2_testexp) as fd2:
-            assert fd1.read() == fd2.read()
+            #assert fd1.read() == fd2.read()
+            assert_equal(fd1.read(), fd2.read())
     os.unlink(fn1_testout)
 
 def test01_edval_edpath1():
