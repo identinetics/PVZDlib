@@ -219,4 +219,3 @@ class SAMLEntityDescriptorPVP:
     def write(self, new_filename=None):
         fn = self.ed.ed_path if new_filename is None else new_filename
         self.ed.write(fn)
-

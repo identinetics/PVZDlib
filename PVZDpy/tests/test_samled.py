@@ -2,23 +2,16 @@ import json
 import pytest
 from PVZDpy.samlentitydescriptor import SAMLEntityDescriptor
 from PVZDpy.userexceptions import InputValueError
-
-#path_prefix = 'PVZDpy/tests/testdata/saml/'
-path_prefix = 'testdata/saml/'
-
-@pytest.fixture
-def cert1():
-    with open(path_prefix+'cert1_redmineIdentineticsCom-cer.pem') as fd:
-        return fd.read()
+from PVZDpy.tests.common_fixtures import cert1, ed_path
 
 @pytest.fixture
 def ed1():
-    return SAMLEntityDescriptor(ed_path=path_prefix+'unsigned_ed/03_idp_valid_c14n.xml')
+    return SAMLEntityDescriptor(ed_path=ed_path(3))
 
 @pytest.fixture
 def xml_str1():
     # xml encoding _must_ be utf-8
-    with open(path_prefix+'unsigned_ed/03_idp_valid_c14n.xml') as fd:
+    with open('ed_path(3)') as fd:
         return fd.read()
 
 @pytest.fixture
@@ -26,13 +19,13 @@ def entityid1():
     return 'https://idp.example.com/idp.xml'
 
 @pytest.fixture
-def result16a():
-    with open(path_prefix+'samled_expected_results/18a_ed_from_cert.xml') as fd:
+def result19():
+    with open(ed_path(19)) as fd:
         return fd.read()
 
 @pytest.fixture
-def result16b():
-    with open(path_prefix+'samled_expected_results/18b_ed_from_cert.xml') as fd:
+def result20():
+    with open(ed_path(20)) as fd:
         return fd.read()
 
 
@@ -41,12 +34,12 @@ def test_cert2ed():
             cert_str=cert1(),
             entityid=entityid1(),
             samlrole='IDP')
-    assert ed_str == result16a()
+    assert ed_str == result19()
     ed = SAMLEntityDescriptor(createfromcertstr=cert1(),
                               entityid=entityid1(),
                               samlrole='IDP')
     ed_str = ed.get_xml_str()
-    assert ed_str == result16b()
+    assert ed_str == result20()
 
 
 # def test_create_delete():
