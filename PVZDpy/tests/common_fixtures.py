@@ -36,6 +36,7 @@ def ed_path(file_index: int):
         'signed_ed/18_idpIdentineticsCom_idpXml.xml',
         'samled_expected_results/19_ed_from_cert.xml',
         'samled_expected_results/20_ed_from_cert.xml',
+        'signed_ed/21_idp_urn_entityid.xml',
     )
     return path_prefix_testin + path[file_index]
 

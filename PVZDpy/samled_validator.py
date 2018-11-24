@@ -149,6 +149,10 @@ class SamlEdValidator:
             xml_sig_verifyer_response = self.ed.validateSignature()
             self.signer_cert_pem = xml_sig_verifyer_response.signer_cert_pem
             self.signer_cert_cn = XY509cert(self.signer_cert_pem).getSubjectCN()
+            if len(self.ed.get_entityid_hostname()) == 0:
+                self.authz_ok = False
+                self.val_mesg_dict['validate Domain Names'] = 'Cannot authorize: no hostname found when URL-parsing entityID'
+                raise NoFurtherValidation
             try:
                 org_ids = self.ed.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
                 allowedDomains = self.ed.getAllowedDomainsForOrgs(org_ids)

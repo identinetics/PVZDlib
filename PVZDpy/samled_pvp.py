@@ -45,10 +45,10 @@ class SAMLEntityDescriptorPVP:
             except crypto.X509StoreContextError as e:
                 raise CertInvalidError(('Certificate validation failed. ' + str(e) + ' ' +
                                         cert.getIssuer_str()))
-            if cert.getSubject_str().find('/CN='+self._get_entityid_hostname()) < 0:
+            if cert.getSubject_str().find('/CN='+self.get_entityid_hostname()) < 0:
                 raise EdHostnameNotMatchingCertSubject(
                     'Hostname of entityID (%s) not matching CN in cert subject (%s)' %
-                    (self._get_entityid_hostname(), cert.getSubject_str()))
+                    (self.get_entityid_hostname(), cert.getSubject_str()))
 
         for cert_pem in self._getCerts('SP'):   # certs in SPSSODescriptor elements
             cert = XY509cert(cert_pem)
@@ -100,9 +100,13 @@ class SAMLEntityDescriptorPVP:
     def get_filename_from_entityid(self) -> str:
         return SAMLEntityDescriptor.get_filename_from_entityid(self.ed.get_entityid)
 
-    def _get_entityid_hostname(self):
+    def get_entityid_hostname(self):
         entityID_url = self.ed.get_entityid()
-        return urlparse(entityID_url).hostname
+        hostname = urlparse(entityID_url).hostname
+        if hostname is None:
+            return ''
+        else:
+            return hostname
 
     def get_orgids_for_signer(self, signerCert) -> str:
         """ return associated organizations for signer. There are two possible paths:
@@ -115,7 +119,7 @@ class SAMLEntityDescriptorPVP:
         return org_ids
 
     def get_orgid(self) -> str:
-        fqdn = self._get_entityid_hostname()
+        fqdn = self.get_entityid_hostname()
         domain_rec = self.policyDict["domain"].get(fqdn)
         if not domain_rec:
             parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
@@ -183,10 +187,10 @@ class SAMLEntityDescriptorPVP:
 
     def validateDomainNames(self, allowedDomains) -> bool:
         """ check that entityId and endpoints contain only hostnames from allowed domains"""
-        if not self._isInAllowedDomains(self._get_entityid_hostname(), allowedDomains):
+        if not self._isInAllowedDomains(self.get_entityid_hostname(), allowedDomains):
             raise InvalidFQDNinEntityID('FQDN of entityID %s not in domains allowed for signer: %s' %
-                                        (self._get_entityid_hostname(), sorted(allowedDomains)))
-        logging.debug('signer is allowed to use %s as entityID' % self._get_entityid_hostname())
+                                        (self.get_entityid_hostname(), sorted(allowedDomains)))
+        logging.debug('signer is allowed to use %s as entityID' % self.get_entityid_hostname())
         for attr_value in self.ed.tree.xpath('//md:*/@Location', namespaces={'md': XMLNS_MD}):
             location_hostname = urlparse(attr_value).hostname
             if not self._isInAllowedDomains(location_hostname, allowedDomains):

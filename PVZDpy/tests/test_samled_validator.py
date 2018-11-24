@@ -78,6 +78,9 @@ def test01_edval_edpath12():
 def test01_edval_edpath13():
     run_test_with_edpath(13, sigval=True, test_index=1)
 
+def test01_edval_edpath21():
+    run_test_with_edpath(21, sigval=True, test_index=1)
+
 def run_test_with_xmlstr(file_index: int, sigval=False, test_index=None):
     ed = SamlEdValidator(poldir1())
     with open(ed_path_testin(file_index)) as fd:
