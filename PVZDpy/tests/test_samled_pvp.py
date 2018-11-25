@@ -51,7 +51,7 @@ def test_getAllowedNamespacesForOrgs():
     assert allowed_namespaces == namespaces7()
 
 
-def testget_allowed_namesp_for_fqdn():
+def test_get_allowed_namesp_for_fqdn():
     allowed_namespaces =  {
         "*.identinetics.com": ["AT:VKZ:XFN-318886a"],
         "some.net": ["AT:VKZ:XZVR:4711"],
@@ -73,6 +73,24 @@ def testget_allowed_namesp_for_fqdn():
     fqdn5 = 'idp.some.net'
     expected_result5 = None
     assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn5, {}) == expected_result5
+
+def test_isInAllowedNamespaces():
+    allowed_namespaces =  {
+        "*.identinetics.com": ["AT:VKZ:XFN-318886a"],
+        "some.net": ["AT:VKZ:XZVR:4711"],
+        "some.org": ["AT:VKZ:XZVR:4711"],
+        "sp.somenew.org": ["AT:VKZ:XZVR:4712"]
+    }
+    fqdn1 = 'idp.identinetics.com'
+    assert SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn1, allowed_namespaces)
+    fqdn2 = 'idp.iam.identinetics.com'
+    assert not SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn2, allowed_namespaces)
+    fqdn3 = 'sp.somenew.org'
+    assert SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn3, allowed_namespaces)
+    fqdn4 = 'idp.some.net'
+    assert not SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn4, allowed_namespaces)
+    fqdn5 = 'idp.some.net'
+    assert not SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn5, {})
 
 
 def test_get_orgids_for_signer():

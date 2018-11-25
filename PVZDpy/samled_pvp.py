@@ -155,9 +155,11 @@ class SAMLEntityDescriptorPVP:
         except KeyError:
             return False
 
-    def _isInAllowedNamespaces(self, fqdn, allowed_namespaces) -> bool:
+    @staticmethod
+    def _isInAllowedNamespaces(fqdn, allowed_namespaces) -> bool:
         """  check if fqdn is identical to or in a wildcard-namespace of an allowed namespace """
         # TODO: change to explicit wildcards
+        ###fqdn = self.get_entityid_hostname()
         parent_dn = re.sub('^[^\.]+\.', '', fqdn)
         wildcard_dn = '*.' + parent_dn
         if fqdn in allowed_namespaces or wildcard_dn in allowed_namespaces:
@@ -196,13 +198,13 @@ class SAMLEntityDescriptorPVP:
 
     def validateDomainNames(self, allowedDomains) -> bool:
         """ check that entityId and endpoints contain only hostnames from allowed namespaces"""
-        if not self._isInAllowedNamespaces(self.get_entityid_hostname(), allowedDomains):
+        if not SAMLEntityDescriptorPVP._isInAllowedNamespaces(self.get_entityid_hostname(), allowedDomains):
             raise InvalidFQDNinEntityID('FQDN of entityID %s not in namespaces allowed for signer: %s' %
                                         (self.get_entityid_hostname(), sorted(allowedDomains)))
         logging.debug('signer is allowed to use %s as entityID' % self.get_entityid_hostname())
         for attr_value in self.ed.tree.xpath('//md:*/@Location', namespaces={'md': XMLNS_MD}):
             location_hostname = urlparse(attr_value).hostname
-            if not self._isInAllowedNamespaces(location_hostname, allowedDomains):
+            if not SAMLEntityDescriptorPVP._isInAllowedNamespaces(location_hostname, allowedDomains):
                 raise InvalidFQDNInEndpoint('%s in %s not in allowed namespaces: %s' %
                                             (location_hostname, attr_value, sorted(allowedDomains)))
             logging.debug('signer is allowed to use %s in %s' % (location_hostname, attr_value))
