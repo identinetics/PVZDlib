@@ -10,7 +10,7 @@ from PVZDpy.tests.common_fixtures import *
 #path_prefix_testin = 'PVZDpy/tests/testdata/saml/'
 
 @pytest.fixture
-def domains7():
+def namespaces7():
     return ['*.identinetics.com']
 
 @pytest.fixture
@@ -46,13 +46,13 @@ def test_create_delete():
         assert delete_requ == fd.read()
 
 
-def test_getAllowedDomainsForOrgs():
-    allowed_domains = ed(7).getAllowedDomainsForOrgs(orgids7())
-    assert allowed_domains == domains7()
+def test_getAllowedNamespacesForOrgs():
+    allowed_namespaces = ed(7).getAllowedNamespacesForOrgs(orgids7())
+    assert allowed_namespaces == namespaces7()
 
 
-def testget_allowed_domain_for_fqdn():
-    allowed_domains =  {
+def testget_allowed_namesp_for_fqdn():
+    allowed_namespaces =  {
         "*.identinetics.com": ["AT:VKZ:XFN-318886a"],
         "some.net": ["AT:VKZ:XZVR:4711"],
         "some.org": ["AT:VKZ:XZVR:4711"],
@@ -60,19 +60,19 @@ def testget_allowed_domain_for_fqdn():
     }
     fqdn1 = 'idp.identinetics.com'
     expected_result1 = '*.identinetics.com'
-    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn1, allowed_domains) == expected_result1
+    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn1, allowed_namespaces) == expected_result1
     fqdn2 = 'idp.iam.identinetics.com'
     expected_result2 = None  # wildcard MUST NOT match subdomains
-    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn2, allowed_domains) == expected_result2
+    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn2, allowed_namespaces) == expected_result2
     fqdn3 = 'sp.somenew.org'
     expected_result3 = fqdn3
-    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn3, allowed_domains) == expected_result3
+    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn3, allowed_namespaces) == expected_result3
     fqdn4 = 'idp.some.net'
     expected_result4 = None
-    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn4, allowed_domains) == expected_result4
+    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn4, allowed_namespaces) == expected_result4
     fqdn5 = 'idp.some.net'
     expected_result5 = None
-    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn5, {}) == expected_result5
+    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn5, {}) == expected_result5
 
 
 def test_get_orgids_for_signer():
@@ -128,10 +128,10 @@ def test_validate_xsd():
 
 def test_validateDomainNames():
     with pytest.raises(InvalidFQDNinEntityID):
-        ed(1).validateDomainNames(domains7())
-    ed(7).validateDomainNames(domains7())
+        ed(1).validateDomainNames(namespaces7())
+    ed(7).validateDomainNames(namespaces7())
     with pytest.raises(InvalidFQDNInEndpoint):
-        ed(15).validateDomainNames(domains7())
+        ed(15).validateDomainNames(namespaces7())
 
 
 def test_validateSignature():

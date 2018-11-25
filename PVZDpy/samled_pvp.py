@@ -77,7 +77,7 @@ class SAMLEntityDescriptorPVP:
       </md:IDPSSODescriptor>
     </md:EntityDescriptor>""".format(eid=entityid)
 
-    def getAllowedDomainsForOrgs(self, org_ids: list) -> list:
+    def getAllowedNamespacesForOrgs(self, org_ids: list) -> list:
         allowedDomains = []
         for dn in self.policyDict["domain"].keys():
             if self.policyDict["domain"][dn][0] in org_ids:
@@ -119,24 +119,27 @@ class SAMLEntityDescriptorPVP:
         return org_ids
 
     @staticmethod
-    def get_allowed_domain_for_fqdn(fqdn: str, allowed_domains: dict) -> str:
-        if allowed_domains.get(fqdn):
+    def get_allowed_namesp_for_fqdn(fqdn: str, allowed_namespaces: dict) -> str:
+        if allowed_namespaces.get(fqdn):
             return fqdn
         parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
         wildcard_fqdn = '*.' + parent_fqdn
-        if allowed_domains.get(wildcard_fqdn ):
+        if allowed_namespaces.get(wildcard_fqdn ):
             return wildcard_fqdn
 
     def get_orgid(self) -> str:
         fqdn = self.get_entityid_hostname()
-        allowed_domains = self.policyDict["domain"]
-        domain = self.get_allowed_domain_for_fqdn(fqdn, allowed_domains)
-        domain_rec = self.policyDict["domain"].get(domain)
+        allowed_namespaces = self.policyDict["domain"]
+        namespace = self.get_allowed_namesp_for_fqdn(fqdn, allowed_namespaces)
+        domain_rec = self.policyDict["domain"].get(namespace)
         if domain_rec:
             orgid = domain_rec[0]
             return orgid
         else:
             return None
+        
+    def get_namespace(self) -> str:
+        pass
 
     def get_orgcn(self, orgid) -> str:
         return self.policyDict["organization"].get(orgid)[0]
@@ -152,12 +155,12 @@ class SAMLEntityDescriptorPVP:
         except KeyError:
             return False
 
-    def _isInAllowedDomains(self, dn, allowedDomains) -> bool:
-        """  check if dn is identical to or in a wildcard-domain of an allowed domain """
+    def _isInAllowedNamespaces(self, fqdn, allowed_namespaces) -> bool:
+        """  check if fqdn is identical to or in a wildcard-namespace of an allowed namespace """
         # TODO: change to explicit wildcards
-        parent_dn = re.sub('^[^\.]+\.', '', dn)
+        parent_dn = re.sub('^[^\.]+\.', '', fqdn)
         wildcard_dn = '*.' + parent_dn
-        if dn in allowedDomains or wildcard_dn in allowedDomains:
+        if fqdn in allowed_namespaces or wildcard_dn in allowed_namespaces:
             return True
         return False
 
@@ -192,15 +195,15 @@ class SAMLEntityDescriptorPVP:
             {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
 
     def validateDomainNames(self, allowedDomains) -> bool:
-        """ check that entityId and endpoints contain only hostnames from allowed domains"""
-        if not self._isInAllowedDomains(self.get_entityid_hostname(), allowedDomains):
-            raise InvalidFQDNinEntityID('FQDN of entityID %s not in domains allowed for signer: %s' %
+        """ check that entityId and endpoints contain only hostnames from allowed namespaces"""
+        if not self._isInAllowedNamespaces(self.get_entityid_hostname(), allowedDomains):
+            raise InvalidFQDNinEntityID('FQDN of entityID %s not in namespaces allowed for signer: %s' %
                                         (self.get_entityid_hostname(), sorted(allowedDomains)))
         logging.debug('signer is allowed to use %s as entityID' % self.get_entityid_hostname())
         for attr_value in self.ed.tree.xpath('//md:*/@Location', namespaces={'md': XMLNS_MD}):
             location_hostname = urlparse(attr_value).hostname
-            if not self._isInAllowedDomains(location_hostname, allowedDomains):
-                raise InvalidFQDNInEndpoint('%s in %s not in allowed domains: %s' %
+            if not self._isInAllowedNamespaces(location_hostname, allowedDomains):
+                raise InvalidFQDNInEndpoint('%s in %s not in allowed namespaces: %s' %
                                             (location_hostname, attr_value, sorted(allowedDomains)))
             logging.debug('signer is allowed to use %s in %s' % (location_hostname, attr_value))
         return True

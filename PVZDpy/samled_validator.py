@@ -155,7 +155,7 @@ class SamlEdValidator:
                 raise NoFurtherValidation
             try:
                 org_ids = self.ed.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
-                allowedDomains = self.ed.getAllowedDomainsForOrgs(org_ids)
+                allowedDomains = self.ed.getAllowedNamespacesForOrgs(org_ids)
                 self.ed.validateDomainNames(allowedDomains)
                 self.orgid = self.ed.get_orgid()
                 self.orgcn = self.ed.get_orgcn(self.orgid)
