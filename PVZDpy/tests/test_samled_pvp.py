@@ -51,28 +51,35 @@ def test_getAllowedNamespacesForOrgs():
     assert allowed_namespaces == namespaces7()
 
 
-def test_get_allowed_namesp_for_fqdn():
-    allowed_namespaces =  {
-        "*.identinetics.com": ["AT:VKZ:XFN-318886a"],
-        "some.net": ["AT:VKZ:XZVR:4711"],
-        "some.org": ["AT:VKZ:XZVR:4711"],
-        "sp.somenew.org": ["AT:VKZ:XZVR:4712"]
-    }
+def test_get_namespace():
+    ed2 = ed(2)
+    assert ed2.get_namespace() is None
+    ed7 = ed(7)
+    assert ed7.get_namespace() == '*.identinetics.com'
+
+
+def test_get_namesp_for_fqdn():
+    allowed_namespaces =  [
+        "*.identinetics.com",
+        "some.net",
+        "some.org",
+        "sp.somenew.org",
+    ]
     fqdn1 = 'idp.identinetics.com'
     expected_result1 = '*.identinetics.com'
-    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn1, allowed_namespaces) == expected_result1
+    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn1, allowed_namespaces) == expected_result1
     fqdn2 = 'idp.iam.identinetics.com'
     expected_result2 = None  # wildcard MUST NOT match subdomains
-    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn2, allowed_namespaces) == expected_result2
+    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn2, allowed_namespaces) == expected_result2
     fqdn3 = 'sp.somenew.org'
     expected_result3 = fqdn3
-    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn3, allowed_namespaces) == expected_result3
+    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn3, allowed_namespaces) == expected_result3
     fqdn4 = 'idp.some.net'
     expected_result4 = None
-    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn4, allowed_namespaces) == expected_result4
+    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn4, allowed_namespaces) == expected_result4
     fqdn5 = 'idp.some.net'
     expected_result5 = None
-    assert SAMLEntityDescriptorPVP.get_allowed_namesp_for_fqdn(fqdn5, {}) == expected_result5
+    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn5, {}) == expected_result5
 
 def test_isInAllowedNamespaces():
     allowed_namespaces =  {

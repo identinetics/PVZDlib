@@ -118,19 +118,30 @@ class SAMLEntityDescriptorPVP:
             raise UnauthorizedSignerError('Signer certificate not found in policy directory')
         return org_ids
 
+    def get_namespace(self) -> str:
+        fqdn = self.get_entityid_hostname()
+        allowed_namespaces = list(self.policyDict["domain"].keys())
+        namespace = SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn, allowed_namespaces)
+        return namespace
+
     @staticmethod
-    def get_allowed_namesp_for_fqdn(fqdn: str, allowed_namespaces: dict) -> str:
-        if allowed_namespaces.get(fqdn):
+    def get_namesp_for_fqdn(fqdn: str, allowed_namespaces: list) -> str:
+        if fqdn in allowed_namespaces:
             return fqdn
         parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
         wildcard_fqdn = '*.' + parent_fqdn
-        if allowed_namespaces.get(wildcard_fqdn ):
+        if wildcard_fqdn in allowed_namespaces:
             return wildcard_fqdn
+        else:
+            return None
+
+    def get_orgcn(self, orgid) -> str:
+        return self.policyDict["organization"].get(orgid)[0]
 
     def get_orgid(self) -> str:
         fqdn = self.get_entityid_hostname()
-        allowed_namespaces = self.policyDict["domain"]
-        namespace = self.get_allowed_namesp_for_fqdn(fqdn, allowed_namespaces)
+        allowed_namespaces = list(self.policyDict["domain"].keys())
+        namespace = self.get_namesp_for_fqdn(fqdn, allowed_namespaces)
         domain_rec = self.policyDict["domain"].get(namespace)
         if domain_rec:
             orgid = domain_rec[0]
@@ -138,12 +149,6 @@ class SAMLEntityDescriptorPVP:
         else:
             return None
         
-    def get_namespace(self) -> str:
-        pass
-
-    def get_orgcn(self, orgid) -> str:
-        return self.policyDict["organization"].get(orgid)[0]
-
     def get_xml_str(self):
         return self.ed.get_xml_str()
 
@@ -156,15 +161,11 @@ class SAMLEntityDescriptorPVP:
             return False
 
     @staticmethod
-    def _isInAllowedNamespaces(fqdn, allowed_namespaces) -> bool:
+    def _isInAllowedNamespaces(fqdn: str, allowed_namespaces: list) -> bool:
         """  check if fqdn is identical to or in a wildcard-namespace of an allowed namespace """
         # TODO: change to explicit wildcards
-        ###fqdn = self.get_entityid_hostname()
-        parent_dn = re.sub('^[^\.]+\.', '', fqdn)
-        wildcard_dn = '*.' + parent_dn
-        if fqdn in allowed_namespaces or wildcard_dn in allowed_namespaces:
-            return True
-        return False
+        namespace = SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn, allowed_namespaces)
+        return (namespace is not None)
 
     def remove_enveloped_signature(self):
         lxml_helper.delete_element_if_existing(self.ed.tree,
