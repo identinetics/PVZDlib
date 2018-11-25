@@ -51,9 +51,40 @@ def test_getAllowedDomainsForOrgs():
     assert allowed_domains == domains7()
 
 
+def testget_allowed_domain_for_fqdn():
+    allowed_domains =  {
+        "*.identinetics.com": ["AT:VKZ:XFN-318886a"],
+        "some.net": ["AT:VKZ:XZVR:4711"],
+        "some.org": ["AT:VKZ:XZVR:4711"],
+        "sp.somenew.org": ["AT:VKZ:XZVR:4712"]
+    }
+    fqdn1 = 'idp.identinetics.com'
+    expected_result1 = '*.identinetics.com'
+    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn1, allowed_domains) == expected_result1
+    fqdn2 = 'idp.iam.identinetics.com'
+    expected_result2 = None  # wildcard MUST NOT match subdomains
+    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn2, allowed_domains) == expected_result2
+    fqdn3 = 'sp.somenew.org'
+    expected_result3 = fqdn3
+    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn3, allowed_domains) == expected_result3
+    fqdn4 = 'idp.some.net'
+    expected_result4 = None
+    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn4, allowed_domains) == expected_result4
+    fqdn5 = 'idp.some.net'
+    expected_result5 = None
+    assert SAMLEntityDescriptorPVP.get_allowed_domain_for_fqdn(fqdn5, {}) == expected_result5
+
+
 def test_get_orgids_for_signer():
     orgids = ed(2).get_orgids_for_signer(signerCert7())
     assert orgids == ['AT:VKZ:XFN-318886a']
+
+
+def test_get_orgid():
+    orgid = ed(2).get_orgid()
+    assert orgid is None
+    orgid = ed(7).get_orgid()
+    assert orgid == 'AT:VKZ:XFN-318886a'
 
 
 def test_isDeletionRequest():

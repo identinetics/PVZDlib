@@ -109,8 +109,8 @@ class SAMLEntityDescriptorPVP:
             return hostname
 
     def get_orgids_for_signer(self, signerCert) -> str:
-        """ return associated organizations for signer. There are two possible paths:
-                signer-cert -> portaladmin -> [orgid]
+        """ return associated organizations for signer.
+            The paths is signer-cert -> portaladmin -> [orgid]
         """
         try:
             org_ids = self.policyDict["userprivilege"]['{cert}'+signerCert][0]
@@ -118,13 +118,20 @@ class SAMLEntityDescriptorPVP:
             raise UnauthorizedSignerError('Signer certificate not found in policy directory')
         return org_ids
 
+    @staticmethod
+    def get_allowed_domain_for_fqdn(fqdn: str, allowed_domains: dict) -> str:
+        if allowed_domains.get(fqdn):
+            return fqdn
+        parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
+        wildcard_fqdn = '*.' + parent_fqdn
+        if allowed_domains.get(wildcard_fqdn ):
+            return wildcard_fqdn
+
     def get_orgid(self) -> str:
         fqdn = self.get_entityid_hostname()
-        domain_rec = self.policyDict["domain"].get(fqdn)
-        if not domain_rec:
-            parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
-            wildcard_fqdn = '*.' + parent_fqdn
-            domain_rec = self.policyDict["domain"].get(wildcard_fqdn)
+        allowed_domains = self.policyDict["domain"]
+        domain = self.get_allowed_domain_for_fqdn(fqdn, allowed_domains)
+        domain_rec = self.policyDict["domain"].get(domain)
         if domain_rec:
             orgid = domain_rec[0]
             return orgid
@@ -133,7 +140,6 @@ class SAMLEntityDescriptorPVP:
 
     def get_orgcn(self, orgid) -> str:
         return self.policyDict["organization"].get(orgid)[0]
-
 
     def get_xml_str(self):
         return self.ed.get_xml_str()
