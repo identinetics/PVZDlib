@@ -2,7 +2,7 @@
   "authz_ok": null,
   "content_val_ok": true,
   "deletionRequest": false,
-  "entityID": "https://idp.example.com/idp.xml",
+  "entityID": "https://idp1.example.org/idp.xml",
   "orgcn": "",
   "orgid": "",
   "signer_cert_cn": "",

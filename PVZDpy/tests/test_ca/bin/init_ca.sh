@@ -1,7 +1,7 @@
 #!/bin/bash
 # Setup Test-CA
 
-mkdir -p ca/db crl certs etc
+mkdir -p ca/db ca/root-ca/private ca/root-ca/db crl certs etc
 
 if [[ ! -e  "etc/openssl.cnf" ]]; then
     echo "missing openssl.cnf"
@@ -14,7 +14,7 @@ echo 01 > ca/serial
 touch ca/index.txt
 openssl req -new \
     -config etc/openssl.cnf -batch \
-    -subj /CN=PVZD-Test-CA \
+    -subj /CN=PVZD-Alien-Test-CA2 \
     -out ca/root-ca.csr \
     -keyout ca/root-key.pem \
     -passout pass:changeit

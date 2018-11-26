@@ -2,12 +2,12 @@
   "authz_ok": null,
   "content_val_ok": false,
   "deletionRequest": false,
-  "entityID": "https://idp.example.com/idp.xml",
+  "entityID": "https://idp2.example.com/idp.xml",
   "orgcn": "",
   "orgid": "",
   "signer_cert_cn": "",
   "signer_cert_pem": "",
   "val_mesg_dict": {
-    "Entity certificate check": "[CertExpiredError] Certificate is expired"
+    "Entity certificate check": "[CertInvalidError] Certificate validation failed. [20, 0, 'unable to get local issuer certificate'] /CN=PVZD-Alien-Test-CA2"
   }
 }

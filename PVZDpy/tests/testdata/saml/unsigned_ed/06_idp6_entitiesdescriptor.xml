@@ -1,0 +1,32 @@
+<md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+  <md:EntityDescriptor entityID="https://idp6.example.org/idp.xml">
+    <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+      <md:KeyDescriptor use="signing">
+        <ds:KeyInfo>
+          <ds:X509Data>
+            <ds:X509Certificate>
+              MIICpjCCAY4CAQgwDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAwwMUFZaRC1UZXN0
+              LUNBMB4XDTE4MTEyNTE2MjYyN1oXDTI4MTEyMjE2MjYyN1owGzEZMBcGA1UEAwwQ
+              aWRwNi5leGFtcGxlLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
+              AL4HF8kYH7RX9TOEvY5xOGwgJFlmRP9RTtOs9VkAPoTQlXy8pOU6skyubRzSNoTu
+              4xv19niSG5g2Ji3IWmaudYUMDv+BNq5y7gYjYa/mW7IZb+7Qk1LF89iWEyMVNdO7
+              jn5lwlU/CQLRNmx5HK4z5a9RgxJs+D8L8Qrh43jbVFjCnn0aI/kQPmEdiDS2qR3P
+              1SH+kOqUd43GBUA6wJW8F53WGDcLsevu13mZnjxuUalU8yDBnl/XPnnfRvng0+5I
+              pWXib4M2pADXdbi11e6AZvw6VNgfW/5fSmBl9t6OWQIXpMlSI8GapA0YBF4e07ny
+              W79jwOjzFLaQVCIYUVL2NSECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAc9n3pPIG
+              PF3Jeo6x8eebpTenblqwZqg/lT/5MXvw0SycU5kfEogVSKxlh5Xj3AeWOuSQWWJ5
+              qSO3er+fKlhEwcOVj9jm2mFuxPqbWL3ivw8RMmdKuEwYDR8bOlkG0aw57cRxSJKF
+              udTrWsxRvGmYmm16+LMpGHwViE1HkccJkZXafMoxn0He+Dw1crKWg5pLLTSOMQ1U
+              W7lnjo8B3yIMDBNbV70UP6ACs6j55y/RDtSffv87xNDTX+eX0dWzuoL7cVaE33Gv
+              +EkjJQCh3FzvsAzYifnqA3QS9xBIxdwi4fVcaF0Rrd53rMqCf6UxyMuX0/FyuDbu
+              gxceirJ51oXJ0g==
+            </ds:X509Certificate>
+          </ds:X509Data>
+        </ds:KeyInfo>
+      </md:KeyDescriptor>
+      <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp6.example.org/slo/redirect"/>
+      <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+      <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp6.example.org/sso/post"/>
+    </md:IDPSSODescriptor>
+  </md:EntityDescriptor>
+</md:EntitiesDescriptor>

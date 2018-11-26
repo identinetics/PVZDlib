@@ -7,7 +7,12 @@ from PVZDpy.userexceptions import *
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.tests.common_fixtures import *
 
-#path_prefix_testin = 'PVZDpy/tests/testdata/saml/'
+
+def assert_equal(expected, actual, fn=''):
+    # workaround because pycharm does not display the full string (despite pytest -vv etc)
+    msg = fn+"\n'"+actual+"' != '"+expected+"' "
+    assert expected == actual, msg
+
 
 @pytest.fixture
 def namespaces7():
@@ -30,6 +35,8 @@ def ed(file_index: int):
 def test_checkCerts():
     ed(1).checkCerts()
     with pytest.raises(CertInvalidError):
+        ed(2).checkCerts()
+    with pytest.raises(CertInvalidError):
         ed(5).checkCerts()
     with pytest.raises(CertExpiredError):
         ed(12).checkCerts()
@@ -41,9 +48,9 @@ def test_checkCerts():
 
 
 def test_create_delete():
-    delete_requ = SAMLEntityDescriptorPVP.create_delete('https://idp.example.com/idp.xml')
+    delete_requ = SAMLEntityDescriptorPVP.create_delete('https://idp4.example.com/idp.xml')
     with open(ed_path(4)) as fd:
-        assert delete_requ == fd.read()
+        assert_equal(delete_requ, fd.read())
 
 
 def test_getAllowedNamespacesForOrgs():
@@ -81,6 +88,7 @@ def test_get_namesp_for_fqdn():
     expected_result5 = None
     assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn5, {}) == expected_result5
 
+
 def test_isInAllowedNamespaces():
     allowed_namespaces =  {
         "*.identinetics.com": ["AT:VKZ:XFN-318886a"],
@@ -89,15 +97,28 @@ def test_isInAllowedNamespaces():
         "sp.somenew.org": ["AT:VKZ:XZVR:4712"]
     }
     fqdn1 = 'idp.identinetics.com'
-    assert SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn1, allowed_namespaces)
+    assert SAMLEntityDescriptorPVP.isInAllowedNamespaces(fqdn1, allowed_namespaces)
     fqdn2 = 'idp.iam.identinetics.com'
-    assert not SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn2, allowed_namespaces)
+    assert not SAMLEntityDescriptorPVP.isInAllowedNamespaces(fqdn2, allowed_namespaces)
     fqdn3 = 'sp.somenew.org'
-    assert SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn3, allowed_namespaces)
+    assert SAMLEntityDescriptorPVP.isInAllowedNamespaces(fqdn3, allowed_namespaces)
     fqdn4 = 'idp.some.net'
-    assert not SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn4, allowed_namespaces)
+    assert not SAMLEntityDescriptorPVP.isInAllowedNamespaces(fqdn4, allowed_namespaces)
     fqdn5 = 'idp.some.net'
-    assert not SAMLEntityDescriptorPVP._isInAllowedNamespaces(fqdn5, {})
+    assert not SAMLEntityDescriptorPVP.isInAllowedNamespaces(fqdn5, {})
+
+
+def test_isInRegisteredNamespaces():
+    fqdn1 = 'idp.identinetics.com'
+    assert ed(1).isInRegisteredNamespaces(fqdn1)
+    fqdn2 = 'idp.iam.identinetics.com'
+    assert not ed(1).isInRegisteredNamespaces(fqdn2)
+    fqdn3 = 'sp.somenew.org'
+    assert not ed(1).isInRegisteredNamespaces(fqdn3)
+    fqdn4 = 'idp.some.net'
+    assert not ed(1).isInRegisteredNamespaces(fqdn4)
+    fqdn5 = 'idp.some.net'
+    assert not ed(1).isInRegisteredNamespaces(fqdn5)
 
 
 def test_get_orgids_for_signer():
@@ -124,19 +145,19 @@ def test_remove_enveloped_signature():
     ed10.write(fn10_edit)
     with open(ed_path(17)) as fd17:
         with open(fn10_edit) as fn10_edit:
-            assert fn10_edit.read() == fd17.read()
+            assert_equal(fn10_edit.read(), fd17.read(), fn=fn10_edit.name)
 
 
 def test_set_registrationinfo():
-    ed14=ed(1)
+    ed1=ed(1)
     # make expected equal to actual with fake registrationInstant = "1900-01-01T00:00:00Z"
-    SAMLEntityDescriptorPVP.set_registrationinfo(ed14.ed.tree, SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
-    fn14_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test14_edit', suffix='xml').name
-    ed14.write(fn14_edit)
+    SAMLEntityDescriptorPVP.set_registrationinfo(ed1.ed.tree, SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
+    fn1_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test1_edit', suffix='xml').name
+    ed1.write(fn1_edit)
     with open(ed_path(16)) as fd1:
-        with open(fn14_edit) as fd2:
-            assert  fd2.read() == fd1.read()
-    os.unlink(fn14_edit)
+        with open(fn1_edit) as fd2:
+            assert_equal(fd2.read(), fd1.read())
+    os.unlink(fn1_edit)
 
 
 def test_validate_schematron():

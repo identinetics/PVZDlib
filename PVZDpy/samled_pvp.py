@@ -161,10 +161,17 @@ class SAMLEntityDescriptorPVP:
             return False
 
     @staticmethod
-    def _isInAllowedNamespaces(fqdn: str, allowed_namespaces: list) -> bool:
-        """  check if fqdn is identical to or in a wildcard-namespace of an allowed namespace """
+    def isInAllowedNamespaces(fqdn: str, allowed_namespaces: list) -> bool:
+        """  check if fqdn is identical to or in a wildcard-namespace of an namespace allowed for signer """
         # TODO: change to explicit wildcards
         namespace = SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn, allowed_namespaces)
+        return (namespace is not None)
+
+    def isInRegisteredNamespaces(self, fqdn: str) -> bool:
+        """  check if fqdn is identical to or in a wildcard-namespace of a registered namespace (independet of signer) """
+        # TODO: change to explicit wildcards
+        registered_ns = self.policyDict["domain"].keys()
+        namespace = SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn, registered_ns)
         return (namespace is not None)
 
     def remove_enveloped_signature(self):
@@ -199,13 +206,13 @@ class SAMLEntityDescriptorPVP:
 
     def validateDomainNames(self, allowedDomains) -> bool:
         """ check that entityId and endpoints contain only hostnames from allowed namespaces"""
-        if not SAMLEntityDescriptorPVP._isInAllowedNamespaces(self.get_entityid_hostname(), allowedDomains):
+        if not SAMLEntityDescriptorPVP.isInAllowedNamespaces(self.get_entityid_hostname(), allowedDomains):
             raise InvalidFQDNinEntityID('FQDN of entityID %s not in namespaces allowed for signer: %s' %
                                         (self.get_entityid_hostname(), sorted(allowedDomains)))
         logging.debug('signer is allowed to use %s as entityID' % self.get_entityid_hostname())
         for attr_value in self.ed.tree.xpath('//md:*/@Location', namespaces={'md': XMLNS_MD}):
             location_hostname = urlparse(attr_value).hostname
-            if not SAMLEntityDescriptorPVP._isInAllowedNamespaces(location_hostname, allowedDomains):
+            if not SAMLEntityDescriptorPVP.isInAllowedNamespaces(location_hostname, allowedDomains):
                 raise InvalidFQDNInEndpoint('%s in %s not in allowed namespaces: %s' %
                                             (location_hostname, attr_value, sorted(allowedDomains)))
             logging.debug('signer is allowed to use %s in %s' % (location_hostname, attr_value))

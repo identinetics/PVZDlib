@@ -41,7 +41,8 @@ class SAMLEntityDescriptor:
                 raise EmptySamlEDError(self.ed_path_abs + ' empty or missing')
             assert self.ed_path_abs[-4:] == '.xml', 'input file must have the extension .xml'
             self.tree = self.get_entitydescriptor(lxml.etree.parse(self.ed_path_abs))
-            self.xml_str = lxml.etree.tostring(self.tree, encoding='utf-8', pretty_print=False).decode('utf-8')
+            self.xml_str = lxml.etree.tostring(self.tree, encoding='utf-8',
+                                               pretty_print=False).decode('utf-8')
         elif createfromcertstr is not None:  # case 2
             if entityid is None or samlrole is None:
                 raise InputValueError('if creating ed from certstr, entityid and samlrole must be given.')

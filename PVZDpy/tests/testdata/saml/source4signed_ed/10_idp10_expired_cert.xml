@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor  entityID="https://idp10.example.com/idp.xml" xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+  <!-- expired idp signing certificate as of 2018-11-27  -->
+  <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:Extensions>
+      <alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+      <alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256" MaxKeySize="511" MinKeySize="256"/>
+      <alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" MaxKeySize="4096" MinKeySize="2048"/>
+      <mdui:UIInfo>
+        <mdui:DisplayName xml:lang="en">Test Driver IdP</mdui:DisplayName>
+        <mdui:Description xml:lang="en">Saml2Test Test Driver IdP</mdui:Description>
+      </mdui:UIInfo>
+    </md:Extensions>
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>
+            MIICpzCCAY8CAQowDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAwwMUFZaRC1UZXN0
+            LUNBMB4XDTE4MTEyNjIxMzEzMFoXDTE4MTEyNzIxMzEzMFowHDEaMBgGA1UEAwwR
+            aWRwMTAuZXhhbXBsZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+            AQDisBtn25FCjo8q6LZ36wmnD0V2NLos/GGmizvM0y/1ukJmUgCtHqIh0M0RuiB8
+            H46Lh7ffJ5DmPSTJJaq6aFX1DxFRj9ueJRNEQcAelT+MCfJ8DU7acYNyFkHuAVuN
+            Gh372/OKJCC08lEPheNXXhOzVGDXk6OZaIDNYCuoPJM7tXGP/T+khdXHKBEql8OL
+            ZobiNpNPakYpMnHoVFOHRqeozEd/yGNJDOeQgxYCTCjzps7miQBub7PBmrYmRUEr
+            0405N9s1J5HlfmOB1rgtKjCFzoS2Nlx9YMmNLWqVkSyU5HHfXacePjb6f11fiXk4
+            JOCQMjvSl4PpOdNXf0njSKWXAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAJiLtNsx
+            nUTs4X19TiL7bM3mkiXsbBh9bIJ0HcUgsxwdqC+cztKvyB+U8cAvHMAv2pZbinbh
+            X2sDO4K7Nz7pLGinKJ6+HgMmhEhb0Y23KhV0HFjkj80/vaCEsKQcWkGE2t4p7jBO
+            s7VwlKbEDlSNRzM7/R6wf5t7tm+jtJmYTo5CATkwaYCWAmuAhOqcnrV4w97H4X0n
+            6TRoZgPY5uiVqrwW8p1pvvrb1+7+KDKFrtAKHFGBtsQ5esqDv93KlCdXsm86xX63
+            rrzHqpw5CdEgq6PcSdwhjaWG4EwgKUxw3tAyqnfUFNVMUNl9io3TLOvTf1YmSg3D
+            ilE/rKI66B7tCXg=
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.example.com/slo/post"/>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.example.com/slo/redirect"/>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.example.com/sso/redirect"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.example.com/sso/post"/>
+  </md:IDPSSODescriptor>
+  <md:Organization>
+    <md:OrganizationName xml:lang="en">Saml2Test Harness</md:OrganizationName>
+    <md:OrganizationDisplayName xml:lang="en">Saml2Test Harness</md:OrganizationDisplayName>
+    <md:OrganizationURL xml:lang="en">https://github.com/rohe/saml2test/</md:OrganizationURL>
+  </md:Organization>
+  <md:ContactPerson contactType="technical">
+    <md:GivenName>Testiani</md:GivenName>
+    <md:SurName>Testosteroni</md:SurName>
+    <md:EmailAddress>testiani@example.com</md:EmailAddress>
+  </md:ContactPerson>
+</md:EntityDescriptor>

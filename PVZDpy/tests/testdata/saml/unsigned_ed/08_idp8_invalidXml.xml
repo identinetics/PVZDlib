@@ -2,7 +2,7 @@
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
                      xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
                      xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-                     entityID="https://gondor.magwien.gv.at/idp">
+                     entityID="https://idp8.magwien.gv.at/idp">
     <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo>
@@ -49,3 +49,4 @@
                                 Location="https://gondor.magwien.gv.at/idp/idp/unused"/>
     </md:IDPSSODescriptor>
 </md:EntityDescriptor>
+        </dsig:Signature>
