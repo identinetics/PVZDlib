@@ -50,19 +50,19 @@ def test_checkCerts():
 def test_create_delete():
     delete_requ = SAMLEntityDescriptorPVP.create_delete('https://idp4.example.com/idp.xml')
     with open(ed_path(4)) as fd:
-        assert_equal(delete_requ, fd.read())
+        assert_equal(fd.read(), delete_requ)
 
 
 def test_getAllowedNamespacesForOrgs():
     allowed_namespaces = ed(7).getAllowedNamespacesForOrgs(orgids7())
-    assert allowed_namespaces == namespaces7()
+    assert namespaces7() == allowed_namespaces
 
 
 def test_get_namespace():
-    ed2 = ed(2)
-    assert ed2.get_namespace() is None
+    ed1 = ed(1)
+    assert ed1.get_namespace() is None
     ed7 = ed(7)
-    assert ed7.get_namespace() == '*.identinetics.com'
+    assert '*.identinetics.com' == ed7.get_namespace()
 
 
 def test_get_namesp_for_fqdn():
@@ -74,19 +74,19 @@ def test_get_namesp_for_fqdn():
     ]
     fqdn1 = 'idp.identinetics.com'
     expected_result1 = '*.identinetics.com'
-    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn1, allowed_namespaces) == expected_result1
+    assert expected_result1 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn1, allowed_namespaces)
     fqdn2 = 'idp.iam.identinetics.com'
     expected_result2 = None  # wildcard MUST NOT match subdomains
-    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn2, allowed_namespaces) == expected_result2
+    assert expected_result2 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn2, allowed_namespaces)
     fqdn3 = 'sp.somenew.org'
     expected_result3 = fqdn3
-    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn3, allowed_namespaces) == expected_result3
+    assert expected_result3 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn3, allowed_namespaces)
     fqdn4 = 'idp.some.net'
     expected_result4 = None
-    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn4, allowed_namespaces) == expected_result4
+    assert expected_result4 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn4, allowed_namespaces)
     fqdn5 = 'idp.some.net'
     expected_result5 = None
-    assert SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn5, {}) == expected_result5
+    assert expected_result5 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn5, {})
 
 
 def test_isInAllowedNamespaces():
@@ -123,19 +123,19 @@ def test_isInRegisteredNamespaces():
 
 def test_get_orgids_for_signer():
     orgids = ed(2).get_orgids_for_signer(signerCert7())
-    assert orgids == ['AT:VKZ:XFN-318886a']
+    assert ['AT:VKZ:XFN-318886a'] == orgids
 
 
 def test_get_orgid():
-    orgid = ed(2).get_orgid()
-    assert orgid is None
-    orgid = ed(7).get_orgid()
-    assert orgid == 'AT:VKZ:XFN-318886a'
+    orgid1 = ed(1).get_orgid()
+    assert orgid1 is None
+    orgid7 = ed(7).get_orgid()
+    assert 'AT:VKZ:XFN-318886a' == orgid7
 
 
 def test_isDeletionRequest():
-    assert ed(2).isDeletionRequest() == False
-    assert ed(4).isDeletionRequest() == True
+    assert not ed(2).isDeletionRequest()
+    assert ed(4).isDeletionRequest()
 
 
 def test_remove_enveloped_signature():
@@ -145,7 +145,7 @@ def test_remove_enveloped_signature():
     ed10.write(fn10_edit)
     with open(ed_path(17)) as fd17:
         with open(fn10_edit) as fn10_edit:
-            assert_equal(fn10_edit.read(), fd17.read(), fn=fn10_edit.name)
+            assert_equal(fd17.read(), fn10_edit.read(), fn=fn10_edit.name)
 
 
 def test_set_registrationinfo():
@@ -154,8 +154,8 @@ def test_set_registrationinfo():
     SAMLEntityDescriptorPVP.set_registrationinfo(ed1.ed.tree, SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
     fn1_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test1_edit', suffix='xml').name
     ed1.write(fn1_edit)
-    with open(ed_path(16)) as fd1:
-        with open(fn1_edit) as fd2:
+    with open(ed_path(16)) as fd2:
+        with open(fn1_edit) as fd1:
             assert_equal(fd2.read(), fd1.read())
     os.unlink(fn1_edit)
 

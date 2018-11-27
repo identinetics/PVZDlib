@@ -8,3 +8,4 @@ V	281122153445Z		07	unknown	/CN=idp1.example.org
 V	281122162627Z		08	unknown	/CN=idp6.example.org
 V	281122163907Z		09	unknown	/CN=idp10.example.org
 V	181127213130Z		0A	unknown	/CN=idp10.example.com
+V	390610211858Z		0B	unknown	/CN=idp6.example.com

@@ -7,5 +7,7 @@
   "orgid": "",
   "signer_cert_cn": "",
   "signer_cert_pem": "",
-  "val_mesg_dict": {}
+  "val_mesg_dict": {
+    "validate Domain Names": "idp1.example.org is not registered with anybody"
+  }
 }

@@ -108,16 +108,6 @@ class SAMLEntityDescriptorPVP:
         else:
             return hostname
 
-    def get_orgids_for_signer(self, signerCert) -> str:
-        """ return associated organizations for signer.
-            The paths is signer-cert -> portaladmin -> [orgid]
-        """
-        try:
-            org_ids = self.policyDict["userprivilege"]['{cert}'+signerCert][0]
-        except KeyError:
-            raise UnauthorizedSignerError('Signer certificate not found in policy directory')
-        return org_ids
-
     def get_namespace(self) -> str:
         fqdn = self.get_entityid_hostname()
         allowed_namespaces = list(self.policyDict["domain"].keys())
@@ -149,6 +139,16 @@ class SAMLEntityDescriptorPVP:
         else:
             return None
         
+    def get_orgids_for_signer(self, signerCert) -> str:
+        """ return associated organizations for signer.
+            The paths is signer-cert -> portaladmin -> [orgid]
+        """
+        try:
+            org_ids = self.policyDict["userprivilege"]['{cert}'+signerCert][0]
+        except KeyError:
+            raise UnauthorizedSignerError('Signer certificate not found in policy directory')
+        return org_ids
+
     def get_xml_str(self):
         return self.ed.get_xml_str()
 

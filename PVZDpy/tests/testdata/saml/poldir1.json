@@ -1,5 +1,8 @@
 {
   "domain": {
+    "*.example.com": [
+      "org111"
+    ],
     "*.identinetics.com": [
       "AT:VKZ:XFN-318886a"
     ], 

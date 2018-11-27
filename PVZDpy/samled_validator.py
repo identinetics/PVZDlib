@@ -85,6 +85,7 @@ class SamlEdValidator:
             self.deletionRequest = self.ed.isDeletionRequest()
             self._validate_certcheck()
             self.content_val_ok = self.schematron_ok and self.certcheck_ok
+            self._validate_is_registered_namespace()
             if sigval:
                 self._validate_authz()
             self._discard_tempfile()
@@ -143,6 +144,11 @@ class SamlEdValidator:
         except(OpenSSL.crypto.Error, PVZDuserexception) as e:
             self.certcheck_ok = False
             self.val_mesg_dict['Entity certificate check'] = self._format_val_msg(e)
+
+    def _validate_is_registered_namespace(self):
+        fqdn = self.ed.get_entityid_hostname()
+        if not self.ed.isInRegisteredNamespaces(fqdn):
+            self.val_mesg_dict['validate Domain Names'] = fqdn + ' is not registered with anybody'
 
     def _validate_authz(self):
         try:
