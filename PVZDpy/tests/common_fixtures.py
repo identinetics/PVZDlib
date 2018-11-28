@@ -1,5 +1,7 @@
 import json
+import os.path
 import pytest
+from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 
 path_prefix_testin = 'testdata/saml/'
 path_prefix_testout = 'testout/samled_validator'
@@ -12,8 +14,7 @@ def poldir1():
     return d
 
 
-@pytest.fixture
-def ed_path(file_index: int):
+def ed_path(file_index: int, dir=None):
     path = (
         'unsigned_ed/idpExampleCom_idpXml.xml',
         'unsigned_ed/01_idp1_valid_cert.xml',
@@ -38,7 +39,10 @@ def ed_path(file_index: int):
         'samled_expected_results/20_ed_from_cert.xml',
         'signed_ed/21_idp_urn_entityid.xml',
     )
-    return path_prefix_testin + path[file_index]
+    if dir:
+        return os.path.join(dir,path[file_index])
+    else:
+        return os.path.join(path_prefix_testin + path[file_index])
 
 
 @pytest.fixture
@@ -46,3 +50,62 @@ def cert1():
     with open(path_prefix_testin+'cert1_redmineIdentineticsCom-cer.pem') as fd:
         return fd.read()
 
+@pytest.fixture
+def ed0():
+    return SAMLEntityDescriptorPVP(ed_path(0), poldir1())
+
+@pytest.fixture
+def ed1():
+    return SAMLEntityDescriptorPVP(ed_path(1), poldir1())
+
+@pytest.fixture
+def ed2():
+    return SAMLEntityDescriptorPVP(ed_path(2), poldir1())
+
+@pytest.fixture
+def ed3():
+    return SAMLEntityDescriptorPVP(ed_path(3), poldir1())
+
+@pytest.fixture
+def ed4():
+    return SAMLEntityDescriptorPVP(ed_path(4), poldir1())
+
+@pytest.fixture
+def ed5():
+    return SAMLEntityDescriptorPVP(ed_path(5), poldir1())
+
+@pytest.fixture
+def ed6():
+    return SAMLEntityDescriptorPVP(ed_path(6), poldir1())
+
+@pytest.fixture
+def ed7():
+    return SAMLEntityDescriptorPVP(ed_path(7), poldir1())
+
+# cannot use ed8 as fixture - instantiation raises (expected) exception
+
+@pytest.fixture
+def ed9():
+    return SAMLEntityDescriptorPVP(ed_path(9), poldir1())
+
+@pytest.fixture
+def ed10():
+    return SAMLEntityDescriptorPVP(ed_path(10), poldir1())
+
+@pytest.fixture
+def ed11():
+    return SAMLEntityDescriptorPVP(ed_path(11), poldir1())
+
+@pytest.fixture
+def ed12():
+    return SAMLEntityDescriptorPVP(ed_path(12), poldir1())
+
+# cannot use ed13 as fixture - instantiation raises (expected) exception
+
+@pytest.fixture
+def ed14():
+    return SAMLEntityDescriptorPVP(ed_path(14), poldir1())
+
+@pytest.fixture
+def ed15():
+    return SAMLEntityDescriptorPVP(ed_path(15), poldir1())

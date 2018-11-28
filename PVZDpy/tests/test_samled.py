@@ -33,42 +33,44 @@ def result20():
         return fd.read()
 
 
-def test_cert2ed():
+def test_cert2ed(cert1, result19):
     ed_str = SAMLEntityDescriptor.cert2ed(
-            cert_str=cert1(),
+            cert_str=cert1,
             entityid=entityid(),
             samlrole='IDP')
-    assert ed_str == result19()
-    ed = SAMLEntityDescriptor(createfromcertstr=cert1(),
+    assert ed_str == result19
+
+def test_cert2ed(cert1, result20):
+    ed = SAMLEntityDescriptor(createfromcertstr=cert1,
                               entityid=entityid(),
                               samlrole='IDP')
     ed_str = ed.get_xml_str()
-    assert ed_str == result20()
+    assert ed_str == result20
 
 
 # def test_create_delete():
 #     self.fail()
 
-def test_get_entityid():
-    assert ed3().get_entityid() == entityid3()
+def test_get_entityid(ed3, entityid3):
+    assert ed3.get_entityid() == entityid3
 
 #def test_get_xml_str():
 #    x = ed3().get_xml_str().rstrip()
 #    y = xml_str1().rstrip()
 #    assert x == y
 
-def test_get_signing_certs():
-    x = ed3().get_signing_certs()
+def test_get_signing_certs(ed3):
+    x = ed3.get_signing_certs()
     assert isinstance(x, list)
 
-def test_get_namespace_prefix():
-    assert ed3().get_namespace_prefix() == 'md'
+def test_get_namespace_prefix(ed3):
+    assert ed3.get_namespace_prefix() == 'md'
 
 def test_get_filename_from_entityid():
     assert SAMLEntityDescriptor.get_filename_from_entityid(ed3().get_entityid()) == 'idp3ExampleCom_idpXml.xml'
 
-def test_validate_xsd():
-    ed3().validate_xsd()
+def test_validate_xsd(ed3):
+    ed3.validate_xsd()
 
 # def test_validate_schematron():
 #     self.fail()
