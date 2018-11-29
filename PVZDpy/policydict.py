@@ -1,6 +1,5 @@
 import re
 
-
 from .aodsfilehandler import AODSFileHandler
 from .aodslisthandler import AodsListHandler
 from .userexceptions import UnauthorizedSignerError
