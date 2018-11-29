@@ -8,6 +8,7 @@ from OpenSSL import crypto
 from urllib.parse import urlparse
 from .constants import *
 import PVZDpy.lxml_helper as lxml_helper
+from PVZDpy.policydict import PolicyDict
 from .samlentitydescriptor import SAMLEntityDescriptor
 from .userexceptions import *
 from .xy509cert import XY509cert
@@ -77,13 +78,6 @@ class SAMLEntityDescriptorPVP:
       </md:IDPSSODescriptor>
     </md:EntityDescriptor>""".format(eid=entityid)
 
-    def getAllowedNamespacesForOrgs(self, org_ids: list) -> list:
-        allowedDomains = []
-        for dn in self.policyDict["domain"].keys():
-            if self.policyDict["domain"][dn][0] in org_ids:
-                allowedDomains.append(dn)
-        return allowedDomains
-
     def _getCerts(self, role) -> list:
         certs = []
         if role == 'IDP': xp = 'md:IDPSSODescriptor//ds:X509Certificate'
@@ -111,43 +105,8 @@ class SAMLEntityDescriptorPVP:
     def get_namespace(self) -> str:
         fqdn = self.get_entityid_hostname()
         allowed_namespaces = list(self.policyDict["domain"].keys())
-        namespace = SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn, allowed_namespaces)
+        namespace = PolicyDict.get_namesp_for_fqdn(fqdn, allowed_namespaces)
         return namespace
-
-    @staticmethod
-    def get_namesp_for_fqdn(fqdn: str, allowed_namespaces: list) -> str:
-        if fqdn in allowed_namespaces:
-            return fqdn
-        parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
-        wildcard_fqdn = '*.' + parent_fqdn
-        if wildcard_fqdn in allowed_namespaces:
-            return wildcard_fqdn
-        else:
-            return None
-
-    def get_orgcn(self, orgid) -> str:
-        return self.policyDict["organization"].get(orgid)[0]
-
-    def get_orgid(self) -> str:
-        fqdn = self.get_entityid_hostname()
-        allowed_namespaces = list(self.policyDict["domain"].keys())
-        namespace = self.get_namesp_for_fqdn(fqdn, allowed_namespaces)
-        domain_rec = self.policyDict["domain"].get(namespace)
-        if domain_rec:
-            orgid = domain_rec[0]
-            return orgid
-        else:
-            return None
-        
-    def get_orgids_for_signer(self, signerCert) -> str:
-        """ return associated organizations for signer.
-            The paths is signer-cert -> portaladmin -> [orgid]
-        """
-        try:
-            org_ids = self.policyDict["userprivilege"]['{cert}'+signerCert][0]
-        except KeyError:
-            raise UnauthorizedSignerError('Signer certificate not found in policy directory')
-        return org_ids
 
     def get_xml_str(self):
         return self.ed.get_xml_str()
@@ -164,14 +123,14 @@ class SAMLEntityDescriptorPVP:
     def isInAllowedNamespaces(fqdn: str, allowed_namespaces: list) -> bool:
         """  check if fqdn is identical to or in a wildcard-namespace of an namespace allowed for signer """
         # TODO: change to explicit wildcards
-        namespace = SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn, allowed_namespaces)
+        namespace = PolicyDict.get_namesp_for_fqdn(fqdn, allowed_namespaces)
         return (namespace is not None)
 
     def isInRegisteredNamespaces(self, fqdn: str) -> bool:
         """  check if fqdn is identical to or in a wildcard-namespace of a registered namespace (independet of signer) """
         # TODO: change to explicit wildcards
         registered_ns = self.policyDict["domain"].keys()
-        namespace = SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn, registered_ns)
+        namespace = PolicyDict.get_namesp_for_fqdn(fqdn, registered_ns)
         return (namespace is not None)
 
     def remove_enveloped_signature(self):

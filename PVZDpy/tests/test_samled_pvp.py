@@ -14,20 +14,6 @@ def assert_equal(expected, actual, fn=''):
     assert expected == actual, msg
 
 
-@pytest.fixture
-def namespaces7():
-    return ['*.identinetics.com']
-
-@pytest.fixture
-def orgids7():
-    return ['AT:VKZ:XFN-318886a']
-
-@pytest.fixture
-def signerCert7():
-    with open(path_prefix_testin+'signercert7_rh.pem') as fd:
-        return fd.read()
-
-
 
 def test_checkCerts1(ed1):
     ed1.checkCerts()
@@ -62,40 +48,11 @@ def test_create_delete():
         assert_equal(fd.read(), delete_requ)
 
 
-def test_getAllowedNamespacesForOrgs(ed7, namespaces7, orgids7):
-    allowed_namespaces = ed7.getAllowedNamespacesForOrgs(orgids7)
-    assert namespaces7 == allowed_namespaces
-
-
 def test_get_namespace1(ed1):
     assert ed1.get_namespace() is None
 
 def test_get_namespace1(ed7):
     assert '*.identinetics.com' == ed7.get_namespace()
-
-
-def test_get_namesp_for_fqdn():
-    allowed_namespaces =  [
-        "*.identinetics.com",
-        "some.net",
-        "some.org",
-        "sp.somenew.org",
-    ]
-    fqdn1 = 'idp.identinetics.com'
-    expected_result1 = '*.identinetics.com'
-    assert expected_result1 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn1, allowed_namespaces)
-    fqdn2 = 'idp.iam.identinetics.com'
-    expected_result2 = None  # wildcard MUST NOT match subdomains
-    assert expected_result2 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn2, allowed_namespaces)
-    fqdn3 = 'sp.somenew.org'
-    expected_result3 = fqdn3
-    assert expected_result3 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn3, allowed_namespaces)
-    fqdn4 = 'idp.some.net'
-    expected_result4 = None
-    assert expected_result4 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn4, allowed_namespaces)
-    fqdn5 = 'idp.some.net'
-    expected_result5 = None
-    assert expected_result5 == SAMLEntityDescriptorPVP.get_namesp_for_fqdn(fqdn5, {})
 
 
 def test_isInAllowedNamespaces():
@@ -128,20 +85,6 @@ def test_isInRegisteredNamespaces(ed1):
     assert not ed1.isInRegisteredNamespaces(fqdn4)
     fqdn5 = 'idp.some.net'
     assert not ed1.isInRegisteredNamespaces(fqdn5)
-
-
-def test_get_orgids_for_signer(ed2, signerCert7):
-    orgids = ed2.get_orgids_for_signer(signerCert7)
-    assert ['AT:VKZ:XFN-318886a'] == orgids
-
-
-def test_get_orgid1(ed1):
-    orgid1 = ed1.get_orgid()
-    assert orgid1 is None
-
-def test_get_orgid7(ed7):
-    orgid7 = ed7.get_orgid()
-    assert 'AT:VKZ:XFN-318886a' == orgid7
 
 
 def test_isDeletionRequest2(ed2):
