@@ -75,7 +75,7 @@ class SamlEdValidator:
         self.testid = testid
         self._reset_validation_result()
         if not getattr(self, 'policydir', False):
-            self.policydir = self.policystore.get_policy_dict()
+            self.policydir = self.policystore.get_policydir()
         try:
             self._validate_parse_xml(ed_str_new, ed_path_new)
             self._create_tempfile_from_edstr()

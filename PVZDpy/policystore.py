@@ -11,14 +11,14 @@ class PolicyStore:
         if invocation:
             aodsFileHandler = AODSFileHandler(invocation.args)
             aodsListHandler = AodsListHandler(aodsFileHandler, invocation.args)
-            self.policydict = aodsListHandler.aods_read()
+            self._policydir = aodsListHandler.aods_read()
         elif policydir:
-            self.policydict = policydir
+            self._policydir = policydir
 
     def getAllowedNamespacesForOrgs(self, org_ids: list) -> list:
         allowedDomains = []
-        for dn in self.policydict["domain"].keys():
-            if self.policydict["domain"][dn][0] in org_ids:
+        for dn in self._policydir["domain"].keys():
+            if self._policydir["domain"][dn][0] in org_ids:
                 allowedDomains.append(dn)
         return allowedDomains
 
@@ -34,12 +34,12 @@ class PolicyStore:
             return None
 
     def get_orgcn(self, orgid) -> str:
-        return self.policydict["organization"].get(orgid)[0]
+        return self._policydir["organization"].get(orgid)[0]
 
     def get_orgid(self, fqdn) -> str:
-        allowed_namespaces = list(self.policydict["domain"].keys())
+        allowed_namespaces = list(self._policydir["domain"].keys())
         namespace = self.get_namesp_for_fqdn(fqdn, allowed_namespaces)
-        domain_rec = self.policydict["domain"].get(namespace)
+        domain_rec = self._policydir["domain"].get(namespace)
         if domain_rec:
             orgid = domain_rec[0]
             return orgid
@@ -51,12 +51,12 @@ class PolicyStore:
             The paths is signer-cert -> portaladmin -> [orgid]
         """
         try:
-            org_ids = self.policydict["userprivilege"]['{cert}' + signerCert][0]
+            org_ids = self._policydir["userprivilege"]['{cert}' + signerCert][0]
         except KeyError:
             raise UnauthorizedSignerError('Signer certificate not found in policy directory')
         return org_ids
 
-    def get_policy_dict(self) -> dict:
-        return self.policydict
+    def get_policydir(self) -> dict:
+        return self._policydir
 
 

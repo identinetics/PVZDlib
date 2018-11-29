@@ -16,7 +16,7 @@ def poldir1():
 
 
 @pytest.fixture
-def policydict1(poldir1):
+def policydir1(poldir1):
     return PolicyStore(policydir=poldir1)
 
 
