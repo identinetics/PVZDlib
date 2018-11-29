@@ -48,4 +48,9 @@ def test_get_orgid7(policystore1):
     orgid7 = policystore1.get_orgid('ipd.identinetics.com')
     assert 'AT:VKZ:XFN-318886a' == orgid7
 
+def test_get_orgcn0(policystore1):
+    orgcn0 = policystore1.get_orgcn(None)
+    assert orgcn0 == ''
+
+
 

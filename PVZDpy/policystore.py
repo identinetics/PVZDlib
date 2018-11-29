@@ -37,7 +37,10 @@ class PolicyStore:
             return None
 
     def get_orgcn(self, orgid) -> str:
-        return self._policydir["organization"].get(orgid)[0]
+        if orgid:
+            return self._policydir["organization"].get(orgid)[0]
+        else:
+            return ''
 
     def get_orgid(self, fqdn) -> str:
         allowed_namespaces = list(self._policydir["domain"].keys())
