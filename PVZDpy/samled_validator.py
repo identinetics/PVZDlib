@@ -23,9 +23,11 @@ class NoFurtherValidation(Exception):
     pass
 
 class SamlEdValidator:
-    def __init__(self, policydir):
+    def __init__(self, policystore: PolicyStore):
+        if not isinstance(policystore, PolicyStore):
+            raise exception('create SamlEdValidator requires PolicyStore')
         self._reset_validation_result()
-        self.policystore = PolicyStore(policydir=policydir)
+        self.policystore = policystore
         self.ed_str = ''
         self.schematron_ok = None
         self.certcheck_ok = None
@@ -112,7 +114,7 @@ class SamlEdValidator:
 
     def _validate_instantiate_ed(self):
         try:
-            self.ed = SAMLEntityDescriptorPVP(self.fd.name, self.policydir)
+            self.ed = SAMLEntityDescriptorPVP(self.fd.name, self.policystore)
         except(PVZDuserexception) as e:
             self.val_mesg_dict['Parse XML'] = self._format_val_msg(e)
             raise NoFurtherValidation

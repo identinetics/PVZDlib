@@ -23,12 +23,13 @@ class SAMLEntityDescriptorPVP:
     """
     Instance of SAML EntityDescriptor with PVP profile specific extensions
     """
-    def __init__(self, ed_path, policyDict):
+    def __init__(self, ed_path, policystore):
         self.ed_path = ed_path
         self.ed = SAMLEntityDescriptor(ed_path)
-        self.policyDict = policyDict
-        self.IDP_trustStore = Xy509certStore(policyDict, 'IDP')
-        self.SP_trustStore = Xy509certStore(policyDict, 'SP')
+        self.policystore = policystore
+        issuers = self.policystore.get_issuers()
+        self.IDP_trustStore = Xy509certStore(issuers, 'IDP')
+        self.SP_trustStore = Xy509certStore(issuers, 'SP')
 
     def checkCerts(self):
         """ validate that included signing and encryption certificates meet following conditions:
@@ -104,7 +105,7 @@ class SAMLEntityDescriptorPVP:
 
     def get_namespace(self) -> str:
         fqdn = self.get_entityid_hostname()
-        allowed_namespaces = list(self.policyDict["domain"].keys())
+        allowed_namespaces = self.policystore.get_registered_namespaces()
         namespace = PolicyStore.get_namesp_for_fqdn(fqdn, allowed_namespaces)
         return namespace
 
@@ -129,7 +130,7 @@ class SAMLEntityDescriptorPVP:
     def isInRegisteredNamespaces(self, fqdn: str) -> bool:
         """  check if fqdn is identical to or in a wildcard-namespace of a registered namespace (independet of signer) """
         # TODO: change to explicit wildcards
-        registered_ns = self.policyDict["domain"].keys()
+        registered_ns = self.policystore.get_registered_namespaces()
         namespace = PolicyStore.get_namesp_for_fqdn(fqdn, registered_ns)
         return (namespace is not None)
 

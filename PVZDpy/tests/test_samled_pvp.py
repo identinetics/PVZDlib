@@ -33,9 +33,9 @@ def test_checkCerts12(ed12):
     with pytest.raises(CertExpiredError):
         ed12.checkCerts()
 
-def test_checkCerts13():
+def test_checkCerts13(policystore1):
     with pytest.raises(MultipleEntitiesNotAllowed):
-        ed13 = SAMLEntityDescriptorPVP(ed_path(13), poldir1())
+        ed13 = SAMLEntityDescriptorPVP(ed_path(13), policystore1)
 
 def test_checkCerts14(ed14):
     with pytest.raises(EdHostnameNotMatchingCertSubject):
@@ -121,9 +121,9 @@ def test_validate_schematron(ed2):
 def test_validate_xsd2(ed2):
     ed2.validate_xsd()
 
-def test_validate_xsd8():
+def test_validate_xsd8(policystore1):
     with pytest.raises(lxml.etree.XMLSyntaxError):
-        ed8 = SAMLEntityDescriptorPVP(ed_path(8), poldir1())
+        ed8 = SAMLEntityDescriptorPVP(ed_path(8), policystore1)
 
 
 def test_validate_xsd9(ed9):

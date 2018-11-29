@@ -22,6 +22,9 @@ class PolicyStore:
                 allowedDomains.append(dn)
         return allowedDomains
 
+    def get_issuers(self):
+        return self._policydir["issuer"]
+
     @staticmethod
     def get_namesp_for_fqdn(fqdn: str, allowed_namespaces: list) -> str:
         if fqdn in allowed_namespaces:
@@ -46,7 +49,7 @@ class PolicyStore:
         else:
             return None
 
-    def get_orgids_for_signer(self, signerCert) -> str:
+    def get_orgids_for_signer(self, signerCert) -> list:
         """ return associated organizations for signer.
             The paths is signer-cert -> portaladmin -> [orgid]
         """
@@ -59,4 +62,5 @@ class PolicyStore:
     def get_policydir(self) -> dict:
         return self._policydir
 
-
+    def get_registered_namespaces(self) -> list:
+        return list(self._policydir["domain"].keys())
