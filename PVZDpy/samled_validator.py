@@ -6,6 +6,7 @@ from PVZDpy.aodsfilehandler import AODSFileHandler
 from PVZDpy.invocation.aodsfhinvocation import aodsfhInvocation
 from PVZDpy.aodslisthandler import AodsListHandler
 from PVZDpy.invocation.aodslhinvocation import aodslhInvocation
+from PVZDpy.policystore import PolicyStore
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import *
 from PVZDpy.xy509cert import XY509cert
@@ -24,7 +25,7 @@ class NoFurtherValidation(Exception):
 class SamlEdValidator:
     def __init__(self, policydir):
         self._reset_validation_result()
-        self.policydir = policydir
+        self.policystore = PolicyStore(policydir=policydir)
         self.ed_str = ''
         self.schematron_ok = None
         self.certcheck_ok = None
@@ -74,7 +75,7 @@ class SamlEdValidator:
         self.testid = testid
         self._reset_validation_result()
         if not getattr(self, 'policydir', False):
-            self.policydir = self.getPolicyDict_from_json()
+            self.policydir = self.policystore.get_policy_dict()
         try:
             self._validate_parse_xml(ed_str_new, ed_path_new)
             self._create_tempfile_from_edstr()
@@ -160,11 +161,11 @@ class SamlEdValidator:
                 self.val_mesg_dict['validate Domain Names'] = 'Cannot authorize: no hostname found when URL-parsing entityID'
                 raise NoFurtherValidation
             try:
-                org_ids = self.ed.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
-                allowedDomains = self.ed.getAllowedNamespacesForOrgs(org_ids)
+                org_ids = self.policystore.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
+                allowedDomains = self.policystore.getAllowedNamespacesForOrgs(org_ids)
                 self.ed.validateDomainNames(allowedDomains)
-                self.orgid = self.ed.get_orgid()
-                self.orgcn = self.ed.get_orgcn(self.orgid)
+                self.orgid = self.policystore.get_orgid(self.ed.get_entityid_hostname())
+                self.orgcn = self.policystore.get_orgcn(self.orgid)
                 self.authz_ok = True
             except(PVZDuserexception) as e:
                 self.authz_ok = False

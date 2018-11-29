@@ -8,7 +8,7 @@ from OpenSSL import crypto
 from urllib.parse import urlparse
 from .constants import *
 import PVZDpy.lxml_helper as lxml_helper
-from PVZDpy.policydict import PolicyDict
+from PVZDpy.policystore import PolicyStore
 from .samlentitydescriptor import SAMLEntityDescriptor
 from .userexceptions import *
 from .xy509cert import XY509cert
@@ -105,7 +105,7 @@ class SAMLEntityDescriptorPVP:
     def get_namespace(self) -> str:
         fqdn = self.get_entityid_hostname()
         allowed_namespaces = list(self.policyDict["domain"].keys())
-        namespace = PolicyDict.get_namesp_for_fqdn(fqdn, allowed_namespaces)
+        namespace = PolicyStore.get_namesp_for_fqdn(fqdn, allowed_namespaces)
         return namespace
 
     def get_xml_str(self):
@@ -123,14 +123,14 @@ class SAMLEntityDescriptorPVP:
     def isInAllowedNamespaces(fqdn: str, allowed_namespaces: list) -> bool:
         """  check if fqdn is identical to or in a wildcard-namespace of an namespace allowed for signer """
         # TODO: change to explicit wildcards
-        namespace = PolicyDict.get_namesp_for_fqdn(fqdn, allowed_namespaces)
+        namespace = PolicyStore.get_namesp_for_fqdn(fqdn, allowed_namespaces)
         return (namespace is not None)
 
     def isInRegisteredNamespaces(self, fqdn: str) -> bool:
         """  check if fqdn is identical to or in a wildcard-namespace of a registered namespace (independet of signer) """
         # TODO: change to explicit wildcards
         registered_ns = self.policyDict["domain"].keys()
-        namespace = PolicyDict.get_namesp_for_fqdn(fqdn, registered_ns)
+        namespace = PolicyStore.get_namesp_for_fqdn(fqdn, registered_ns)
         return (namespace is not None)
 
     def remove_enveloped_signature(self):

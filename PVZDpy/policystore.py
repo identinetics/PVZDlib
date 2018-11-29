@@ -4,10 +4,10 @@ from .aodsfilehandler import AODSFileHandler
 from .aodslisthandler import AodsListHandler
 from .userexceptions import UnauthorizedSignerError
 
-class PolicyDict:
+class PolicyStore:
     def __init__(self, invocation=None, policydir=None):
         if not any([invocation, policydir]):
-            raise Exception('PolicyDict.__init__ requires either invocation or policydir arg')
+            raise Exception('PolicyStore.__init__ requires either invocation or policydir arg')
         if invocation:
             aodsFileHandler = AODSFileHandler(invocation.args)
             aodsListHandler = AodsListHandler(aodsFileHandler, invocation.args)
@@ -57,6 +57,6 @@ class PolicyDict:
         return org_ids
 
     def get_policy_dict(self) -> dict:
-        return self.poldict
+        return self.policydict
 
 

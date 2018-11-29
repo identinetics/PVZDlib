@@ -1,7 +1,7 @@
 import json
 from os.path import join as opj 
 import pytest
-from ..policydict import PolicyDict
+from ..policystore import PolicyStore
 from ..samled_pvp import SAMLEntityDescriptorPVP
 
 path_prefix_testin = opj('testdata', 'saml')
@@ -17,7 +17,7 @@ def poldir1():
 
 @pytest.fixture
 def policydict1(poldir1):
-    return PolicyDict(policydir=poldir1)
+    return PolicyStore(policydir=poldir1)
 
 
 def ed_path(file_index: int, dir=None):
