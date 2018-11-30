@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <md:EntityDescriptor  entityID="https://idp10.example.com/idp.xml" xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
-  <!-- expired idp signing certificate as of 2018-11-27  -->
+  <!-- idp signing certificate from trusted root, but expired as of 2018-11-27  -->
   <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
     <md:Extensions>
       <alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
