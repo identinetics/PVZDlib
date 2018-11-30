@@ -8,6 +8,6 @@
   "signer_cert_cn": "",
   "signer_cert_pem": "",
   "val_mesg_dict": {
-    "Entity certificate check": "[CertInvalidError] Certificate validation failed. [18, 0, 'self signed certificate'] /C=AU/ST=Some-State/O=Internet Widgits Pty Ltd"
+    "Entity cert": "[CertInvalidError] Certificate validation failed. [18, 0, 'self signed certificate'] /C=AU/ST=Some-State/O=Internet Widgits Pty Ltd"
   }
 }

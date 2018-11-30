@@ -6,7 +6,7 @@
   "signer_cert_cn": "",
   "signer_cert_pem": "",
   "val_mesg_dict": {
-    "Entity certificate check": "[CertExpiredError] Certificate is expired",
+    "Entity cert": "[CertExpiredError] Certificate is expired",
     "Validate signature": "[ValidationError] Signature verification failed, code=2212; Fehler beim Auswerten des XPath-Ausdrucks: //dsig:Signature"
   },
   "val_ok": false

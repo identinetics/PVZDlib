@@ -126,7 +126,7 @@ class SamlEdValidator:
             msg = str(e)
             fixed_part_pos = msg.find('lineNumber: ')
             fixed_part = msg[fixed_part_pos:]
-            self.val_mesg_dict['Validate SAML schema'] = self._format_val_msg(e, fixed_part)
+            self.val_mesg_dict['SAML XML schema'] = self._format_val_msg(e, fixed_part)
             raise NoFurtherValidation
 
     def _validate_saml_profile(self):
@@ -146,12 +146,12 @@ class SamlEdValidator:
                 self.certcheck_ok = True
         except(OpenSSL.crypto.Error, PVZDuserexception) as e:
             self.certcheck_ok = False
-            self.val_mesg_dict['Entity certificate check'] = self._format_val_msg(e)
+            self.val_mesg_dict['Entity cert'] = self._format_val_msg(e)
 
     def _validate_is_registered_namespace(self):
         fqdn = self.ed.get_entityid_hostname()
         if not self.ed.isInRegisteredNamespaces(fqdn):
-            self.val_mesg_dict['validate Domain Names'] = fqdn + ' is not registered with anybody'
+            self.val_mesg_dict['Hostname'] = fqdn + ' is not registered with anybody'
 
     def _validate_authz(self):
         try:
@@ -160,7 +160,7 @@ class SamlEdValidator:
             self.signer_cert_cn = XY509cert(self.signer_cert_pem).getSubjectCN()
             if len(self.ed.get_entityid_hostname()) == 0:
                 self.authz_ok = False
-                self.val_mesg_dict['validate Domain Names'] = 'Cannot authorize: no hostname found when URL-parsing entityID'
+                self.val_mesg_dict['Hostname'] = 'Cannot authorize: no hostname found when URL-parsing entityID'
                 raise NoFurtherValidation
             try:
                 org_ids = self.policystore.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
@@ -171,7 +171,7 @@ class SamlEdValidator:
                 self.authz_ok = True
             except(PVZDuserexception) as e:
                 self.authz_ok = False
-                self.val_mesg_dict['validate Domain Names'] = self._format_val_msg(e)
+                self.val_mesg_dict['Hostname'] = self._format_val_msg(e)
         except(PVZDuserexception) as e:
             self.authz_ok = False
             self.val_mesg_dict['Validate signature'] = self._format_val_msg(e)

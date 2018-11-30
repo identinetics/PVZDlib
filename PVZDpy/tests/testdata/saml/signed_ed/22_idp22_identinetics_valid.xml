@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" entityID="https://idp22.identinetics.com/idp.xml"><dsig:Signature Id="Signature-c2465391-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-c2465391-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><dsig:Reference Id="Reference-c2465391-1" URI=""><dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+        <dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+      </dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>owj7x8/PKA5X6CDp4gKcSVo1hyXCsJS+Fq9o4EdP2U8=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-c2465391-2" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-c2465391-1"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>0HVPcSH/uCOtQ7LHb2t8eenk2Oq8k2BYdE4cPDyN3XI=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-c2465391-1">wV6+14g0J33P3WK9sU312FAXda/F/rqpQSxExhci2lT3Z5oCE7CkMCZhCQybVbgg
+aTxV5rL7U5ZouM5dgY5DiA==</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIEjzCCA3egAwIBAgIDGP0iMA0GCSqGSIb3DQEBBQUAMIGXMQswCQYDVQQGEwJB
+VDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBp
+bSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJl
+bWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMjAeFw0x
+NTA3MTAxMDI0MTNaFw0yMDA3MTAwODI0MTNaMF4xCzAJBgNVBAYTAkFUMRYwFAYD
+VQQDDA1SYWluZXIgSMO2cmJlMQ8wDQYDVQQEDAZIw7ZyYmUxDzANBgNVBCoMBlJh
+aW5lcjEVMBMGA1UEBRMMODkxMzQ4MDYxMzEwMFkwEwYHKoZIzj0CAQYIKoZIzj0D
+AQcDQgAEitOBhEXzDGJ1V9idI3RvmHl4g5FYTqB0sp+KcvbwEFg1briOreGj2zXN
+OOhEzM+mDljuCv5D7QkHlHCk1Evc3KOCAeUwggHhMBEGA1UdDgQKBAhB3LUFPwWu
+4jAOBgNVHQ8BAf8EBAMCBsAwEwYDVR0jBAwwCoAITd/h/0vZyd8wCQYDVR0TBAIw
+ADB7BggrBgEFBQcBAQRvMG0wQgYIKwYBBQUHMAKGNmh0dHA6Ly93d3cuYS10cnVz
+dC5hdC9jZXJ0cy9hLXNpZ24tUHJlbWl1bS1TaWctMDJhLmNydDAnBggrBgEFBQcw
+AYYbaHR0cDovL29jc3AuYS10cnVzdC5hdC9vY3NwMFkGA1UdIARSMFAwRAYGKigA
+EQELMDowOAYIKwYBBQUHAgEWLGh0dHA6Ly93d3cuYS10cnVzdC5hdC9kb2NzL2Nw
+L2Etc2lnbi1QcmVtaXVtMAgGBgQAizABATAnBggrBgEFBQcBAwEB/wQYMBYwCAYG
+BACORgEBMAoGCCsGAQUFBwsBMIGaBgNVHR8EgZIwgY8wgYyggYmggYaGgYNsZGFw
+Oi8vbGRhcC5hLXRydXN0LmF0L291PWEtc2lnbi1QcmVtaXVtLVNpZy0wMixvPUEt
+VHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0P2Jhc2U/b2JqZWN0
+Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTANBgkqhkiG9w0BAQUFAAOC
+AQEA08DFHxU01lhHnx/5s/n+Ue/LUQFNLaTxQYbmKuQ2zdiJBI33TQptMCQQITGZ
+vJJBeTBgGguVu5547+BdnxonyULw+GkfBqR0ZBcS7ejEx9ujRnTZdUYNAXkTMnk2
+5YAAX4DDgm3CHV850LVUt++ofaYgzv+HNSPGvu3gD3qGp6tJ1nlns0SVCIMBE+LH
+Fh+9lBjCHCmPWosfEcCv2vSmL/PkQGtXKhegUPnnAJFzDqK4xrRm3uj53TXZwdWz
+YUWYeUggnvzck5sUQCtGlFLkaiAvS4dtnS9DuRuq82kqzHoTTSb6hWcVCoVBx4Os
+woOXeF6xhaCm7oYL6Q9fPi1zCQ==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-c2465391-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns3="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature-c2465391-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-c2465391-1"><xades:SignedSignatureProperties><xades:SigningTime>2018-11-30T19:45:11Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>LHR6mkaPTEpnE8VKRFnHDKIutB/Z+ZLmmMGxQRvtKFE=</dsig:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=a-sign-Premium-Sig-02,OU=a-sign-Premium-Sig-02,O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>1637666</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-c2465391-1"><xades:MimeType>application/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>
+  <!--  gültiger EntityDescriptor nach PVP2 Profil -->
+  <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:Extensions>
+      <alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+      <alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256" MaxKeySize="511" MinKeySize="256"/>
+      <alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" MaxKeySize="4096" MinKeySize="2048"/> <!-- blacklisted: http://www.w3.org/2000/09/xmldsig#rsa-sha1 -->
+      <mdui:UIInfo>
+        <mdui:DisplayName xml:lang="en">Test Driver IdP</mdui:DisplayName>
+        <mdui:Description xml:lang="en">Saml2Test Test Driver IdP</mdui:Description>
+      </mdui:UIInfo>
+      <mdui:DiscoHints>
+        <mdui:DomainHint>https://github.com/rohe/fedlab/</mdui:DomainHint>
+        <mdui:IPHint>81.217.70.0/8</mdui:IPHint>
+        <mdui:GeolocationHint>geo:92.3308,17.0516</mdui:GeolocationHint>
+      </mdui:DiscoHints>
+    </md:Extensions>
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>
+            MIICrDCCAZQCAQwwDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAwwMUFZaRC1UZXN0
+            LUNBMB4XDTE4MTEzMDE5MzgzMloXDTM5MDYxMzE5MzgzMlowITEfMB0GA1UEAwwW
+            aWRwMjIuaWRlbnRpbmV0aWNzLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+            AQoCggEBALldtEkU+ERD2XckMAsrfWtC7RoS7wolTQ+xlArHIj8/gccjsgVu29xE
+            q2H1d0uZV1kglniDL/HvAyQ0Pktj96y+qTOKMk0Ea5tepCZYFtedQMCUVzTYYCdC
+            w1kyPJZxISAy1MCyTLyM4A7vDzCVog1emtfrZcYho0ljaqEyYxdLmbRV5kv7Pvfm
+            eFbrlsiv6VmJ8eGf0N8PQ9F+MkaKPPStbntH0u3uEVX8WEj4GUlRdxN7yHLSV2x+
+            yrCYTmXJiPB2q7VmaEM6m/1OPe8bmzJHL30s4Rgj1WTtl038Xq/nvAd9GNjzF/NV
+            so9aRIjOWXRv5/kOkDo+jZOtv41bzLcCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA
+            qru0XRGTVwUhRJL2UQVDXA/suUGBVdz8id/H83AfgvSMVuPlqY70XdVEXZpN136k
+            c8EoLzSYWCO4BSctMv87noGd8lL1HSAMt1iJ/Xrjw5Aa8/ndE/MDXUM+fqgMuM6B
+            ZKBAui/K+5E28o8b2zhpaKiSVE8nVjR68daHW0vUoRlT7wWLcBrWheEuqsjCff2k
+            +QbnEJG3SmYQLqsKh+y/42soDA5K+I4R909Vysr90PyTqdCV2QEw+HFRJ+oRxSSG
+            bJ9lNlZ0kFIBfxTSBQ/vFw/JrH6pnrNRK48Vcm6SNwsSg5zY5ZGNet80TORQLHj8
+            JPOzCgG6xdw9hCOljAQtyg==
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp22.identinetics.com/slo/post"/>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp22.identinetics.com/slo/redirect"/>
+    <md:ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp22.identinetics.com/mni/post"/>
+    <md:ManageNameIDService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp22.identinetics.com/mni/redirect"/>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp22.identinetics.com/sso/redirect"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp22.identinetics.com/sso/post"/>
+    <md:AssertionIDRequestService Binding="urn:oasis:names:tc:SAML:2.0:bindings:URI" Location="https://idp22.identinetics.com/airs"/>
+  </md:IDPSSODescriptor>
+  <md:Organization>
+    <md:OrganizationName xml:lang="en">Saml2Test Harness</md:OrganizationName>
+    <md:OrganizationDisplayName xml:lang="en">Saml2Test Harness</md:OrganizationDisplayName>
+    <md:OrganizationURL xml:lang="en">https://github.com/rohe/saml2test/</md:OrganizationURL>
+  </md:Organization>
+  <md:ContactPerson contactType="technical">
+    <md:GivenName>Testiani</md:GivenName>
+    <md:SurName>Testosteroni</md:SurName>
+    <md:EmailAddress>testiani@identinetics.com</md:EmailAddress>
+  </md:ContactPerson>
+</md:EntityDescriptor>

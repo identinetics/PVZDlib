@@ -9,3 +9,4 @@ V	281122162627Z		08	unknown	/CN=idp6.example.org
 V	281122163907Z		09	unknown	/CN=idp10.example.org
 V	181127213130Z		0A	unknown	/CN=idp10.example.com
 V	390610211858Z		0B	unknown	/CN=idp6.example.com
+V	390613193832Z		0C	unknown	/CN=idp22.identinetics.com

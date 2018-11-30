@@ -175,6 +175,12 @@ class SAMLEntityDescriptor:
         return xml_str.decode('utf-8')
 
 
+    @staticmethod
+    def has_enveloped_signature(self) -> bool:
+        lxml_helper.delete_element_if_existing(self.ed.tree,
+            '/md:EntityDescriptor/ds:Signature',
+            {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
+
     def remove_enveloped_signature(self):
         lxml_helper.delete_element_if_existing(self.tree,
             '/md:EntityDescriptor/ds:Signature',

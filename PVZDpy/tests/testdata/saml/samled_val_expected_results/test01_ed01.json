@@ -8,6 +8,6 @@
   "signer_cert_cn": "",
   "signer_cert_pem": "",
   "val_mesg_dict": {
-    "validate Domain Names": "idp1.example.org is not registered with anybody"
+    "Hostname": "idp1.example.org is not registered with anybody"
   }
 }

@@ -121,6 +121,7 @@ def test_validate_schematron(ed2):
 def test_validate_xsd2(ed2):
     ed2.validate_xsd()
 
+
 def test_validate_xsd8(policystore1):
     with pytest.raises(lxml.etree.XMLSyntaxError):
         ed8 = SAMLEntityDescriptorPVP(ed_path(8), policystore1)
@@ -135,8 +136,10 @@ def test_validateDomainNames1(ed1, namespaces7):
     with pytest.raises(InvalidFQDNinEntityID):
         ed1.validateDomainNames(namespaces7)
 
+
 def test_validateDomainNames7(ed7, namespaces7):
     ed7.validateDomainNames(namespaces7)
+
 
 def test_validateDomainNames15(ed15, namespaces7):
     with pytest.raises(InvalidFQDNInEndpoint):
@@ -147,8 +150,10 @@ def test_validateSignature1(ed1):
     with pytest.raises(ValidationError):
         ed1.validateSignature()
 
+
 def test_validateSignature10(ed10):
     ed10.validateSignature()
+
 
 def test_validateSignature11(ed11):
     ed11.validateSignature()
@@ -157,6 +162,7 @@ def test_validateSignature11(ed11):
 def test_verify_filename2(ed2):
     with pytest.raises(InputValueError):
         ed2.verify_filename()
+
 
 def test_verify_filename0(ed0):
     ed0.verify_filename()

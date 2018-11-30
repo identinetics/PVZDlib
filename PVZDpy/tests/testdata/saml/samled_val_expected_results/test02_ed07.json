@@ -8,6 +8,6 @@
   "signer_cert_cn": "",
   "signer_cert_pem": "",
   "val_mesg_dict": {
-    "Entity certificate check": "[EdHostnameNotMatchingCertSubject] Hostname of entityID (idp7.identinetics.com) not matching CN in cert subject (/CN=idp.identinetics.com)"
+    "Entity cert": "[EdHostnameNotMatchingCertSubject] Hostname of entityID (idp7.identinetics.com) not matching CN in cert subject (/CN=idp.identinetics.com)"
   }
 }
