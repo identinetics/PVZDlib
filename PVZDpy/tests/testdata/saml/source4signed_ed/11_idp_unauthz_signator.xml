@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor entityID="https://idp11.example.com/idp.xml"
+                     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport"
+                     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                     xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+  <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:Extensions>
+      <alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+      <alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256" MaxKeySize="511" MinKeySize="256"/>
+      <alg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" MaxKeySize="4096" MinKeySize="2048"/>
+      <mdui:UIInfo>
+        <mdui:DisplayName xml:lang="en">Test Driver IdP</mdui:DisplayName>
+        <mdui:Description xml:lang="en">Saml2Test Test Driver IdP</mdui:Description>
+      </mdui:UIInfo>
+    </md:Extensions>
+    <md:KeyDescriptor>
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>
+            MIICpzCCAY8CAQ0wDQYJKoZIhvcNAQELBQAwFzEVMBMGA1UEAwwMUFZaRC1UZXN0
+            LUNBMB4XDTE4MTIwMjA3MTU1NVoXDTM5MDYxNTA3MTU1NVowHDEaMBgGA1UEAwwR
+            aWRwMTEuZXhhbXBsZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+            AQDJGurJATx+vgDMdiwWYXkr3eYDKzVBpCIY/jgbgQ8nS94/OQisxC3z8Sjck6Nf
+            nsEekkXp2NwVSL+px9pKMCtMVHWctTl1izHxB/jQICqvE2gMwh0PXy+sMC9ybWme
+            RkE2TgqBdeW9jvT4LVyBmD37ifR5NhQaQdVCZTaAZYu+3bm9Pi0hNrXDlknIrome
+            YX8dwSb7wQ56JbNl0WadyxM9c5s48bU3Q3VemRFg3VoCDrtImqfhYrlo1eZVz5wP
+            8rZpmgBpkTJXwwXm5dCclYdDnMCr5on8VZg3f12JtM5Ng0QnPdpIUVw7vcuD9jeh
+            baAzKCjRRboCOi7UfeY1sUjbAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAEaeSUzQ
+            cYPQMMP35pUpygJs+V4QuVf7++ylG2LMXk3LSXhh1Fc9DylNatVvzPdH/EInTXC8
+            EtLxxcK6UuVBSAif3H/0eHECYWXbhAUV8KNm8FzS50YKqoZ2FXo2yMYj1PZGNMzl
+            c97bESb78N/GHvf+nY/l6XW+TSE55xSZIeElLF1G8/IOe86lrEFW5KvxbDHsQexK
+            llg4owQ+w52dgsOzU0jyACxFAPu0x2CGu6A3pqcrsOO7ezCKfCt0jbDJATBrjOJA
+            GHv4yGCaRpcEe9HGw9Sw1/xYApahZZk5sh1uFVyUwNVWUPgtp4vUIradRVbxdc+b
+            tmzTuGbPcP/t788=
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp11.example.com/slo/post"/>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp11.example.com/slo/redirect"/>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp11.example.com/sso/redirect"/>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp11.example.com/sso/post"/>
+  </md:IDPSSODescriptor>
+  <md:Organization>
+    <md:OrganizationName xml:lang="en">Saml2Test Harness</md:OrganizationName>
+    <md:OrganizationDisplayName xml:lang="en">Saml2Test Harness</md:OrganizationDisplayName>
+    <md:OrganizationURL xml:lang="en">https://github.com/rohe/saml2test/</md:OrganizationURL>
+  </md:Organization>
+  <md:ContactPerson contactType="technical">
+    <md:GivenName>Testiani</md:GivenName>
+    <md:SurName>Testosteroni</md:SurName>
+    <md:EmailAddress>testiani@example.com</md:EmailAddress>
+  </md:ContactPerson>
+</md:EntityDescriptor>

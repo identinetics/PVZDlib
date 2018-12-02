@@ -81,6 +81,12 @@ def test01_edval_edpath13(policystore1):
 def test01_edval_edpath21(policystore1):
     run_test_with_edpath(21, policystore1, sigval=True, test_index=1)
 
+def test01_edval_edpath22(policystore1):
+    run_test_with_edpath(22, policystore1, sigval=True, test_index=1)
+
+def test01_edval_edpath23(policystore1):
+    run_test_with_edpath(23, policystore1, sigval=True, test_index=1)
+
 def run_test_with_xmlstr(file_index: int, policystore, sigval=False, test_index=None):
     ed = SamlEdValidator(policystore)
     with open(ed_path_testin(file_index)) as fd:

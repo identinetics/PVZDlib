@@ -33,10 +33,10 @@ def ed_path(file_index: int, dir=None):
         opj('unsigned_ed', '08_idp8_invalidXml.xml'),
         opj('unsigned_ed', '09_idp9_invalidXsd.xml'),
         opj('signed_ed', '10_idp10_expired_cert.xml'),
-        opj('signed_ed', '11_idp_unauthz_signator.xml'),
+        opj('signed_ed', '11_idp11_unauthz_signator.xml'),
         opj('signed_ed', '12_idp12_valid_expired_cert_sig.xml'),
         opj('signed_ed', '13_idp_entitiesdescriptor_2idps.xml'),
-        opj('signed_ed', '14_cert_subject_mismatch_gondorWienGvAt_idp.xml'),
+        opj('signed_ed', '14_gondor_cert_subject_mismatch.xml'),
         opj('signed_ed', '15_idp15_endpoint_mismatch.xml'),
         opj('samled_expected_results', '16_01_plus_reginfo.xml'),
         opj('samled_expected_results', '17_idp_signed_10_edit.xml'),
@@ -44,6 +44,8 @@ def ed_path(file_index: int, dir=None):
         opj('samled_expected_results', '19_ed_from_cert.xml'),
         opj('samled_expected_results', '20_ed_from_cert.xml'),
         opj('signed_ed', '21_idp_urn_entityid.xml'),
+        opj('signed_ed', '22_idp22_identinetics_valid.xml'),
+        opj('unsigned_ed', '23_idp23_delete.xml'),
     )
     if dir:
         return opj(dir, path[file_index])
