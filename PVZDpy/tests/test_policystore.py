@@ -24,6 +24,12 @@ def policystore1_namespaces():
         return fd.read()
 
 
+@pytest.fixture
+def policystore1_namespace_obj():
+    with open(opj(path_prefix_testin, 'expected_results', 'policystore1_namespace_obj.json')) as fd:
+        return fd.read()
+
+
 def test_getAllowedNamespacesForOrgs(ed7, namespaces7, orgids7, policystore1):
     allowed_namespaces = policystore1.getAllowedNamespacesForOrgs(orgids7)
     assert namespaces7 == allowed_namespaces
@@ -77,8 +83,13 @@ def test_get_orgcn0(policystore1):
     assert orgcn0 == ''
 
 def test_get_registered_namespaces(policystore1, policystore1_namespaces):
-    ns_recs = policystore1.get_registered_namespaces()
-    x = json.dumps(ns_recs, sort_keys=True, indent=2)
-    assert policystore1_namespaces == json.dumps(ns_recs, sort_keys=True)
+    ns_names = policystore1.get_registered_namespaces()
+    assert policystore1_namespaces == json.dumps(ns_names, sort_keys=True)
+
+def test_get_registered_namespace_objs(policystore1, policystore1_namespace_obj):
+    ns_recs = policystore1.get_registered_namespace_objs()
+    json_str = json.dumps(ns_recs, sort_keys=True, indent=2)
+    assert policystore1_namespace_obj == json_str
+
 
 

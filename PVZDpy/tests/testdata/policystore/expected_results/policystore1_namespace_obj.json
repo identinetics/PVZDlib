@@ -1,0 +1,17 @@
+{
+  "*.example.com": [
+    "org111"
+  ],
+  "*.identinetics.com": [
+    "AT:VKZ:XFN-318886a"
+  ],
+  "some.net": [
+    "AT:VKZ:XZVR:4711"
+  ],
+  "some.org": [
+    "AT:VKZ:XZVR:4711"
+  ],
+  "somenew.org": [
+    "AT:VKZ:XZVR:4712"
+  ]
+}

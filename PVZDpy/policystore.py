@@ -71,3 +71,6 @@ class PolicyStore:
 
     def get_registered_namespaces(self) -> list:
         return sorted(list(self._policydir["domain"].keys()))
+
+    def get_registered_namespace_objs(self) -> list:
+        return self._policydir["domain"]
