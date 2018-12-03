@@ -1,13 +1,37 @@
+from os.path import join as opj
 import pytest
 #from PVZDpy.constants import *
 #from PVZDpy.userexceptions import *
 from PVZDpy.policystore import PolicyStore
 from PVZDpy.tests.common_fixtures import *
 
+path_prefix_testin = opj('testdata', 'policystore')
+
+def assert_equal(expected, actual, fn=''):
+    # workaround because pycharm does not display the full string (despite pytest -vv etc)
+    msg = fn+"\n'"+actual+"' != '"+expected+"' "
+    assert expected == actual, msg
+
+@pytest.fixture
+def policystore1_orgs():
+    with open(opj(path_prefix_testin, 'expected_results', 'policystore1_orgs.json')) as fd:
+        return json.loads(fd.read())
+
+
+@pytest.fixture
+def policystore1_namespaces():
+    with open(opj(path_prefix_testin, 'expected_results', 'policystore1_namespaces.json')) as fd:
+        return fd.read()
+
 
 def test_getAllowedNamespacesForOrgs(ed7, namespaces7, orgids7, policystore1):
     allowed_namespaces = policystore1.getAllowedNamespacesForOrgs(orgids7)
     assert namespaces7 == allowed_namespaces
+
+
+def test_get_all_orgids(policystore1, policystore1_orgs):
+    org_recs = policystore1.get_all_orgids()
+    assert policystore1_orgs == org_recs
 
 
 def test_get_namesp_for_fqdn():
@@ -52,5 +76,9 @@ def test_get_orgcn0(policystore1):
     orgcn0 = policystore1.get_orgcn(None)
     assert orgcn0 == ''
 
+def test_get_registered_namespaces(policystore1, policystore1_namespaces):
+    ns_recs = policystore1.get_registered_namespaces()
+    x = json.dumps(ns_recs, sort_keys=True, indent=2)
+    assert policystore1_namespaces == json.dumps(ns_recs, sort_keys=True)
 
 

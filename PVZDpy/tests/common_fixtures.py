@@ -8,14 +8,14 @@ path_prefix_testin = opj('testdata', 'saml')
 path_prefix_testout = opj('testout', 'samled_validator')
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def policydir1():
     with open(opj(path_prefix_testin, 'poldir1.json')) as fd:
         d = json.load(fd)
     return d
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def policystore1(policydir1):
     return PolicyStore(policydir=policydir1)
 
