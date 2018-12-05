@@ -56,6 +56,9 @@ class PolicyStore:
         org_recs = self._policydir["organization"]
         return org_recs
 
+    def get_issuers(self):
+        return self._policydir["issuer"]
+
     def get_orgids_for_signer(self, signerCert) -> list:
         """ return associated organizations for signer.
             The paths is signer-cert -> portaladmin -> [orgid]
@@ -74,3 +77,9 @@ class PolicyStore:
 
     def get_registered_namespace_objs(self) -> list:
         return self._policydir["domain"]
+
+    def get_revoked_certs(self) -> list:
+        return sorted(list(self._policydir["revocation"].keys()))
+
+    def get_userprivileges(self):
+        return self._policydir["userprivilege"]
