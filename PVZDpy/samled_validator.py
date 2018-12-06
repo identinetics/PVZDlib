@@ -25,7 +25,7 @@ class NoFurtherValidation(Exception):
 class SamlEdValidator:
     def __init__(self, policystore: PolicyStore):
         if not isinstance(policystore, PolicyStore):
-            raise exception('create SamlEdValidator requires PolicyStore')
+            raise Exception('create SamlEdValidator requires PolicyStore')
         self._reset_validation_result()
         self.policystore = policystore
         self.ed_str = ''
