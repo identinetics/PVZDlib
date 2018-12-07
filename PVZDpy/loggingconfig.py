@@ -23,6 +23,7 @@ class LoggingConfig:
             handlers_dict = {'handlers': ['file', ], 'level': logging.DEBUG,}
         LOGGING = dict(
             version = 1,
+            'disable_existing_loggers': False,  # do not overwrite loggers from imported modules
             formatters = {
                 'long': {'format': '%(asctime)s - %(levelname)s  [%(filename)s:%(lineno)s] %(message)s'},
                 'short': {'format': '%(levelname)-6s %(message)s'},
@@ -34,7 +35,7 @@ class LoggingConfig:
                       'level': console_level
                 },
                 'file': {
-                      'class': 'logging.FileHandler',
+                      'class': 'logging.FileHandler',  # rotating
                       'formatter': 'long',
                       'level': file_level,
                       'filename': self.LOGFILENAME,

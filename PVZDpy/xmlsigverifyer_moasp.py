@@ -1,6 +1,7 @@
 import base64, bz2, datetime, os, re, sys
 import logging
 import lxml.etree as ET
+from jnius import autoclass
 from .constants import PROJLIB
 from .xmlsigverifyer_abstract import XmlSigVerifyerAbstract
 from .xmlsigverifyer_response import XmlSigVerifyerResponse
@@ -22,21 +23,13 @@ xslt_str = """<?xml version="1.0" ?>
 """
 
 class XmlSigVerifyerMoasp(XmlSigVerifyerAbstract):
-    """ Python wrapper for the PvzdVerifySig Java class
-    The Python/Java bridge is implemented with 2 different libraries, to be on the save side :-)
-    If PYJNIUS_ACTIVATE is unset, it will use javabridge, otherwise pyjnius
-    """
+    """ Python wrapper for the PvzdVerifySig Java class """
     def __init__(self):
         # name of class in foo/bar/Baz form (not foo.bar.Baz)
         # print(os.environ['CLASSPATH'])
         self.pvzd_verify_sig_pkg = 'at/wien/ma14/pvzd/verifysigapi'
         self.pvzd_verify_sig = self.pvzd_verify_sig_pkg + '/' + 'PvzdVerifySig'
-        try:
-            os.environ['PYJNIUS_ACTIVATE']
-            from jnius import autoclass
-            self.pywrapper = autoclass(self.pvzd_verify_sig)
-        except KeyError:
-            None
+        self.pywrapper = autoclass(self.pvzd_verify_sig)
 
     def verify(self, xml_file_name) -> str:
         """ verify xmldsig and return signerCertificate """
@@ -44,39 +37,18 @@ class XmlSigVerifyerMoasp(XmlSigVerifyerAbstract):
         log4j_conf   = os.path.join(PROJLIB, 'log4jconf/log4j.properties')
         sig_doc      = xml_file_name
         #logging.debug('verifying signature of %s using moa-sp, config path=%s' % (sig_doc, moaspss_conf))
-
-        try:
-            os.environ['PYJNIUS_ACTIVATE']
-            pvzdverifysig = self.pywrapper(
-                moaspss_conf,
-                log4j_conf,
-                sig_doc)
-            response  = pvzdverifysig.verify()
-            if response.pvzdCode != 'OK':
-                logging.debug("Signature verification failed, code=" +
-                                      response.pvzdCode + "; " + response.pvzdMessage)
-                raise ValidationError("Signature verification failed, code=" +
-                                      response.pvzdCode + "; " + response.pvzdMessage)
-        except KeyError:
-            import javabridge
-            # constructor takes three string parameters
-            pvzdverifysig = javabridge.make_instance(self.pvzd_verify_sig,
-                "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",
-                 moaspss_conf, log4j_conf, sig_doc)
-            # method verify returns response object
-            response = javabridge.call(pvzdverifysig, "verify",
-                "()" + "L" + self.pvzd_verify_sig_pkg + "/" + "PvzdVerifySigResponse;")
-            if javabridge.get_field(response, "pvzdCode", "Ljava/lang/String;") != 'OK':
-                raise ValidationError("Signature verification failed, code=" +
-                    javabridge.get_field(response, "pvzdCode", "Ljava/lang/String;") + "; " +
-                    javabridge.get_field(response, "pvzdMessage", "Ljava/lang/String;"))
+        pvzdverifysig = self.pywrapper(
+            moaspss_conf,
+            log4j_conf,
+            sig_doc)
+        response  = pvzdverifysig.verify()
+        if response.pvzdCode != 'OK':
+            logging.debug("Signature verification failed, code=" +
+                                  response.pvzdCode + "; " + response.pvzdMessage)
+            raise ValidationError("Signature verification failed, code=" +
+                                  response.pvzdCode + "; " + response.pvzdMessage)
 
         # Following "see-what-you-signed" principle use returned data from sig library
         signed_data_str = response.referencedata
-        try:
-            os.environ['PYJNIUS_ACTIVATE']
-            r = XmlSigVerifyerResponse(signed_data_str, response.signerCertificateEncoded)
-        except KeyError:
-            import javabridge
-            r = XmlSigVerifyerResponse(signed_data_str, javabridge.get_field(response, "signerCertificateEncoded", "Ljava/lang/String;"))
+        r = XmlSigVerifyerResponse(signed_data_str, response.signerCertificateEncoded)
         return r

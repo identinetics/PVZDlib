@@ -21,7 +21,7 @@ XMLNS_PVZD_PREFIX = '{%s}' % XMLNS_PVZD
 XMLNS_MDRPI = 'urn:oasis:names:tc:SAML:2.0:metadata:rpi'
 XMLNS_MDRPI_PREFIX = '{%s}' % XMLNS_MDRPI
 
-SAML_MDPRI_REGISTRATIONAUTHORITY='http://www.test.portlaverunbd.gv.at'
+SAML_MDPRI_REGISTRATIONAUTHORITY='http://www.test.portalverbund.gv.at'
 # loglevles valid for this project
 LOGLEVELS = {'CRITICAL': 50, 'ERROR': 40, 'WARNING': 30, 'INFO': 20, 'DEBUG': 10}
 LOGLEVELS_BY_INT = dict((v, k) for k, v in LOGLEVELS.items())

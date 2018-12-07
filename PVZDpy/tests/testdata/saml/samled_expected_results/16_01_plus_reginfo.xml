@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:alg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" entityID="https://idp1.example.org/idp.xml">
-  <md:Extensions><ns0:RegistrationInfo xmlns:ns0="urn:oasis:names:tc:SAML:2.0:metadata:rpi" ns0:registrationAuthority="http://www.test.portlaverunbd.gv.at" ns0:registrationInstant="1900-01-01T00:00:00Z"/></md:Extensions><!-- EntityDescriptor is valid according to PVP2.1 profile -->
+  <md:Extensions><ns0:RegistrationInfo xmlns:ns0="urn:oasis:names:tc:SAML:2.0:metadata:rpi" ns0:registrationAuthority="http://www.test.portalverbund.gv.at" ns0:registrationInstant="1900-01-01T00:00:00Z"/></md:Extensions><!-- EntityDescriptor is valid according to PVP2.1 profile -->
   <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
     <md:Extensions>
       <alg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
