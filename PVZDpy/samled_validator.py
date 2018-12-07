@@ -105,7 +105,7 @@ class SamlEdValidator:
 
     def _create_tempfile_from_edstr(self):
         # make xml available for lxml file parsing (to avoid encoding issues)
-        self.fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml')
+        self.fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml', encoding='utf-8')
         self.fd.write(self.ed_str)
         self.fd.flush()
 

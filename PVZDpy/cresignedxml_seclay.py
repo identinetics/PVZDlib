@@ -8,13 +8,6 @@ from .userexceptions import *
 
 __author__ = 'r2h2'
 
-def fail_if_securitylayer_unavailable():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    addr = ('127.0.0.1', 3495)
-    if sock.connect_ex(addr) != 0:
-        #sys.tracebacklimit = 0
-        raise SecurityLayerUnavailableError(SecurityLayerUnavailableError.__doc__)
-    sock.close()
 
 def get_seclay_requesttemplate(sigType, sigPosition=None) -> str:
     ''' return an XML template to be merged with the data to be signed
@@ -38,6 +31,7 @@ def get_seclay_requesttemplate(sigType, sigPosition=None) -> str:
     </sl:TransformsInfo>
   </sl:DataObjectInfo>
 </sl:CreateXMLSignatureRequest> '''
+
     if sigType == 'enveloped':
         return '''\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -65,6 +59,7 @@ def get_seclay_requesttemplate(sigType, sigPosition=None) -> str:
   </sl:SignatureInfo>
 </sl:CreateXMLSignatureRequest> ''' % ('%s', sigPosition)
 
+
 def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
     ''' Create XAdES signature using AT Bürgerkarte/Security Layer
         There are two signature types:
@@ -77,7 +72,6 @@ def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=No
 
     if sig_type not in ('envelopingB64BZIP', 'enveloped'):
         raise ValidationError("Signature type must be one of 'envelopingB64BZIP', 'enveloped' but is " + sig_type)
-    fail_if_securitylayer_unavailable()
     if sig_type == 'envelopingB64BZIP':
         dataObject = DATA_HEADER_B64BZIP + base64.b64encode(bz2.compress(sig_data.encode('utf-8'))).decode('ascii')
     else:

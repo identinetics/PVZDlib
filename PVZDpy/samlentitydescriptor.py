@@ -11,7 +11,7 @@ __author__ = 'r2h2'
 
 def SAMLEntityDescriptorFromStrFactory(ed_str):
     ''' Create SamlEdValidator from string - only for utf-8 (default) XML encoding '''
-    fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml')
+    fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml', encoding='utf-8')
     fd.write(ed_str)
     fd.flush()
     ed = SAMLEntityDescriptor(fd.name)
