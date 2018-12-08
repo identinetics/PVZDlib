@@ -29,7 +29,7 @@ class PolicyStore:
     def get_namesp_for_fqdn(fqdn: str, allowed_namespaces: list) -> str:
         if fqdn in allowed_namespaces:
             return fqdn
-        parent_fqdn = re.sub('^[^\.]+\.', '', fqdn)
+        parent_fqdn = re.sub(r'^[^\.]+\.', '', fqdn)
         wildcard_fqdn = '*.' + parent_fqdn
         if wildcard_fqdn in allowed_namespaces:
             return wildcard_fqdn

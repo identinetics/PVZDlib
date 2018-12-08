@@ -15,7 +15,7 @@ def xml_str1():
         return fd.read()
 
 @pytest.fixture
-def entityid():
+def entityid0():
     return 'https://idp.example.com/idp.xml'
 
 @pytest.fixture
@@ -33,16 +33,16 @@ def result20():
         return fd.read()
 
 
-def test_cert2ed(cert1, result19):
+def test_cert2ed(cert1, entityid0, result19):
     ed_str = SAMLEntityDescriptor.cert2ed(
             cert_str=cert1,
-            entityid=entityid(),
+            entityid=entityid0,
             samlrole='IDP')
     assert ed_str == result19
 
-def test_cert2ed(cert1, result20):
+def test_cert2ed(cert1, entityid0, result20):
     ed = SAMLEntityDescriptor(createfromcertstr=cert1,
-                              entityid=entityid(),
+                              entityid=entityid0,
                               samlrole='IDP')
     ed_str = ed.get_xml_str()
     assert ed_str == result20
@@ -66,8 +66,8 @@ def test_get_signing_certs(ed3):
 def test_get_namespace_prefix(ed3):
     assert ed3.get_namespace_prefix() == 'md'
 
-def test_get_filename_from_entityid():
-    assert SAMLEntityDescriptor.get_filename_from_entityid(ed3().get_entityid()) == 'idp3ExampleCom_idpXml.xml'
+def test_get_filename_from_entityid(ed3):
+    assert SAMLEntityDescriptor.get_filename_from_entityid(ed3.get_entityid()) == 'idp3ExampleCom_idpXml.xml'
 
 def test_validate_xsd(ed3):
     ed3.validate_xsd()

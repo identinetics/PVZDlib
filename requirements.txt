@@ -1,0 +1,10 @@
+cffi
+Cython
+GitPython
+json2html
+lxml
+pyOpenSSL
+requests
+pyjnius
+pytest
+pytest-cover

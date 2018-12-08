@@ -5,8 +5,8 @@ from PVZDpy.userexceptions import ValidationError, UnauthorizedAODSSignerError
 #path_prefix = 'PVZDpy/tests/testdata/xy509cert/'
 path_prefix = 'testdata/xy509cert/'
 
-@pytest.fixture
-def cert_str(index: int) -> str:
+
+def fixture_cert_str(index: int) -> str:
     filename = (
         '00_dummy',
         '01_cert_with_delim.pem',
@@ -20,11 +20,11 @@ def cert_str(index: int) -> str:
 #def test_pem_add_rfc7468_delimiters():
 
 def test_pem_remove_rfc7468_delimiters():
-    cert_str1 = cert_str(1)
+    cert_str1 = fixture_cert_str(1)
     pem = XY509cert.pem_remove_rfc7468_delimiters(cert_str1, optional_delimiter=True)
-    assert pem == cert_str(2)
+    assert pem == fixture_cert_str(2)
     with pytest.raises(ValidationError):
-        pem = XY509cert.pem_remove_rfc7468_delimiters(cert_str(2), optional_delimiter=False)
+        pem = XY509cert.pem_remove_rfc7468_delimiters(fixture_cert_str(2), optional_delimiter=False)
 
 #def test_getPEM_str():
 

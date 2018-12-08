@@ -41,7 +41,7 @@ class XY509cert:
         else:
             c = new_cert
             #print("Zertifikat: " + c)
-        return re.sub('\n\s*\n', '\n', c)  # openssl dislikes blank lines before the end line
+        return re.sub(r'\n\s*\n', '\n', c)  # openssl dislikes blank lines before the end line
 
     @staticmethod
     def pem_remove_rfc7468_delimiters(cert_str,
@@ -70,7 +70,7 @@ class XY509cert:
             if not end:
                 raise ValidationError("PEM file must have '-----END CERTIFICATE-----' header conforming to RFC 7468")
         if remove_whitespace:
-            return re.sub('\s', '', pem_str)
+            return re.sub(r'\s', '', pem_str)
         else:
             return pem_str
 

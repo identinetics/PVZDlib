@@ -147,7 +147,7 @@ class SAMLEntityDescriptor:
         in the XPath when calling the signature.
         This functions is using a regular expression, YMMV in corner cases.
         """
-        p = re.compile('\sxmlns:(\w+)\s*=\s*"urn:oasis:names:tc:SAML:2.0:metadata"')
+        p = re.compile(r'\sxmlns:(\w+)\s*=\s*"urn:oasis:names:tc:SAML:2.0:metadata"')
         m = p.search(self.xml_str)
         return m.group(1)
 
