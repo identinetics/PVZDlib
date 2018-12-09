@@ -76,9 +76,9 @@ def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=No
         dataObject = DATA_HEADER_B64BZIP + base64.b64encode(bz2.compress(sig_data.encode('utf-8'))).decode('ascii')
     else:
         dataObject = re.sub(r'<\?xml.*>', '', sig_data)  #remove xml-header - provided by SecLay request wrapper
-    logging.debug('data to be signed:\n%s\n\n' % dataObject)
+    #logging.debug('data to be signed:\n%s\n\n' % dataObject)
     sigRequ = get_seclay_requesttemplate(sig_type, sig_position) % dataObject
-    logging.debug('SecLay request:\n%s\n' % sigRequ)
+    #logging.debug('SecLay request:\n%s\n' % sigRequ)
     try:
         s = requests.Session()
         req = requests.Request('POST', 'http://localhost:3495/http-security-layer-request',
