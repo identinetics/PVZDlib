@@ -5,7 +5,7 @@ from .aodslisthandler import AodsListHandler
 from .userexceptions import UnauthorizedSignerError
 
 class PolicyStore:
-    def __init__(self, invocation=None, policydir=None):
+    def __init__(self, invocation=None, policydir: dict=None):
         if not any([invocation, policydir]):
             raise Exception('PolicyStore.__init__ requires either invocation or policydir arg')
         if invocation:

@@ -38,6 +38,8 @@ class SAMLEntityDescriptorPVP:
             * the x509subject's CN matches the hostname of the entityDescriptor
         """
         for cert_pem in self._getCerts('IDP'):   # certs in IDPSSODescriptor elements
+            if cert_pem is None:
+                continue
             cert = XY509cert(cert_pem)
             if not cert.isNotExpired():
                 raise CertExpiredError('Certificate is expired')
@@ -53,6 +55,8 @@ class SAMLEntityDescriptorPVP:
                     (self.get_entityid_hostname(), cert.getSubject_str()))
 
         for cert_pem in self._getCerts('SP'):   # certs in SPSSODescriptor elements
+            if cert_pem is None:
+                continue
             cert = XY509cert(cert_pem)
             if not cert.isNotExpired():
                 raise CertExpiredError('Certificate is expired since ' + cert.notValidAfter() +
@@ -85,7 +89,8 @@ class SAMLEntityDescriptorPVP:
         if role == 'SP': xp = 'md:SPSSODescriptor//ds:X509Certificate'
         i = 0
         for elem in self.ed.tree.xpath(xp, namespaces={'ds': XMLNS_DSIG, 'md': XMLNS_MD}):
-            certs.append(elem.text)
+            if elem.text:
+                certs.append(elem.text)
             i += 1
         return certs
 
