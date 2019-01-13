@@ -117,7 +117,9 @@ class XY509cert:
         return ':'.join(x[i:i+2] for i in range(0, len(x), 2))
 
     def get_pubkey(self) -> str:
-        return self.cert.get_pubkey().decode('ascii')
+        # the result of this function is only useful to compare if two certificate share the same public key
+        pkey_pem = crypto.dump_publickey(crypto.FILETYPE_PEM, self.cert.get_pubkey())
+        return pkey_pem
 
 
     def digest(self, dgst='SHA1') -> str:
