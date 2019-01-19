@@ -41,7 +41,7 @@ def get_seclay_requesttemplate(sigType, sigPosition=None) -> str:
   <sl:DataObjectInfo Structure="detached">
     <sl:DataObject Reference=""></sl:DataObject>
     <sl:TransformsInfo>
-	<dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+    <dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
         <dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
       </dsig:Transforms>
       <sl:FinalDataMetaInfo>

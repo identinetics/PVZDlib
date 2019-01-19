@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8" /></head>
+  <body> <!--onload="document.forms[0].submit()"-->
+    <p>you must press the Continue button once to proceed.</p>
+    <form action="http://localhost:13495/http-security-layer-request" method="post">
+      <input type="hidden" name=" "/>
+            <textarea rows="20" cols="100" name="XMLRequest">
+<?xml version="1.0" encoding="UTF-8"?>
+<sl:CreateXMLSignatureRequest
+  xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#">
+  <sl:KeyboxIdentifier>SecureSignatureKeypair</sl:KeyboxIdentifier>
+  <sl:DataObjectInfo Structure="detached">
+    <sl:DataObject Reference=""></sl:DataObject>
+    <sl:TransformsInfo>
+	<dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+        <dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+      </dsig:Transforms>
+      <sl:FinalDataMetaInfo>
+        <sl:MimeType>application/xml</sl:MimeType>
+      </sl:FinalDataMetaInfo>
+    </sl:TransformsInfo>
+  </sl:DataObjectInfo>
+  <sl:SignatureInfo>
+    <sl:SignatureEnvironment>
+      <sl:XMLContent>
+
+<md:EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:pvzd="http://egov.gv.at/pvzd1.xsd" entityID="https://redmine.identinetics.com/idp.xml" pvzd:pvptype="R-Profile">
+  <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://redmine.identinetics.com/idp.xml/idp/unused"/>
+  </md:IDPSSODescriptor>
+</md:EntityDescriptor>
+
+      </sl:XMLContent>
+    </sl:SignatureEnvironment>
+    <sl:SignatureLocation xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Index="0">
+      /md:EntityDescriptor
+    </sl:SignatureLocation>
+  </sl:SignatureInfo>
+</sl:CreateXMLSignatureRequest>
+        </textarea>
+      <input type="submit" value="Continue"/>
+    </form>
+  </body>
+</html>
