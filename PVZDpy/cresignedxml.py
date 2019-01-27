@@ -2,7 +2,7 @@ import base64, bz2, sys
 import logging
 import requests
 import re
-from .cresignedxml_seclay import *
+from .cresignedxml_seclay_direct import creSignedXML
 
 __author__ = 'r2h2'
 
@@ -10,9 +10,10 @@ __author__ = 'r2h2'
 def creSignedXML(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
     ''' Create XML signature '''
 
-    return cre_signedxml_seclay(sig_data,
-                                sig_type=sig_type,
-                                sig_position=sig_position)
+    return cre_signedxml_seclay_direct(
+        sig_data,
+        sig_type=sig_type,
+        sig_position=sig_position)
 
 ed = '''\
 <md:EntityDescriptor entityID="https://gondor.magwien.gv.at/idp"

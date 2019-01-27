@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import logging
-#import urllib
+import sys
 
 def main(xml_to_be_signed):
     server_address = ('127.0.0.1', 13080)
@@ -95,19 +95,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         '''.format(res_content, '/md:EntityDescriptor')
 
 
-def run(server_class=HTTPServer, handler_class=RequestHandler, port=14080):
-    logging.basicConfig(level=logging.INFO)
-    server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
-    logging.info('Starting httpd...\n')
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    httpd.server_close()
-    logging.info('Stopping httpd...\n')
-
-if __name__ == '__main__':
+f __name__ == '__main__':
+    if sys.version_info < (3, 6):
+        raise "must use python 3.6 or higher"
     xml_to_be_signed = '''\
 <md:EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:pvzd="http://egov.gv.at/pvzd1.xsd" entityID="https://redmine.identinetics.com/idp.xml" pvzd:pvptype="R-Profile">
   <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
