@@ -2,13 +2,13 @@ import base64, bz2, datetime, os, re, sys
 import logging
 import json
 import xml.etree.ElementTree as ET
-from .constants import DATA_HEADER_B64BZIP
-from .cresignedxml import creSignedXML
-from .invocation.aodsfhinvocation import aodsfhInvocation
-from .wrapperrecord import *
-from .userexceptions import *
-from .xmlsigverifyer import XmlSigVerifyer
-from .xy509cert import XY509cert
+from PVZDpy.constants import DATA_HEADER_B64BZIP
+from PVZDpy.cresignedxml_seclay_direct import cre_signedxml_seclay
+from PVZDpy.invocation.aodsfhinvocation import aodsfhInvocation
+from PVZDpy.wrapperrecord import *
+from PVZDpy.userexceptions import *
+from PVZDpy.xmlsigverifyer import XmlSigVerifyer
+from PVZDpy.xy509cert import XY509cert
 __author__ = 'r2h2'
 
 
@@ -46,7 +46,7 @@ class AODSFileHandler():
             #             'not after: ' + xy509cert.notValidAfter())
         #logging.debug('--- End of list of trusted certificates.')
 
-    def create(self, s, noxmlsign):
+    def create(self, start_rec: dict, noxmlsign: bool):
         if os.path.exists(self._aodsFile):
             raise InvalidArgumentValueError('Must remove existing %s before creating a new AODS' %
                                             self._aodsFile)
@@ -55,8 +55,8 @@ class AODSFileHandler():
             with open(self._aodsFile, 'w') as f:
                 f.write(json.dumps(s))
         else:
-            j = json.dumps(s)
-            x = creSignedXML(j)
+            j = json.dumps(start_rec)
+            x = cre_signedxml_seclay(j)
             with open(self._aodsFile, 'w') as f:
                 f.write(x)
 

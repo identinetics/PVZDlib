@@ -71,7 +71,7 @@ class AodsListHandler:
         wrapperRec = WrapperRecord('elements', inputRec)
         seedVal_str = str(datetime.now())
         seedVal_bytes = base64.b64encode(hashlib.sha256(seedVal_str.encode('ascii')).digest())
-        if self.args.debug: seedVal_bytes = 'fixedValueForDebugOnly'.encode('ascii')
+        #if self.args.debug: seedVal_bytes = 'fixedValueForDebugOnly'.encode('ascii')
         logging.debug("0 seedVal: " + seedVal_bytes.decode('ascii'))
         self.aodsFileHandler.create({"AODS": [wrapperRec.getRec(0, seedVal_bytes.decode('ascii'))]}, self.args.noxmlsign)
 

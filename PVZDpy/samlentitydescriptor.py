@@ -1,10 +1,10 @@
 import logging, os, re, sys, tempfile
 import lxml.etree
-from .constants import *
+from PVZDpy.constants import *
 import PVZDpy.lxml_helper as lxml_helper
-from .userexceptions import *
-from .xmlschemavalidator import XmlSchemaValidator
-from .xy509cert import XY509cert
+from PVZDpy.userexceptions import *
+from PVZDpy.xmlschemavalidator import XmlSchemaValidator
+from PVZDpy.xy509cert import XY509cert
 
 __author__ = 'r2h2'
 

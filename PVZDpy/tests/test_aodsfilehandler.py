@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 from PVZDpy.aodsfilehandler import AODSFileHandler
 from PVZDpy.invocation.aodsfhinvocation import aodsfhInvocation
 from PVZDpy.userexceptions import ValidationError, UnauthorizedAODSSignerError
@@ -8,7 +9,8 @@ path_prefix = 'testdata/aodsfilehandler/'
 
 
 def fixture_invocationargs(aods_filename, trustedcerts_filename):
-    return aodsfhInvocation(path_prefix+aods_filename, path_prefix+trustedcerts_filename)
+    aods_fn_path = Path(path_prefix) / aods_filename
+    return aodsfhInvocation(aods_fn_path, path_prefix+trustedcerts_filename)
 
 #     class Invocation:
 #         def __init__(self, args):

@@ -40,7 +40,7 @@ xml_to_be_signed = '''\
 </sl:CreateXMLSignatureRequest> ''' % ('/md:EntityDescriptor')
 
 s = requests.Session()
-req = requests.Request('POST', 'http://localhost:13495/http-security-layer-request',
+req = requests.Request('POST', 'http://localhost:3495/http-security-layer-request',
                        data={'XMLRequest': xml_to_be_signed})
 prepped_req = req.prepare()  # prep to have nice logging
 logmsg = '{}\n{}\n{}\n\n{}'.format(

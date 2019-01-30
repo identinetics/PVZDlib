@@ -1,7 +1,7 @@
 import pathlib
 import pytest
-from ..cresignedxml import creSignedXML
-from ..samlentitydescriptor import SAMLEntityDescriptorFromStrFactory
+from cresignedxml_seclay_direct import cre_signedxml_seclay
+from samlentitydescriptor import SAMLEntityDescriptorFromStrFactory
 
 
 def assert_equal(expected, actual, fn=''):
@@ -47,9 +47,10 @@ def idp22_path_out(path_testout):
 def test_sign_idp_unsigned(idp1_path_in, idp1_path_out):
     ed = SAMLEntityDescriptorFromStrFactory(idp1_path_in.read_text())
     md_namespace_prefix = ed.get_namespace_prefix()
-    ed_signed = creSignedXML(ed.get_xml_str(),
-                             sig_type='enveloped',
-                             sig_position='/' + md_namespace_prefix + ':EntityDescriptor')
+    ed_signed = cre_signedxml_seclay(
+        ed.get_xml_str(),
+        sig_type='enveloped',
+        sig_position='/' + md_namespace_prefix + ':EntityDescriptor')
     idp1_path_out.write_text(ed_signed)
     # TODO: assert result (requires masking the xades SigningTime)
 
@@ -58,9 +59,10 @@ def test_sign_idp_signed_with_diacritics(idp22_path_in, idp22_path_out):
     ed = SAMLEntityDescriptorFromStrFactory(idp22_path_in.read_text())
     ed.remove_enveloped_signature()
     md_namespace_prefix = ed.get_namespace_prefix()
-    ed_signed = creSignedXML(ed.get_xml_str(),
-                             sig_type='enveloped',
-                             sig_position='/' + md_namespace_prefix + ':EntityDescriptor')
+    ed_signed = cre_signedxml_seclay(
+        ed.get_xml_str(),
+        sig_type='enveloped',
+        sig_position='/' + md_namespace_prefix + ':EntityDescriptor')
     idp22_path_out.write_text(ed_signed)
     # TODO: assert result (requires masking the xades SigningTime)
 

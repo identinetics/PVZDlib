@@ -3,61 +3,9 @@ import logging
 import requests
 import re
 import socket
-from .constants import DATA_HEADER_B64BZIP
-from .userexceptions import *
-
-__author__ = 'r2h2'
-
-
-def get_seclay_requesttemplate(sigType, sigPosition=None) -> str:
-    ''' return an XML template to be merged with the data to be signed
-        sigPosition is the XPath for the element under which an enveoped signature shall
-        be positioned, e.g. <md:/EntitiyDescriptor>
-    '''
-    if sigType == 'envelopingB64BZIP':
-        return '''\
-<?xml version="1.0" encoding="UTF-8"?>
-<sl:CreateXMLSignatureRequest
-  xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#">
-  <sl:KeyboxIdentifier>SecureSignatureKeypair</sl:KeyboxIdentifier>
-  <sl:DataObjectInfo Structure="enveloping">
-    <sl:DataObject>
-      <sl:XMLContent>%s</sl:XMLContent>
-    </sl:DataObject>
-    <sl:TransformsInfo>
-      <sl:FinalDataMetaInfo>
-        <sl:MimeType>text/plain</sl:MimeType>
-      </sl:FinalDataMetaInfo>
-    </sl:TransformsInfo>
-  </sl:DataObjectInfo>
-</sl:CreateXMLSignatureRequest> '''
-
-    if sigType == 'enveloped':
-        return '''\
-<?xml version="1.0" encoding="UTF-8"?>
-<sl:CreateXMLSignatureRequest
-  xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#">
-  <sl:KeyboxIdentifier>SecureSignatureKeypair</sl:KeyboxIdentifier>
-  <sl:DataObjectInfo Structure="detached">
-    <sl:DataObject Reference=""></sl:DataObject>
-    <sl:TransformsInfo>
-    <dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
-        <dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
-      </dsig:Transforms>
-      <sl:FinalDataMetaInfo>
-        <sl:MimeType>application/xml</sl:MimeType>
-      </sl:FinalDataMetaInfo>
-    </sl:TransformsInfo>
-  </sl:DataObjectInfo>
-  <sl:SignatureInfo>
-    <sl:SignatureEnvironment>
-      <sl:XMLContent>
-%s
-      </sl:XMLContent>
-    </sl:SignatureEnvironment>
-    <sl:SignatureLocation xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Index="0">%s</sl:SignatureLocation>
-  </sl:SignatureInfo>
-</sl:CreateXMLSignatureRequest> ''' % ('%s', sigPosition)
+from constants import DATA_HEADER_B64BZIP
+from get_seclay_request import get_seclay_request
+from userexceptions import *
 
 
 def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
@@ -74,10 +22,12 @@ def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=No
         raise ValidationError("Signature type must be one of 'envelopingB64BZIP', 'enveloped' but is " + sig_type)
     if sig_type == 'envelopingB64BZIP':
         dataObject = DATA_HEADER_B64BZIP + base64.b64encode(bz2.compress(sig_data.encode('utf-8'))).decode('ascii')
+        xml_sig_type = 'enveloping'
     else:
         dataObject = re.sub(r'<\?xml.*>', '', sig_data)  #remove xml-header - provided by SecLay request wrapper
+        xml_sig_type = 'enveloped'
     #logging.debug('data to be signed:\n%s\n\n' % dataObject)
-    sigRequ = get_seclay_requesttemplate(sig_type, sig_position) % dataObject
+    sigRequ = get_seclay_request(xml_sig_type, dataObject, sig_position)
     #logging.debug('SecLay request:\n%s\n' % sigRequ)
     try:
         s = requests.Session()

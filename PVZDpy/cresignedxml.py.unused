@@ -2,20 +2,25 @@ import base64, bz2, sys
 import logging
 import requests
 import re
-from .cresignedxml_seclay_direct import creSignedXML
+from PVZDpy.cresignedxml_seclay_direct import cre_signedxml_seclay
 
 __author__ = 'r2h2'
 
 
-def creSignedXML(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
+def creSignedXML(sig_data, sig_type='envelopingB64BZIP', sig_position=None, channel='browser'):
     ''' Create XML signature '''
 
-    return cre_signedxml_seclay_direct(
-        sig_data,
-        sig_type=sig_type,
-        sig_position=sig_position)
+    assert channel in ('direct', 'browser')
+    if channel == 'direct':
+        return cre_signedxml_seclay_direct(
+            sig_data,
+            sig_type=sig_type,
+            sig_position=sig_position)
+    else:
 
-ed = '''\
+
+def _get_selftest_ed():
+    return '''\
 <md:EntityDescriptor entityID="https://gondor.magwien.gv.at/idp"
     xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
@@ -30,8 +35,7 @@ ed = '''\
     </md:KeyDescriptor>
     <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://gondor.magwien.gv.at/R-Profil-dummy"/>
   </md:IDPSSODescriptor>
-</md:EntityDescriptor>
-'''
+</md:EntityDescriptor>'''
 
 
 if __name__ == '__main__':
@@ -42,6 +46,6 @@ if __name__ == '__main__':
         print(creSignedXML('Test string'))
     elif sys.argv[1] == 'Enveloped':
         print("Enveloped signature\n")
-        print(creSignedXML(ed, 'enveloped', sig_position='/md:EntityDescriptor', verbose=True))
+        print(creSignedXML(_get_selftest_ed(), 'enveloped', sig_position='/md:EntityDescriptor', verbose=True))
     else:
         print('invalid argument')
