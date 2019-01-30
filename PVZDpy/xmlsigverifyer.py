@@ -1,4 +1,4 @@
-from .xmlsigverifyer_moasp import *
+from PVZDpy.xmlsigverifyer_moasp import *
 
 __author__ = 'r2h2'
 

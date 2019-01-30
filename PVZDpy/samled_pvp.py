@@ -6,15 +6,15 @@ import re
 import sys
 from OpenSSL import crypto
 from urllib.parse import urlparse
-from .constants import *
+from PVZDpy.constants import *
 import PVZDpy.lxml_helper as lxml_helper
 from PVZDpy.policystore import PolicyStore
-from .samlentitydescriptor import SAMLEntityDescriptor
-from .userexceptions import *
-from .xy509cert import XY509cert
-from .xmlsigverifyer import XmlSigVerifyer
-from .xy509certstore import Xy509certStore
-from .xy509cert import XY509cert
+from PVZDpy.samlentitydescriptor import SAMLEntityDescriptor
+from PVZDpy.userexceptions import *
+from PVZDpy.xy509cert import XY509cert
+from PVZDpy.xmlsigverifyer import XmlSigVerifyer
+from PVZDpy.xy509certstore import Xy509certStore
+from PVZDpy.xy509cert import XY509cert
 
 __author__ = 'r2h2'
 

@@ -3,9 +3,9 @@ import logging
 import requests
 import re
 import socket
-from constants import DATA_HEADER_B64BZIP
-from get_seclay_request import get_seclay_request
-from userexceptions import *
+from PVZDpy.constants import DATA_HEADER_B64BZIP
+from PVZDpy.get_seclay_request import get_seclay_request
+from PVZDpy.userexceptions import *
 
 
 def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=None):

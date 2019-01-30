@@ -2,10 +2,10 @@ import base64, bz2, datetime, os, re, sys
 import logging
 import lxml.etree as ET
 from jnius import autoclass
-from .constants import PROJLIB
-from .xmlsigverifyer_abstract import XmlSigVerifyerAbstract
-from .xmlsigverifyer_response import XmlSigVerifyerResponse
-from .userexceptions import *
+from PVZDpy.constants import PROJLIB
+from PVZDpy.xmlsigverifyer_abstract import XmlSigVerifyerAbstract
+from PVZDpy.xmlsigverifyer_response import XmlSigVerifyerResponse
+from PVZDpy.userexceptions import *
 
 __author__ = 'r2h2'
 

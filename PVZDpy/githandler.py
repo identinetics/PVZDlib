@@ -3,8 +3,8 @@ import logging
 import os
 from os.path import join
 import shutil
-from constants import *
-from userexceptions import *
+from PVZDpy.constants import *
+from PVZDpy.userexceptions import *
 __author__ = 'r2h2'
 
 class GitHandler:

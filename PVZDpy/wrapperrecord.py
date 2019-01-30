@@ -1,8 +1,6 @@
-from __future__ import print_function
 import base64, hashlib, datetime, sys
 import logging
 import json
-#from inputRecord import InputRecord
 __author__ = 'r2h2'
 
 #logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')

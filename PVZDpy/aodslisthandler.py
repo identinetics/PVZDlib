@@ -3,11 +3,11 @@ from datetime import datetime
 import logging
 import json
 from json2html import *
-from .inputrecord import InputRecord
-from .contentrecord import ContentRecord
-from .wrapperrecord import WrapperRecord
-from .userexceptions import *
-from .xy509cert import XY509cert
+from PVZDpy.inputrecord import InputRecord
+from PVZDpy.contentrecord import ContentRecord
+from PVZDpy.wrapperrecord import WrapperRecord
+from PVZDpy.userexceptions import *
+from PVZDpy.xy509cert import XY509cert
 
 __author__ = 'r2h2'
 assert sys.version_info >= (3,4), 'modules used here support unicode and require python 3.'

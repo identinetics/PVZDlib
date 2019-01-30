@@ -1,6 +1,6 @@
 from __future__ import print_function
-from .userexceptions import *
-from .constants import RECORDTYPES
+from PVZDpy.userexceptions import *
+from PVZDpy.constants import RECORDTYPES
 __author__ = 'r2h2'
 
 ''' Classes in this source file encapsulate the structure of record types '''

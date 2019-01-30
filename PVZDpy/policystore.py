@@ -1,8 +1,8 @@
 import re
 
-from .aodsfilehandler import AODSFileHandler
-from .aodslisthandler import AodsListHandler
-from .userexceptions import UnauthorizedSignerError
+from PVZDpy.aodsfilehandler import AODSFileHandler
+from PVZDpy.aodslisthandler import AodsListHandler
+from PVZDpy.userexceptions import UnauthorizedSignerError
 
 class PolicyStore:
     def __init__(self, invocation=None, policydir: dict=None):

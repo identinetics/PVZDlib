@@ -1,7 +1,7 @@
 import pathlib
 import pytest
 from cresignedxml_seclay_direct import cre_signedxml_seclay
-from samlentitydescriptor import SAMLEntityDescriptorFromStrFactory
+from samlentitydescriptor import SAMLEntityDescriptorFromStrFactory, SAMLEntityDescriptor
 
 
 def assert_equal(expected, actual, fn=''):
@@ -46,7 +46,7 @@ def idp22_path_out(path_testout):
 
 def test_sign_idp_unsigned(idp1_path_in, idp1_path_out):
     ed = SAMLEntityDescriptorFromStrFactory(idp1_path_in.read_text())
-    md_namespace_prefix = ed.get_namespace_prefix()
+    md_namespace_prefix = SAMLEntityDescriptor.get_namespace_prefix(ed.get_xml_str())
     ed_signed = cre_signedxml_seclay(
         ed.get_xml_str(),
         sig_type='enveloped',
@@ -58,7 +58,7 @@ def test_sign_idp_unsigned(idp1_path_in, idp1_path_out):
 def test_sign_idp_signed_with_diacritics(idp22_path_in, idp22_path_out):
     ed = SAMLEntityDescriptorFromStrFactory(idp22_path_in.read_text())
     ed.remove_enveloped_signature()
-    md_namespace_prefix = ed.get_namespace_prefix()
+    md_namespace_prefix = SAMLEntityDescriptor.get_namespace_prefix(ed.get_xml_str())
     ed_signed = cre_signedxml_seclay(
         ed.get_xml_str(),
         sig_type='enveloped',

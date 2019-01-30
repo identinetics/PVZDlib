@@ -139,7 +139,8 @@ class SAMLEntityDescriptor:
         return r + '.xml'
 
 
-    def get_namespace_prefix(self) -> str:
+    @staticmethod
+    def get_namespace_prefix(ed_str: str) -> str:
         """
         Due to a limitation in the XML signer used here (SecurityLayer 1.2)
         the XPath expression for the enveloped signature is specified as
@@ -148,7 +149,7 @@ class SAMLEntityDescriptor:
         This functions is using a regular expression, YMMV in corner cases.
         """
         p = re.compile(r'\sxmlns:(\w+)\s*=\s*"urn:oasis:names:tc:SAML:2.0:metadata"')
-        m = p.search(self.xml_str)
+        m = p.search(ed_str)
         return m.group(1)
 
 

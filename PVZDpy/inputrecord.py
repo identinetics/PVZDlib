@@ -1,6 +1,6 @@
 import logging
-from .contentrecord import ContentRecord
-from .userexceptions import *
+from PVZDpy.contentrecord import ContentRecord
+from PVZDpy.userexceptions import *
 __author__ = 'r2h2'
 
 

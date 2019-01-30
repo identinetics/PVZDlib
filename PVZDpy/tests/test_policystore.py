@@ -2,8 +2,8 @@ from os.path import join as opj
 import pytest
 #from PVZDpy.constants import *
 #from PVZDpy.userexceptions import *
-from PVZDpy.policystore import PolicyStore
-from PVZDpy.tests.common_fixtures import *
+from ..policystore import PolicyStore
+from .common_fixtures import *
 
 path_prefix_testin = opj('testdata', 'policystore')
 

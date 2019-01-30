@@ -64,7 +64,7 @@ def test_get_signing_certs(ed3):
     assert isinstance(x, list)
 
 def test_get_namespace_prefix(ed3):
-    assert ed3.get_namespace_prefix() == 'md'
+    assert SAMLEntityDescriptor.get_namespace_prefix(ed3.get_xml_str()) == 'md'
 
 def test_get_filename_from_entityid(ed3):
     assert SAMLEntityDescriptor.get_filename_from_entityid(ed3.get_entityid()) == 'idp3ExampleCom_idpXml.xml'
