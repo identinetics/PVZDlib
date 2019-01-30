@@ -24,8 +24,8 @@ class WrapperRecord:
                 self.deleteflag = data.deleteflag
                 self.rec = data.rec
                 self.datetimestamp = datetime.datetime.isoformat(datetime.datetime.utcnow()) + '+00:00'
-                self.registrant = self.registrant
-                self.submitter = self.submitter
+                self.registrant = registrant
+                self.submitter = submitter
             except Exception as e:
                 logger.error(str(self))
                 raise e
