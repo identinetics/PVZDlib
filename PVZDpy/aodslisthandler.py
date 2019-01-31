@@ -3,7 +3,7 @@ from datetime import datetime
 import logging
 import json
 from json2html import *
-from PVZDpy.inputrecord import InputRecord
+from PVZDpy.inputrecord import InputRecordAllRecordTypes
 from PVZDpy.contentrecord import ContentRecord
 from PVZDpy.wrapperrecord import WrapperRecord
 from PVZDpy.userexceptions import *
@@ -47,7 +47,7 @@ class AodsListHandler:
         self.aods = self.aodsFileHandler.readFile() # does validation as well
         inputRecSeq = 0
         for inputDataRaw in appendList:
-            inputRec = InputRecord(inputDataRaw)
+            inputRec = InputRecordAllRecordTypes(inputDataRaw)
             wrapperRec = WrapperRecord('elements', inputRec,
                                        registrant = self.args.registrant,
                                        submitter = self.args.submitter)
@@ -67,7 +67,7 @@ class AodsListHandler:
                                    "columns: hash, seq, delete, [rectype, pk, a1, a2, ..], "
                                    "datetimestamp, registrant, submitter]" ],
                         "delete": False}
-        inputRec = InputRecord(inputDataRaw)
+        inputRec = InputRecordAllRecordTypes(inputDataRaw)
         wrapperRec = WrapperRecord('elements', inputRec)
         seedVal_str = str(datetime.now())
         seedVal_bytes = base64.b64encode(hashlib.sha256(seedVal_str.encode('ascii')).digest())

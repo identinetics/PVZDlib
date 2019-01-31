@@ -1,11 +1,12 @@
+import json
 import logging
 from PVZDpy.contentrecord import ContentRecord
 from PVZDpy.userexceptions import *
 __author__ = 'r2h2'
 
 
-class InputRecord:
-    ''' Handle a record to be appended '''
+class InputRecordAllRecordTypes:
+    ''' Handle a record of any type to be appended '''
 
     def __init__(self, appendData):
         if not isinstance(appendData, dict):
@@ -23,3 +24,49 @@ class InputRecord:
         except (InputValueError, InputFormatError) as e:
             raise e
 
+
+class InputRecordAbstract:
+    def as_json(self):
+        return json.dumps(self.inputrec)
+
+
+class InputRecordIssuer(InputRecordAbstract):
+    def __init__(self, cacert: str, pvprole: str, subject_cn: str, delete: bool):
+        self.inputrec = {
+            "record": [
+                "issuer", 
+                subject_cn, 
+                pvprole,
+                cert],
+            "delete": delete}
+    
+
+class InputRecordNamespace(InputRecordAbstract):
+    def __init__(self, fqdn: str, gvouid: str, delete: bool):
+        self.inputrec = {
+            "record": [
+                "domain", 
+                fqdn,
+                gvouid],
+            "delete": delete}
+
+
+class InputRecordRevocation(InputRecordAbstract):
+    def __init__(self, cert: str, subject_cn: str, delete: bool):
+        self.inputrec = {
+            "record": [
+                "revocation", 
+                cert,
+                subject_cn],
+            "delete": delete}
+
+
+class InputRecordUserprivilege(InputRecordAbstract):
+    def __init__(self, cert: str, pvprole: str, subject_cn: str, delete: bool):
+        self.inputrec = {
+            "record": [
+                "issuer",
+                cert,
+                gvouid,
+                subject_cn],
+            "delete": delete}

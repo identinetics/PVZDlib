@@ -1,0 +1,4 @@
+[
+{"record": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org333", "delete from list of orgids"], "delete": true},
+{"record": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org444", "delete last orgid"], "delete": true}
+]

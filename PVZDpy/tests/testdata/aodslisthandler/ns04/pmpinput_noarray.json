@@ -1,0 +1,1 @@
+{"record": ["domain", "sometypo.org", 4711], "delete": false, "_comment": "this JSON object is not a valid input record for PMP because it is not an array"}

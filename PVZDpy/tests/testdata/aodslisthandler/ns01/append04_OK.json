@@ -1,0 +1,10 @@
+[
+{"record": ["organization", "org111", "Org"], "delete": false},
+{"record": ["organization", "org333", "Org"], "delete": false},
+{"record": ["organization", "org444", "Org"], "delete": false},
+{"record": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org111", "add ok"], "delete": false},
+{"record": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org333", "add ok"], "delete": false},
+{"record": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org444", "add ok"], "delete": false},
+{"record": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org111", "delete existing"], "delete": true},
+{"record": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org333", "update existing"], "delete": false}
+]
