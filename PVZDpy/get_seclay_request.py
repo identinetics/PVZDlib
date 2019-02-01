@@ -1,11 +1,16 @@
-def get_seclay_request(sigType, sigData, sigPosition=None) -> str:
-    ''' return an XML template to be merged with the data to be signed
-        sigPosition is the XPath for the element under which an enveoped signature shall
-        be positioned, e.g. <md:/EntitiyDescriptor>
+import re
+
+def get_seclay_request(sig_type, sig_data, sigPosition=None) -> str:
+    ''' return a <CreateXMLSignatureRequest> for requesting either enveloping or
+        enveloped XMLDsig from the SecurityLayer signature service.
+        sigPosition is the XPath for the element under which an
+        enveoped signature shall be positioned, e.g. <md:/EntitiyDescriptor>.
     '''
 
+    def remove_xml_declaration(xml: str) -> str:
+        return re.sub(r'<\?xml[^?]*\?>', '', xml)
 
-    if sigType == 'enveloping':
+    if sig_type == 'enveloping':
         return '''\
 <?xml version="1.0" encoding="UTF-8"?>
 <sl:CreateXMLSignatureRequest
@@ -21,10 +26,10 @@ def get_seclay_request(sigType, sigData, sigPosition=None) -> str:
       </sl:FinalDataMetaInfo>
     </sl:TransformsInfo>
   </sl:DataObjectInfo>
-</sl:CreateXMLSignatureRequest> ''' % sigData
+</sl:CreateXMLSignatureRequest> ''' % remove_xml_declaration(sig_data)
 
 
-    if sigType == 'enveloped':
+    if sig_type == 'enveloped':
         return '''\
 <?xml version="1.0" encoding="UTF-8"?>
 <sl:CreateXMLSignatureRequest
@@ -49,4 +54,4 @@ def get_seclay_request(sigType, sigData, sigPosition=None) -> str:
     </sl:SignatureEnvironment>
     <sl:SignatureLocation xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" Index="0">%s</sl:SignatureLocation>
   </sl:SignatureInfo>
-</sl:CreateXMLSignatureRequest> ''' % (sigData, sigPosition)
+</sl:CreateXMLSignatureRequest> ''' % (remove_xml_declaration(sig_data), sigPosition)
