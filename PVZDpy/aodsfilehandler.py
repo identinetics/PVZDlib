@@ -4,7 +4,7 @@ import json
 import xml.etree.ElementTree as ET
 from PVZDpy.constants import DATA_HEADER_B64BZIP
 from PVZDpy.cresignedxml_seclay_direct import cre_signedxml_seclay
-from PVZDpy.invocation.aodsfhinvocation import aodsfhInvocation
+from PVZDpy.invocation.aodsfhinvocation import AodsfhInvocation
 from PVZDpy.wrapperrecord import *
 from PVZDpy.userexceptions import *
 from PVZDpy.xmlsigverifyer import XmlSigVerifyer
@@ -13,7 +13,7 @@ __author__ = 'r2h2'
 
 
 class AODSFileHandler():
-    def __init__(self, inv_args: aodsfhInvocation):
+    def __init__(self, inv_args: AodsfhInvocation):
         self._aodsFile = inv_args.aods
         self.list_trustedcerts = inv_args.list_trustedcerts
 

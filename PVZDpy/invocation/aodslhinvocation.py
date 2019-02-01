@@ -1,7 +1,7 @@
 """ create an invocation class specific for AODSFileHandler """
 from .abstractinvocation import AbstractInvocation
 
-class aodslhInvocation(AbstractInvocation):
+class AodslhInvocation(AbstractInvocation):
     def __init__(self,
                  inputfilename = None,
                  noxmlsign = False,
