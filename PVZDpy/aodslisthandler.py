@@ -59,7 +59,7 @@ class AodsListHandler:
             logging.debug("%d lastHash: " % inputRecSeq + lastHash)
             wrapperRec_final = wrapperRec.getRec(self.lastSeq + 1, lastHash)
             self.aods['AODS'].append(wrapperRec_final)
-        self.aodsFileHandler.save(self.aods, self.args.noxmlsign)
+        self.aodsFileHandler.save(self.aods)
 
 
     def aods_create(self):
@@ -73,7 +73,7 @@ class AodsListHandler:
         seedVal_bytes = base64.b64encode(hashlib.sha256(seedVal_str.encode('ascii')).digest())
         #if self.args.debug: seedVal_bytes = 'fixedValueForDebugOnly'.encode('ascii')
         logging.debug("0 seedVal: " + seedVal_bytes.decode('ascii'))
-        self.aodsFileHandler.create({"AODS": [wrapperRec.getRec(0, seedVal_bytes.decode('ascii'))]}, self.args.noxmlsign)
+        self.aodsFileHandler.create({"AODS": [wrapperRec.getRec(0, seedVal_bytes.decode('ascii'))]})
 
 
     def write_entry_into_policy_dict(self, policyDict, new_rec, deleteflag):

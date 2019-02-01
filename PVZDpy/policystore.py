@@ -9,8 +9,8 @@ class PolicyStore:
         if not any([invocation, policydir]):
             raise Exception('PolicyStore.__init__ requires either invocation or policydir arg')
         if invocation:
-            aodsFileHandler = AODSFileHandler(invocation.args)
-            aodsListHandler = AodsListHandler(aodsFileHandler, invocation.args)
+            aodsFileHandler = AODSFileHandler(invocation)
+            aodsListHandler = AodsListHandler(aodsFileHandler, invocation)
             self._policydir = aodsListHandler.aods_read()
         elif policydir:
             self._policydir = policydir

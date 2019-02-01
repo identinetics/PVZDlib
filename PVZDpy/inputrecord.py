@@ -25,34 +25,57 @@ class InputRecordAllRecordTypes:
             raise e
 
 
-class InputRecordAbstract:
-    def as_json(self):
-        return json.dumps(self.inputrec)
+''' Classes to create input records for AodsListHandler '''
 
+class InputRecordAbstract:
+    pass
 
 class InputRecordIssuer(InputRecordAbstract):
-    def __init__(self, cacert: str, pvprole: str, subject_cn: str, delete: bool):
+    def __init__(self, subject_cn: str, pvprole: str, cacert: str, delete: bool):
+        self.id = f"i/{subject_cn}"
         self.inputrec = {
             "record": [
-                "issuer", 
-                subject_cn, 
+                "issuer",
+                subject_cn,
                 pvprole,
-                cert],
+                cacert],
             "delete": delete}
+
+    def __str__(self):
+        return self.id
     
 
 class InputRecordNamespace(InputRecordAbstract):
     def __init__(self, fqdn: str, gvouid: str, delete: bool):
+        self.id = f"n/{fqdn}"
         self.inputrec = {
             "record": [
-                "domain", 
+                "domain",
                 fqdn,
                 gvouid],
             "delete": delete}
 
+    def __str__(self):
+        return self.id
+
+
+class InputRecordOrganization(InputRecordAbstract):
+    def __init__(self, gvouid: str, cn: str, delete: bool):
+        self.id = f"n/{gvouid}"
+        self.inputrec = {
+            "record": [
+                "organization",
+                gvouid,
+                cn],
+            "delete": delete}
+
+    def __str__(self):
+        return self.id
+
 
 class InputRecordRevocation(InputRecordAbstract):
     def __init__(self, cert: str, subject_cn: str, delete: bool):
+        self.id = f"r/{subject_cn}"
         self.inputrec = {
             "record": [
                 "revocation", 
@@ -60,13 +83,20 @@ class InputRecordRevocation(InputRecordAbstract):
                 subject_cn],
             "delete": delete}
 
+    def __str__(self):
+        return self.id
+
 
 class InputRecordUserprivilege(InputRecordAbstract):
-    def __init__(self, cert: str, pvprole: str, subject_cn: str, delete: bool):
+    def __init__(self, cert: str, gvouid: str, subject_cn: str, delete: bool):
+        self.id = f"u/{subject_cn}"
         self.inputrec = {
             "record": [
-                "issuer",
+                "userprivilege",
                 cert,
                 gvouid,
                 subject_cn],
             "delete": delete}
+
+    def __str__(self):
+        return self.id
