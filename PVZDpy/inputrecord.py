@@ -5,6 +5,15 @@ from PVZDpy.userexceptions import *
 __author__ = 'r2h2'
 
 
+class AodsChangeList:
+    ''' Aggregate of different record types to add to the policy journal with a single signature '''
+    def __init__(self):
+        self.changelist = []
+
+    def append(self, input_rec: InputRecordAllRecordTypes):
+        assert isinstance(input_rect, InputRecordAllRecordTypes)
+        self.changelist += input_rec
+
 class InputRecordAllRecordTypes:
     ''' Handle a record of any type to be appended '''
 

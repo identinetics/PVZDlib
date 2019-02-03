@@ -1,6 +1,6 @@
 import pytest
+from PVZDpy.userexceptions import ValidationError
 from PVZDpy.xy509cert import XY509cert
-from PVZDpy.userexceptions import ValidationError, UnauthorizedAODSSignerError
 
 #path_prefix = 'PVZDpy/tests/testdata/xy509cert/'
 path_prefix = 'testdata/xy509cert/'

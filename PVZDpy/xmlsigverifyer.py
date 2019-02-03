@@ -1,15 +1,14 @@
+from pathlib import Path
 from PVZDpy.xmlsigverifyer_moasp import *
-
-__author__ = 'r2h2'
 
 
 class XmlSigVerifyer():
     def __init__(self):
         self.xml_sig_verifier = XmlSigVerifyerMoasp()
 
-    def verify(self, xml_file_name, verify_file_extension=True) -> str:
-        """ verify xmldsig and return signerCertificate """
-        if verify_file_extension and xml_file_name[-4:] != '.xml':
+    def verify(self, xml_file_name: Path, verify_file_extension=True) -> str:
+        """ return signerCertificate """
+        if verify_file_extension and xml_file_name.suffix != '.xml':
             raise InvalidArgumentValueError('XMl filename must have extension .xml')
 
-        return self.xml_sig_verifier.verify(xml_file_name)
+        return self.xml_sig_verifier.verify(str(xml_file_name))

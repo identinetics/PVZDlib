@@ -44,6 +44,7 @@ def idp22_path_out(path_testout):
 
 # enveloped signatures
 
+@pytest.mark.requires_signature
 def test_sign_idp_unsigned(idp1_path_in, idp1_path_out):
     ed = SAMLEntityDescriptorFromStrFactory(idp1_path_in.read_text())
     md_namespace_prefix = SAMLEntityDescriptor.get_namespace_prefix(ed.get_xml_str())
@@ -54,7 +55,7 @@ def test_sign_idp_unsigned(idp1_path_in, idp1_path_out):
     idp1_path_out.write_text(ed_signed)
     # TODO: assert result (requires masking the xades SigningTime)
 
-
+@pytest.mark.requires_signature
 def test_sign_idp_signed_with_diacritics(idp22_path_in, idp22_path_out):
     ed = SAMLEntityDescriptorFromStrFactory(idp22_path_in.read_text())
     ed.remove_enveloped_signature()

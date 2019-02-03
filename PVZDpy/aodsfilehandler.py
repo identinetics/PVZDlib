@@ -7,116 +7,54 @@ import os
 import re
 import sys
 import xml.etree.ElementTree as ET
+from PVZDpy.config.get_pvzdlib_config import get_pvzdlib_config
 from PVZDpy.constants import DATA_HEADER_B64BZIP
 from PVZDpy.cresignedxml_seclay_direct import cre_signedxml_seclay
-from PVZDpy.invocation.aodsfhinvocation import AodsfhInvocation
-from PVZDpy.wrapperrecord import *
+from PVZDpy.trustedcerts import TrustedCerts
 from PVZDpy.userexceptions import *
 from PVZDpy.xmlsigverifyer import XmlSigVerifyer
 from PVZDpy.xy509cert import XY509cert
 
 
-class AODSFileHandler():
-    def __init__(self, inv_args: AodsfhInvocation):
-        def _set_canonical_file_extensions():
-            if not self.noxmlsign and self._aodsFile[-4:] != '.xml':
-                self._aodsFile += '.xml'
-            if self.noxmlsign and self._aodsFile[-5:] != '.json':
-                self._aodsFile += '.json'
+class AodsFileHandler():
+    def __init__(self):
+        self.config = get_pvzdlib_config()
+        self.backend = self.config.polstore_backend
+        self.trusted_certs = TrustedCerts()
 
-        def _check_aodsfile_exists():
-            if not os.path.isfile(self._aodsFile) and \
-                    getattr(inv_args, 'subcommand', None) not in ('create', 'scratch'):
-                errmsg = f'Policy journal not found: {self._aodsFile}. Fix path or create'
-                logging.error(errmsg)
-                raise InvalidArgumentValueError(errmsg)
-
-        def _load_trusted_certs():
-            if inv_args.trustedcerts is None:
-                self.trustedCerts = []
-            else:
-                if not os.path.isfile(inv_args.trustedcerts):
-                    raise ValidationError('Trust certs file not found: %s' %
-                                          inv_args.trustedcerts)
-                with open(os.path.abspath(inv_args.trustedcerts)) as f:
-                    self.trustedCerts = json.loads(f.read())
-
-        self._aodsFile = inv_args.aods
-        self.list_trustedcerts = inv_args.list_trustedcerts
-        self.noxmlsign = inv_args.noxmlsign
-        _set_canonical_file_extensions()
-        _check_aodsfile_exists()
-        _load_trusted_certs()
-
-    def _do_list_trustedcerts(self, signerCertificateEncoded):
-        for cert in self.trustedCerts:
-            #logging.debug('--- List of  certificates trusted to sign the policy journal. '
-            #             'Certificate for current journal is marked with ">>".')
-            #linemarker = ('>>' if cert == signerCertificateEncoded else '')
-            xy509cert = XY509cert(cert, 'PEM')
-            #logging.debug(linemarker + 's: ' + xy509cert.getSubject_str() +
-            #             ', i:' + xy509cert.getIssuer_str() +
-            #             'not after: ' + xy509cert.notValidAfter())
-        #logging.debug('--- End of list of trusted certificates.')
-
-    def create(self, start_rec: dict):
-        if os.path.exists(self._aodsFile):
-            raise InvalidArgumentValueError('Must remove existing %s before creating a new AODS' %
-                                            self._aodsFile)
-        os.makedirs(os.path.dirname(self._aodsFile), exist_ok=True)
-        if self.noxmlsign:
-            with open(self._aodsFile, 'w') as f:
-                f.write(json.dumps(s))
-        else:
-            j = json.dumps(start_rec)
-            x = cre_signedxml_seclay(j)
-            with open(self._aodsFile, 'w') as f:
-                f.write(x)
-
-    def readFile(self):
-        if self._aodsFile[-4:] == '.xml':
-            # verify whether the signature is valid
+    def read(self):
+        if self.config.xmlsign:
+            pj_path = self.backend.get_policy_journal_path()
             xml_sig_verifyer = XmlSigVerifyer();
-            xml_sig_verifyer_response = xml_sig_verifyer.verify(self._aodsFile)
-            # verify whether the signer is authorized
-            if xml_sig_verifyer_response.signer_cert_pem not in self.trustedCerts:
+            xml_sig_verifyer_response = xml_sig_verifyer.verify(pj_path)
+            logging.debug('XML signature is valid')
+
+            if xml_sig_verifyer_response.signer_cert_pem not in self.trusted_certs.certs:
                 raise UnauthorizedAODSSignerError("Signature certificate of policy journal not in "
                     "trusted list. Certificate:\n" + xml_sig_verifyer_response.signer_cert_pem)
-            if self.list_trustedcerts:
-                self._do_list_trustedcerts(xml_sig_verifyer_response.signer_cert_pem)
-            # get contents
-            tree = ET.parse(self._aodsFile)
+            logging.debug('XML signature: signer is authorized')
+
+            tree = ET.parse(pj_path)
             content = tree.findtext('{http://www.w3.org/2000/09/xmldsig#}Object')
             if len(content) < 0:
                 raise ValidationError('AODS contained in XML signature value is empty')
-            # logging.debug('Found dsig:SignatureValue/text() in aods:\n%s\n' % content)
+            logging.debug('Found dsig:SignatureValue/text() in aods:\n%s\n' % content)
             content_body_str = content.replace(DATA_HEADER_B64BZIP, '', 1)
             j_bzip2 = base64.b64decode(content_body_str)
             j = bz2.decompress(j_bzip2)
             return json.loads(j.decode('UTF-8'))
-        else:  # must be json
-            with open(self._aodsFile, 'r') as f:
-                j = json.loads(f.read())
-            return j
-
-    def removeFile(self):
-        ''' remove file but ignore if it does not exist '''
-        try:
-            os.remove(self._aodsFile)
-        except OSError as e:
-            if e.errno != 2:
-                raise e
-
-    def save(self, s):
-        if self.noxmlsign:
-            with open(self._aodsFile, 'w') as f:
-                f.truncate()
-                f.write(json.dumps(s))
         else:
-            xml = cre_signedxml_seclay(json.dumps(s))
-            if len(xml) == 0:  # just for defense, should not happen
-                raise EmptyAODSError('Journal empty, not saved - signature failed?')
-            with open(self._aodsFile, 'w') as f:
-                f.truncate()
-                f.write(xml)
+            logging.warning('Loaded policy directory from unsigned JSON source - NO CRYPTOGRAPHIC TRUST')
+            return json.loads(self.backend.get_poldir_json())
 
+    def remove(self):
+        self.config.polstore_backend.reset_pjournal_and_derived()
+
+    def save(self, journal: dict, journal_html: str, shibacl: str):
+        if self.config.xmlsign:
+            j = json.dumps(journal)
+            xml_str = cre_signedxml_seclay(j)
+            self.backend.set_policy_journal(xml_str.encode('utf-8'))
+        self.backend.set_poldir_json(j)
+        self.backend.set_poldir_html(journal_html)
+        self.backend.set_shibacl(shibacl)

@@ -1,28 +1,35 @@
+import os
+#import pathlib
 import pytest
-from PVZDpy.aodsfilehandler import AODSFileHandler
-from PVZDpy.invocation.aodsfhinvocation import AodsfhInvocation
+from PVZDpy.aodsfilehandler import AodsFileHandler
 from PVZDpy.userexceptions import ValidationError, UnauthorizedAODSSignerError
 
-#path_prefix = 'PVZDpy/tests/testdata/aodsfilehandler/'
-path_prefix = 'testdata/aodsfilehandler/'
-
-
-def fixture_invocationargs(aods_filename, trustedcerts_filename):
-    return AodsfhInvocation(path_prefix+aods_filename, path_prefix+trustedcerts_filename)
-
+def set_config_file(filename: str):
+    os.environ['PVZDLIB_CONFIG_MODULE'] = f"testdata/aodsfilehandler/{filename}"
 
 def test_authorized():
-    args = fixture_invocationargs('pol_journal_sig_rh.xml', 'trustedcerts_rh.json')
-    _ = AODSFileHandler(args).readFile()
+    set_config_file('pvzdlib_config_ok.py')
+    _ = AodsFileHandler().read()
 
 
 def test_invalidsig():
-    args = fixture_invocationargs('pol_journal_invalid_sig.xml', 'trustedcert_rh.json')
+    set_config_file('pvzdlib_config_invalid_sig.py')
     with pytest.raises(ValidationError):
-        _ = AODSFileHandler(args).readFile()
+        _ = AodsFileHandler().read()
 
 
 def test_unauthorized():
-    args = fixture_invocationargs('pol_journal_sig_rh.xml', 'trustedcerts_pr.json')
+    set_config_file('pvzdlib_config_unauthz_signer.py')
     with pytest.raises(UnauthorizedAODSSignerError):
-        _ = AODSFileHandler(args).readFile()
+        aodsfh = AodsFileHandler()
+        _ = aodsfh.read()
+
+@pytest.mark.requires_signature
+def test_create_read():
+    set_config_file('pvzdlib_config_new.py')
+    aodsfh = AodsFileHandler()
+    aodsfh.remove()
+    aodsfh.save({'blah': 'blah'}, '<html/>', b'<root/>')
+    poldir = aodsfh.read()
+    poldir_expected = aodsfh.backend.get_policy_journal_path().parent / 'poldir_expected.json'
+    assert poldir_expected.read_text() == aodsfh.backend.get_poldir_json()
