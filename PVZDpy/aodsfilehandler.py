@@ -42,19 +42,28 @@ class AodsFileHandler():
             content_body_str = content.replace(DATA_HEADER_B64BZIP, '', 1)
             j_bzip2 = base64.b64decode(content_body_str)
             j = bz2.decompress(j_bzip2)
-            return json.loads(j.decode('UTF-8'))
+            aods = json.loads(j.decode('UTF-8'))
         else:
             logging.warning('Loaded policy directory from unsigned JSON source - NO CRYPTOGRAPHIC TRUST')
-            return json.loads(self.backend.get_poldir_json())
+            aods_json = self.backend.get_poljournal_json()
+            aods = json.loads(aods_json)
+        return aods
 
     def remove(self):
         self.config.polstore_backend.reset_pjournal_and_derived()
 
-    def save(self, journal: dict, journal_html: str, shibacl: str):
+    def save(self,
+             journal: dict,
+             dict_json: str,
+             dict_html: str,
+             shibacl: str):
+        journal_json = json.dumps(journal)
         if self.config.xmlsign:
-            j = json.dumps(journal)
-            xml_str = cre_signedxml_seclay(j)
-            self.backend.set_policy_journal(xml_str.encode('utf-8'))
-        self.backend.set_poldir_json(j)
-        self.backend.set_poldir_html(journal_html)
+            xml_str = cre_signedxml_seclay(journal_json)
+        else:
+            xml_str = ''
+        self.backend.set_policy_journal_xml(xml_str.encode('utf-8'))
+        self.backend.set_policy_journal_json(journal_json)
+        self.backend.set_poldict_json(dict_json)
+        self.backend.set_poldict_html(dict_html)
         self.backend.set_shibacl(shibacl)
