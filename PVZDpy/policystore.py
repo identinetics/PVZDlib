@@ -11,7 +11,7 @@ class PolicyStore:
         if invocation:
             aodsFileHandler = AODSFileHandler(invocation)
             aodsListHandler = AodsListHandler(aodsFileHandler, invocation)
-            self._policydir = aodsListHandler.aods_read()
+            self._policydir = aodsListHandler.read()
         elif policydir:
             self._policydir = policydir
 
@@ -83,3 +83,5 @@ class PolicyStore:
 
     def get_userprivileges(self):
         return self._policydir["userprivilege"]
+
+class PolicyStoreStorage:

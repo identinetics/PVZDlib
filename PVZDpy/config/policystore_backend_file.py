@@ -8,10 +8,10 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
         self.polstore_dir = polstore_dir
         self.p_journal_xml = polstore_dir / 'policyjournal.xml'
         self.p_journal_json = polstore_dir / 'policyjournal.json'
-        self.p_dir_json = polstore_dir / 'policydict.json'
-        self.p_dir_html = polstore_dir / 'policydict.html'
+        self.p_dict_json = polstore_dir / 'policydict.json'
+        self.p_dict_html = polstore_dir / 'policydict.html'
         self.shibacl = polstore_dir / 'shibacl.xml'
-        self.trustedcertscopy = polstore_dir / 'trustedcerts.txt'
+        self.trustedcerts_report = polstore_dir / 'trustedcerts.txt'
 
     # ---
 
@@ -24,20 +24,23 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
     def get_policy_journal_path(self) -> Path:
         return self.p_journal_xml
 
-    def get_poldict_json(self) -> str:
+    def get_policy_journal_json(self) -> str:
         try:
-            return self.p_dir_json.read_text()
+            return self.p_journal_json.read_text()
         except FileNotFoundError as e:
             raise PolicyJournalNotInitialized
 
+    def get_poldict_json(self) -> str:
+        return self.p_dict_json.read_text()
+
     def get_poldict_html(self) -> str:
-        return self.p_dir_html.read_text()
+        return self.p_dict_html.read_text()
 
     def get_shibacl(self) -> bytes:
         return self.shibacl.read_byteswrite()
 
     def get_trustedcerts_copy(self) -> str:
-        return self.trustedcertscopy.read_text()
+        return self.trustedcerts_report.read_text()
 
     # ---
 
@@ -54,16 +57,16 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
         self.p_journal_json.write_text(json_str)
 
     def set_poldict_json(self, json_str: str):
-        self.p_dir_json.write_text(json_str)
+        self.p_dict_json.write_text(json_str)
 
     def set_poldict_html(self, html_str: str):
-        self.p_dir_html.write_text(html_str)
+        self.p_dict_html.write_text(html_str)
 
     def set_shibacl(self, xml_bytes: str):
         self.shibacl.write_bytes(xml_bytes)
 
     def set_trustedcerts_copy(self, t: str):
-        self.trustedcertscopy.write_text(t)
+        self.trustedcerts_report.write_text(t)
 
     # ---
 
@@ -77,6 +80,8 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
 
     def reset_pjournal_and_derived(self):
         self._unlink_ignore_notfound(self.p_journal_xml)
-        self._unlink_ignore_notfound(self.p_dir_json)
-        self._unlink_ignore_notfound(self.p_dir_html)
+        self._unlink_ignore_notfound(self.p_journal_json)
+        self._unlink_ignore_notfound(self.p_dict_json)
+        self._unlink_ignore_notfound(self.p_dict_html)
         self._unlink_ignore_notfound(self.shibacl)
+        self._unlink_ignore_notfound(self.trustedcerts_report)

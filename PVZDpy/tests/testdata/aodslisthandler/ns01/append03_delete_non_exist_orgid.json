@@ -1,5 +1,0 @@
-[
-{"record": ["organization", "org111", "Org"], "delete": false},
-{"record": ["userprivilege", "{cert}Test key for aods list handler - not good for authN", "org111", "add ok"], "delete": false},
-{"record": ["userprivilege", "{cert}Test key for aods list handler - not good for authN", "org222", "delete non-exisitng orgid"], "delete": true}
-]

@@ -20,7 +20,7 @@ class AodsFileHandler():
     def __init__(self):
         self.config = get_pvzdlib_config()
         self.backend = self.config.polstore_backend
-        self.trusted_certs = TrustedCerts()
+        self.trusted_certs = TrustedCerts().certs
 
     def read(self):
         if self.config.xmlsign:
@@ -29,7 +29,7 @@ class AodsFileHandler():
             xml_sig_verifyer_response = xml_sig_verifyer.verify(pj_path)
             logging.debug('XML signature is valid')
 
-            if xml_sig_verifyer_response.signer_cert_pem not in self.trusted_certs.certs:
+            if xml_sig_verifyer_response.signer_cert_pem not in self.trusted_certs:
                 raise UnauthorizedAODSSignerError("Signature certificate of policy journal not in "
                     "trusted list. Certificate:\n" + xml_sig_verifyer_response.signer_cert_pem)
             logging.debug('XML signature: signer is authorized')
@@ -45,18 +45,14 @@ class AodsFileHandler():
             aods = json.loads(j.decode('UTF-8'))
         else:
             logging.warning('Loaded policy directory from unsigned JSON source - NO CRYPTOGRAPHIC TRUST')
-            aods_json = self.backend.get_poljournal_json()
+            aods_json = self.backend.get_policy_journal_json()
             aods = json.loads(aods_json)
         return aods
 
     def remove(self):
         self.config.polstore_backend.reset_pjournal_and_derived()
 
-    def save(self,
-             journal: dict,
-             dict_json: str,
-             dict_html: str,
-             shibacl: str):
+    def save_journal(self, journal: dict):
         journal_json = json.dumps(journal)
         if self.config.xmlsign:
             xml_str = cre_signedxml_seclay(journal_json)
@@ -64,6 +60,16 @@ class AodsFileHandler():
             xml_str = ''
         self.backend.set_policy_journal_xml(xml_str.encode('utf-8'))
         self.backend.set_policy_journal_json(journal_json)
+
+    def save_policydict_json(self, dict_json: str):
         self.backend.set_poldict_json(dict_json)
+
+    def save_policydict_html(self, dict_html: str):
         self.backend.set_poldict_html(dict_html)
+
+    def save_shibacl(self, shibacl: str):
         self.backend.set_shibacl(shibacl)
+
+    def save_trustedcerts_report(self, cert_report: str):
+        self.backend.set_trustedcerts_copy(cert_report)
+

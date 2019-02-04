@@ -1,5 +1,5 @@
+import json
 import os
-#import pathlib
 import pytest
 from PVZDpy.aodsfilehandler import AodsFileHandler
 from PVZDpy.userexceptions import ValidationError, UnauthorizedAODSSignerError
@@ -29,7 +29,9 @@ def test_create_read():
     set_config_file('pvzdlib_config_new.py')
     aodsfh = AodsFileHandler()
     aodsfh.remove()
-    aodsfh.save({'blah': 'blah'}, '<html/>', b'<root/>')
-    poldir = aodsfh.read()
-    poldir_expected = aodsfh.backend.get_policy_journal_path().parent / 'poldir_expected.json'
-    assert poldir_expected.read_text() == aodsfh.backend.get_poldir_json()
+    aods = {"AODS": [{"content":["header","","contentfields"],"delete": False}]}
+    poldict_json = '{"domain": {}, "issuer": {}, "organization": {}, "revocation": {}, "userprivilege": {}}'
+    aodsfh.save(aods, poldict_json, '<html/>', b'<root/>')
+    policyjournal = aodsfh.read()
+    policyjournal_expected = aodsfh.backend.get_policy_journal_path().parent / 'policyjournal_expected.json'
+    assert policyjournal == json.load(policyjournal_expected.open())

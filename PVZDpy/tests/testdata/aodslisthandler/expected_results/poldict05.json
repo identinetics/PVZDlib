@@ -1,0 +1,25 @@
+{
+  "domain": {},
+  "issuer": {},
+  "organization": {
+    "org111": [
+      "Org"
+    ],
+    "org333": [
+      "Org"
+    ],
+    "org444": [
+      "Org"
+    ]
+  },
+  "revocation": {},
+  "userprivilege": {
+    "{cert}Test key1 for aods list handler - not good for authN": [
+      [
+        "org333",
+        "org444"
+      ],
+      "update existing"
+    ]
+  }
+}

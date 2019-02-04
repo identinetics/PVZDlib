@@ -3,9 +3,9 @@ import OpenSSL.crypto
 import tempfile
 
 from PVZDpy.aodsfilehandler import AODSFileHandler
-from PVZDpy.invocation.aodsfhinvocation import AodsfhInvocation
+from PVZDpy.config.aodsfhinvocation import AodsfhInvocation
 from PVZDpy.aodslisthandler import AodsListHandler
-from PVZDpy.invocation.aodslhinvocation import AodslhInvocation
+from PVZDpy.config.aodslhinvocation import AodslhInvocation
 from PVZDpy.policystore import PolicyStore
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import *

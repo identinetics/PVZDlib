@@ -3,11 +3,19 @@ from pathlib import Path
 
 class PolicyStoreBackendAbstract():
     def get_policy_journal(self) -> bytes:
-        # this shall implement PVZDpy.userexceptions.PolicyJournalNotInitialized
-        raise NotImplementedError()
+        try:
+            raise NotImplementedError()
+        except FileNotFoundError as e:   # customize this to actual storage
+            raise PolicyJournalNotInitialized
 
     def get_policy_journal_path(self) -> Path:
         raise NotImplementedError()
+
+    def get_policy_journal_json(self) -> str:
+        try:
+            raise NotImplementedError()
+        except FileNotFoundError as e: # customize this to actual storage
+            raise PolicyJournalNotInitialized
 
     def get_poldict_json(self) -> str:
         raise NotImplementedError()
