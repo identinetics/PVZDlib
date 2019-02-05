@@ -5,6 +5,7 @@ from PVZDpy.constants import RECORDTYPES
 
 ''' Encapsulate the structure of record types (TODO: convert to base class + extensions) '''
 
+
 class ContentRecord:
     ''' Handle a single content record, which is a list of following fields:
             record type

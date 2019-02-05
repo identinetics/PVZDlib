@@ -3,7 +3,6 @@ import datetime
 import hashlib
 import json
 import logging
-import sys
 from PVZDpy.contentrecord import ContentRecord
 from PVZDpy.policychange import PolicyChangeItemAbstract
 
@@ -33,7 +32,7 @@ class AodsRecord:
             self.registrant = registrant
             self.submitter = submitter
         except Exception as e:
-            logger.error(str(self))
+            logging.error(str(self))
             raise e
 
     def create_from_aodsrec(self, aodsrec: dict):
@@ -47,17 +46,13 @@ class AodsRecord:
             self.registrant = aodsrec[5]
             self.submitter = aodsrec[6]
         except Exception as e:
-            logger.error(str(self))
+            logging.error(str(self))
             raise e
 
     def get_ContentRecord(self):
         return ContentRecord(self.contentfields)
 
-    def validate_hash(self, prevHash):
-        """  
-        :param prevHash: hash value of previous record in hash chain
-        :return: True if valid
-        """
+    def validate_hash(self, prevHash: str) -> bool:
         assert isinstance(prevHash, str)
         aodsrec_val = [
             self.hash,

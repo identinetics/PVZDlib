@@ -2,6 +2,7 @@ from pathlib import Path
 from PVZDpy.config.policystore_backend_abstract import PolicyStoreBackendAbstract
 from PVZDpy.userexceptions import PolicyJournalNotInitialized
 
+
 class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
     def __init__(self, polstore_dir: Path):
         polstore_dir.mkdir(parents=True, exist_ok=True)
@@ -27,7 +28,7 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
     def get_policy_journal_json(self) -> str:
         try:
             return self.p_journal_json.read_text()
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             raise PolicyJournalNotInitialized
 
     def get_poldict_json(self) -> str:

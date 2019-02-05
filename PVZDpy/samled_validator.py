@@ -2,25 +2,25 @@ import lxml.etree
 import OpenSSL.crypto
 import tempfile
 
-from PVZDpy.aodsfilehandler import AODSFileHandler
-from PVZDpy.config.aodsfhinvocation import AodsfhInvocation
-from PVZDpy.aodslisthandler import AodsListHandler
-from PVZDpy.config.aodslhinvocation import AodslhInvocation
+# from PVZDpy.aodsfilehandler import AodsFileHandler
+# from PVZDpy.aodslisthandler import AodsListHandler
 from PVZDpy.policystore import PolicyStore
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
-from PVZDpy.userexceptions import *
+from PVZDpy.userexceptions import InputValueError, PVZDuserexception
 from PVZDpy.xy509cert import XY509cert
 
-""" This class parses amd validates a SAMLEntityDescriptorPVP and yields a structured result 
+""" This class parses and validates a SAMLEntityDescriptorPVP and yields a structured result 
     Supports passing xml as string and file (for PVZDweb and PEP)
-    
+
     For simplicity, xml files are converted to utf-8 strings, and string later back to tempfiles
     for processing with SAMLEntityDescriptorPVP. This will go away if PEP does not read files
     but str from the database
 """
 
+
 class NoFurtherValidation(Exception):
     pass
+
 
 class SamlEdValidator:
     def __init__(self, policystore: PolicyStore):
@@ -95,7 +95,6 @@ class SamlEdValidator:
         except NoFurtherValidation:
             pass
 
-
     def _validate_parse_xml(self, ed_str_new, ed_path_new):
         try:
             self.ed_str = self._get_xml_str(ed_str_new, ed_path_new)
@@ -139,7 +138,7 @@ class SamlEdValidator:
 
     def _validate_certcheck(self):
         try:
-            if  self.ed.isDeletionRequest():
+            if self.ed.isDeletionRequest():
                 self.certcheck_ok = True
             else:
                 self.ed.checkCerts()
@@ -175,4 +174,3 @@ class SamlEdValidator:
         except(PVZDuserexception) as e:
             self.authz_ok = False
             self.val_mesg_dict['Validate signature'] = self._format_val_msg(e)
-

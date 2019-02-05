@@ -31,7 +31,11 @@ def test_create_read():
     aodsfh.remove()
     aods = {"AODS": [{"content":["header","","contentfields"],"delete": False}]}
     poldict_json = '{"domain": {}, "issuer": {}, "organization": {}, "revocation": {}, "userprivilege": {}}'
-    aodsfh.save(aods, poldict_json, '<html/>', b'<root/>')
+    aodsfh.save_journal(aods)
+    aodsfh.save_policydict_json(poldict_json)
+    aodsfh.save_policydict_html('<html/>')
+    aodsfh.save_shibacl(b'<root/>')
+    aodsfh.save_trustedcerts_report('some text')
     policyjournal = aodsfh.read()
     policyjournal_expected = aodsfh.backend.get_policy_journal_path().parent / 'policyjournal_expected.json'
     assert policyjournal == json.load(policyjournal_expected.open())

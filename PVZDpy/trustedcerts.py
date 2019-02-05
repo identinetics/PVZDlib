@@ -18,7 +18,7 @@ class TrustedCerts:
                 pem = XY509cert.pem_remove_rfc7468_delimiters(
                     certfile.read_text(),
                     optional_delimiter=True)
-                pem_single_line = pem.replace('\n','').strip()
+                pem_single_line = pem.replace('\n', '').strip()
                 self.certs.add(pem_single_line)
             else:
                 logging.debug(f"skipping file in certdir because extension != '.pem': {certfile}")

@@ -1,10 +1,10 @@
 import json
-import logging
 from pathlib import Path
 from PVZDpy.contentrecord import ContentRecord
-from PVZDpy.userexceptions import *
+from PVZDpy.userexceptions import InputValueError, InputFormatError
 
 ''' Classes to create input records for the policy journal'''
+
 
 class PolicyChangeItemAbstract:
     ''' A change item is a content record plus an operation
@@ -47,11 +47,11 @@ class PolicyChangeHeader(PolicyChangeItemAbstract):
     def __init__(self):
         self.id_str = f"header"
         self.inputrec = {
-            "content":
-               ["header",
+            "content": [
+                "header",
                 "",
                 "columns: hash, seq, delete, [rectype, pk, attr1, ..], datetimestamp, registrant, submitter]"
-               ],
+            ],
             "delete": False}
 
 
@@ -94,7 +94,7 @@ class PolicyChangeRevocation(PolicyChangeItemAbstract):
         self.id_str = f"r/{subject_cn}"
         self.inputrec = {
             "content": [
-                "revocation", 
+                "revocation",
                 cert,
                 subject_cn],
             "delete": delete}
@@ -113,6 +113,7 @@ class PolicyChangeUserprivilege(PolicyChangeItemAbstract):
 
 
 ''' Policy changes: define input for Policy Journal '''
+
 
 class PolicyChangeList:
     ''' Aggregate of different record types to add to the policy journal with a single signature '''

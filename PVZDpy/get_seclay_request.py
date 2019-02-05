@@ -1,5 +1,6 @@
 import re
 
+
 def get_seclay_request(sig_type, sig_data, sigPosition=None) -> str:
     ''' return a <CreateXMLSignatureRequest> for requesting either enveloping or
         enveloped XMLDsig from the SecurityLayer signature service.
@@ -27,7 +28,6 @@ def get_seclay_request(sig_type, sig_data, sigPosition=None) -> str:
     </sl:TransformsInfo>
   </sl:DataObjectInfo>
 </sl:CreateXMLSignatureRequest> ''' % remove_xml_declaration(sig_data)
-
 
     if sig_type == 'enveloped':
         return '''\

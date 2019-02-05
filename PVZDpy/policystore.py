@@ -1,15 +1,16 @@
 import re
 
-from PVZDpy.aodsfilehandler import AODSFileHandler
+from PVZDpy.aodsfilehandler import AodsFileHandler
 from PVZDpy.aodslisthandler import AodsListHandler
 from PVZDpy.userexceptions import UnauthorizedSignerError
+
 
 class PolicyStore:
     def __init__(self, invocation=None, policydir: dict=None):
         if not any([invocation, policydir]):
             raise Exception('PolicyStore.__init__ requires either invocation or policydir arg')
         if invocation:
-            aodsFileHandler = AODSFileHandler(invocation)
+            aodsFileHandler = AodsFileHandler(invocation)
             aodsListHandler = AodsListHandler(aodsFileHandler, invocation)
             self._policydir = aodsListHandler.read()
         elif policydir:
@@ -83,5 +84,3 @@ class PolicyStore:
 
     def get_userprivileges(self):
         return self._policydir["userprivilege"]
-
-class PolicyStoreStorage:

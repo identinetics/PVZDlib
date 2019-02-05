@@ -1,3 +1,4 @@
+import json
 from os.path import join as opj
 import pytest
 #from PVZDpy.constants import *
@@ -120,12 +121,9 @@ def test_get_registered_namespace_objs(policystore1, policystore1_namespace_obj)
 
 def test_get_revoked_certs(policystore1, policystore1_revoked_certs):
     r_recs = policystore1.get_revoked_certs()
-    json_str = json.dumps(r_recs, sort_keys=True, indent=2)
     assert policystore1_revoked_certs == r_recs
 
 
 def test_get_userprivileges(policystore1, policystore1_userprivileges):
     u_recs = policystore1.get_userprivileges()
-    json_str = json.dumps(u_recs, sort_keys=True, indent=2)
     assert policystore1_userprivileges == u_recs
-

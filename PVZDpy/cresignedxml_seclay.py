@@ -1,3 +1,8 @@
+import BaseHTTPRequestHandler
+import logging
+import urllib
+
+
 class RequestHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         with open('testdata/xmlsig_response.xml') as fd:
@@ -106,5 +111,3 @@ class RequestHandler(BaseHTTPRequestHandler):
           </body>
         </html>
             ''' % sig_response
-
-

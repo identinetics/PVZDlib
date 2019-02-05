@@ -1,6 +1,8 @@
-import base64, hashlib, sys
-import logging
+import base64
+import hashlib
 import json
+import logging
+import sys
 from datetime import datetime
 from json2html import *
 from PVZDpy.aods_record import AodsRecord
@@ -9,10 +11,11 @@ from PVZDpy.config.get_pvzdlib_config import get_pvzdlib_config
 from PVZDpy.contentrecord import ContentRecord
 from PVZDpy.policychange import PolicyChangeList, PolicyChangeHeader
 from PVZDpy.trustedcerts import TrustedCerts
-from PVZDpy.userexceptions import PolicyJournalNotInitialized
+from PVZDpy.userexceptions import HashChainError, InputValueError, PolicyChangeListEmpty
+from PVZDpy.userexceptions import PolicyJournalNotInitialized, ValidationError
 from PVZDpy.xy509cert import XY509cert
 
-assert sys.version_info >= (3,6)
+assert sys.version_info >= (3, 6)
 
 
 class AodsListHandler:
@@ -66,7 +69,7 @@ class AodsListHandler:
             self.last_seq = aodsrec.seq
             if contentrec.rectype == 'header':
                 continue
-            if aodsrec.validate_hash(self.prev_hash) != True:
+            if not aodsrec.validate_hash(self.prev_hash):
                 raise HashChainError('AODS hash chain is broken -> data not trustworthy, revert to last good version')
             if aodsrec.deleteflag:
                 self._policy_dict_delete(policyDict, contentrec)
@@ -88,7 +91,7 @@ class AodsListHandler:
         aodsrec = AodsRecord(changeitem)
         seed_str = str(datetime.now())
         seed_bytes = base64.b64encode(hashlib.sha256(seed_str.encode('ascii')).digest())
-        #if self.config.debug: seed_bytes = 'fixedValueForDebugOnly'.encode('ascii')
+        # if self.config.debug: seed_bytes = 'fixedValueForDebugOnly'.encode('ascii')
         logging.debug("0 seedVal: " + seed_bytes.decode('ascii'))
         logging.warning('Policy Journal was empty - created initial record')
         return {"AODS": [aodsrec.get_rec_with_hash(0, seed_bytes.decode('ascii'))]}
@@ -102,8 +105,9 @@ class AodsListHandler:
             try:
                 oldrec_attr = policyDict["userprivilege"][new_rec.primarykey]
             except KeyError:
-                raise InputValueError('Input error: deleting userprivilege record without previous entry for this cert: ' +
-                                      new_rec.primarykey + ', orgid: ' + new_rec.attr[0])
+                raise InputValueError(
+                    'Input error: deleting userprivilege record without previous entry for this cert: ' +
+                    new_rec.primarykey + ', orgid: ' + new_rec.attr[0])
             orgids = oldrec_attr[0]
             if new_rec.attr[0] in orgids:
                 orgids.remove(new_rec.attr[0])
@@ -138,11 +142,11 @@ class AodsListHandler:
                 if new_rec.attr[0] not in orgids:  # insert orgid
                     orgids += [new_rec.attr[0]]
                     new_rec.attr[0] = orgids
-                else: # duplicate orgid, keep previous state
+                else:   # duplicate orgid, keep previous state
                     new_rec.attr[0] = policyDict["userprivilege"][new_rec.primarykey][0]
             policyDict[new_rec.rectype].update({new_rec.primarykey: new_rec.attr})
         except KeyError as e:
-            logging.error(str(wrap) + ' ' + str(new_rec), file=sys.stderr)
+            logging.error("Add to policy dict {str(new_rec)}\n{str(e)}", file=sys.stderr)
             raise e
 
     def remove(self):
@@ -166,10 +170,10 @@ class AodsListHandler:
         '''  List of user certificates from policy dict AND trusted certificates
              The output file is to be included in a shibboleth2.xml <RequestMapper> element
         '''
-        xml = ( '<?xml version="1.0" encoding="UTF-8"?>\n'
-                '<AccessControl type="edu.internet2.middleware.shibboleth.sp.provider.XMLAccessControl">\n'
-                '  <Rule require="EID-SIGNER-CERTIFICATE">\n')
-        prefix='{cert}'
+        xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+               '<AccessControl type="edu.internet2.middleware.shibboleth.sp.provider.XMLAccessControl">\n'
+               '  <Rule require="EID-SIGNER-CERTIFICATE">\n')
+        prefix = '{cert}'
         for cert in sorted(polcydict['userprivilege']):
             if cert.startswith(prefix):
                 xml += f"    {cert[len(prefix):]}\n"

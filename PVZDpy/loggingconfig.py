@@ -1,5 +1,6 @@
-import logging, os
-__author__ = 'r2h2'
+import logging
+import os
+
 
 class LoggingConfig:
     """
@@ -18,9 +19,10 @@ class LoggingConfig:
             os.makedirs(logdir)
         self.LOGFILENAME = os.path.abspath(os.path.join(logdir, module + '.debug'))
         if console:
-            handlers_dict = {'handlers': ['file', 'console'], 'level': logging.DEBUG,}
+            handlers_dict = {'handlers': ['file', 'console'], 'level': logging.DEBUG, }
         else:
-            handlers_dict = {'handlers': ['file', ], 'level': logging.DEBUG,}
+            handlers_dict = {'handlers': ['file', ], 'level': logging.DEBUG, }
+
         LOGGING = dict(
             version = 1,
             'disable_existing_loggers': False,  # do not overwrite loggers from imported modules
@@ -43,7 +45,7 @@ class LoggingConfig:
                 },
             },
             loggers = {'': handlers_dict},
-            #loggers = {'': {'handlers': ['file', 'console'], 'level': logging.DEBUG,}},
+            # loggers = {'': {'handlers': ['file', 'console'], 'level': logging.DEBUG,}},
         )
 
         logging.config.dictConfig(LOGGING)

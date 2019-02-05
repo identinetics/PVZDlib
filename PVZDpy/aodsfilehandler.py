@@ -1,19 +1,14 @@
 import base64
 import bz2
-import datetime
 import json
 import logging
-import os
-import re
-import sys
 import xml.etree.ElementTree as ET
 from PVZDpy.config.get_pvzdlib_config import get_pvzdlib_config
 from PVZDpy.constants import DATA_HEADER_B64BZIP
 from PVZDpy.cresignedxml_seclay_direct import cre_signedxml_seclay
 from PVZDpy.trustedcerts import TrustedCerts
-from PVZDpy.userexceptions import *
+from PVZDpy.userexceptions import UnauthorizedAODSSignerError, ValidationError
 from PVZDpy.xmlsigverifyer import XmlSigVerifyer
-from PVZDpy.xy509cert import XY509cert
 
 
 class AodsFileHandler():
@@ -25,12 +20,13 @@ class AodsFileHandler():
     def read(self):
         if self.config.xmlsign:
             pj_path = self.backend.get_policy_journal_path()
-            xml_sig_verifyer = XmlSigVerifyer();
+            xml_sig_verifyer = XmlSigVerifyer()
             xml_sig_verifyer_response = xml_sig_verifyer.verify(pj_path)
             logging.debug('XML signature is valid')
 
             if xml_sig_verifyer_response.signer_cert_pem not in self.trusted_certs:
-                raise UnauthorizedAODSSignerError("Signature certificate of policy journal not in "
+                raise UnauthorizedAODSSignerError(
+                    "Signature certificate of policy journal not in "
                     "trusted list. Certificate:\n" + xml_sig_verifyer_response.signer_cert_pem)
             logging.debug('XML signature: signer is authorized')
 
@@ -72,4 +68,3 @@ class AodsFileHandler():
 
     def save_trustedcerts_report(self, cert_report: str):
         self.backend.set_trustedcerts_copy(cert_report)
-

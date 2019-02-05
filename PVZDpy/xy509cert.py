@@ -2,7 +2,7 @@ import re
 import textwrap
 from datetime import datetime
 from OpenSSL import crypto
-from PVZDpy.userexceptions import *
+from PVZDpy.userexceptions import ValidationError
 __author__ = 'r2h2'
 
 
@@ -12,7 +12,7 @@ class XY509cert:
     '''
     def __init__(self, cert_str, inform='PEM'):
         if inform == 'PEM':
-            c =  XY509cert.pem_add_rfc7468_delimiters(cert_str)
+            c = XY509cert.pem_add_rfc7468_delimiters(cert_str)
             self.cert = crypto.load_certificate(crypto.FILETYPE_PEM, c)
         elif inform == 'DER':
             self.cert = crypto.load_certificate(crypto.FILETYPE_ASN1, cert_str)
@@ -24,23 +24,23 @@ class XY509cert:
             wrap lines > 76 characters, because older versions of openssl (< 1.0.2?) limit base64
             lines like MIME
         """
-        cert_str_normalized = cert_str.replace('\r\n','\n')
+        cert_str_normalized = cert_str.replace('\r\n', '\n')
         hasStartLine = False
         new_cert = ''
-        for l in cert_str_normalized.splitlines(True):
-            if l.lstrip() == '-----BEGIN CERTIFICATE-----\n':
+        for line in cert_str_normalized.splitlines(True):
+            if line.lstrip() == '-----BEGIN CERTIFICATE-----\n':
                 hasStartLine = True
             elif hasStartLine:
-                l = '\n'.join(textwrap.wrap(l, 64)) + '\n'
-                #print("line: " + l)
-            new_cert += l
+                line = '\n'.join(textwrap.wrap(line, 64)) + '\n'
+                # print("line: " + l)
+            new_cert += line
         if not hasStartLine:
             c = '-----BEGIN CERTIFICATE-----\n' + \
                 '\n'.join(textwrap.wrap(cert_str, 64)) + \
                 '\n-----END CERTIFICATE-----\n'
         else:
             c = new_cert
-            #print("Zertifikat: " + c)
+            # print("Zertifikat: " + c)
         return re.sub(r'\n\s*\n', '\n', c)  # openssl dislikes blank lines before the end line
 
     @staticmethod
@@ -53,15 +53,15 @@ class XY509cert:
         begin = False
         end = False
         pem_str = ''
-        for l in cert_str.splitlines(True):
-            if l == '-----BEGIN CERTIFICATE-----\n':
+        for line in cert_str.splitlines(True):
+            if line == '-----BEGIN CERTIFICATE-----\n':
                 begin = True
                 continue
             if begin:
-                if l.startswith('-----END CERTIFICATE-----'):
+                if line.startswith('-----END CERTIFICATE-----'):
                     end = True
                     break
-                pem_str += l
+                pem_str += line
         if optional_delimiter:
             pass
         else:
@@ -114,13 +114,12 @@ class XY509cert:
 
     def get_serial_number_hex(self) -> int:
         x = format(self.cert.get_serial_number(), 'x')
-        return ':'.join(x[i:i+2] for i in range(0, len(x), 2))
+        return ':'.join(x[i:i + 2] for i in range(0, len(x), 2))
 
     def get_pubkey(self) -> str:
         # the result of this function is only useful to compare if two certificate share the same public key
         pkey_pem = crypto.dump_publickey(crypto.FILETYPE_PEM, self.cert.get_pubkey())
         return pkey_pem
-
 
     def digest(self, dgst='SHA1') -> str:
         return self.cert.digest(dgst).decode('ascii')

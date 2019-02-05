@@ -14,10 +14,8 @@ class XmlSchemaValidator:
         self.pyjnius_xsdvalidator = autoclass(pvzd_verify_sig)
         self.saml_xsd_validator = self.pyjnius_xsdvalidator(self.saml_xsd_dir, False)
 
-
     def validate_xsd(self, filename_abs):
         return self.saml_xsd_validator.validateSchema(filename_abs)
 
     def validate_schematron(self):
         pass  # TODO: implement
-

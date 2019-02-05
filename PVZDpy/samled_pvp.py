@@ -3,14 +3,16 @@ import logging
 import lxml.etree
 import os
 import re
-import sys
+from pathlib import Path
 from OpenSSL import crypto
 from urllib.parse import urlparse
-from PVZDpy.constants import *
+from PVZDpy.constants import XMLNS_DSIG, XMLNS_MD, XMLNS_MD_PREFIX, XMLNS_MDRPI, XMLNS_MDRPI_PREFIX, XMLNS_PVZD_PREFIX
 import PVZDpy.lxml_helper as lxml_helper
 from PVZDpy.policystore import PolicyStore
 from PVZDpy.samlentitydescriptor import SAMLEntityDescriptor
-from PVZDpy.userexceptions import *
+from PVZDpy.userexceptions import CertExpiredError, CertInvalidError, EdHostnameNotMatchingCertSubject
+from PVZDpy.userexceptions import InputValueError, InvalidFQDNInEndpoint
+from PVZDpy.userexceptions import InvalidFQDNinEntityID
 from PVZDpy.xy509cert import XY509cert
 from PVZDpy.xmlsigverifyer import XmlSigVerifyer
 from PVZDpy.xy509certstore import Xy509certStore
@@ -47,9 +49,8 @@ class SAMLEntityDescriptorPVP:
             try:
                 x509storeContext.verify_certificate()
             except crypto.X509StoreContextError as e:
-                raise CertInvalidError(('Certificate validation failed. ' + str(e) + ' ' +
-                                        cert.getIssuer_str()))
-            if cert.getSubject_str().find('/CN='+self.get_entityid_hostname()) < 0:
+                raise CertInvalidError(('Certificate validation failed. ' + str(e) + ' ' + cert.getIssuer_str()))
+            if cert.getSubject_str().find('/CN=' + self.get_entityid_hostname()) < 0:
                 raise EdHostnameNotMatchingCertSubject(
                     'Hostname of entityID (%s) not matching CN in cert subject (%s)' %
                     (self.get_entityid_hostname(), cert.getSubject_str()))
@@ -59,14 +60,13 @@ class SAMLEntityDescriptorPVP:
                 continue
             cert = XY509cert(cert_pem)
             if not cert.isNotExpired():
-                raise CertExpiredError('Certificate is expired since ' + cert.notValidAfter() +
-                                       '; subject: ' + cert.getSubject_str)
+                raise CertExpiredError(
+                    f"Certificate is expired since {cert.notValidAfter()}; subject: {cert.getSubject_str}")
             x509storeContext = crypto.X509StoreContext(self.SP_trustStore.x509store, cert.cert)
             try:
                 x509storeContext.verify_certificate()
             except crypto.X509StoreContextError as e:
-                raise CertInvalidError(('Certificate validation failed. ' + str(e) + ' ' +
-                                        cert.getIssuer_str()))
+                raise CertInvalidError(('Certificate validation failed. ' + str(e) + ' ' + cert.getIssuer_str()))
         logging.debug('Entity certificates valid for ' + self.ed.get_entityid())
 
     @staticmethod
@@ -85,8 +85,10 @@ class SAMLEntityDescriptorPVP:
 
     def _getCerts(self, role) -> list:
         certs = []
-        if role == 'IDP': xp = 'md:IDPSSODescriptor//ds:X509Certificate'
-        if role == 'SP': xp = 'md:SPSSODescriptor//ds:X509Certificate'
+        if role == 'IDP':
+            xp = 'md:IDPSSODescriptor//ds:X509Certificate'
+        if role == 'SP':
+            xp = 'md:SPSSODescriptor//ds:X509Certificate'
         i = 0
         for elem in self.ed.tree.xpath(xp, namespaces={'ds': XMLNS_DSIG, 'md': XMLNS_MD}):
             if elem.text:
@@ -121,7 +123,7 @@ class SAMLEntityDescriptorPVP:
         tree = lxml.etree.parse(self.ed_path)
         rootelem_attr = tree.getroot().attrib
         try:
-            return rootelem_attr[XMLNS_PVZD_PREFIX+'disposition'] == 'delete'
+            return rootelem_attr[XMLNS_PVZD_PREFIX + 'disposition'] == 'delete'
         except KeyError:
             return False
 
@@ -133,37 +135,42 @@ class SAMLEntityDescriptorPVP:
         return (namespace is not None)
 
     def isInRegisteredNamespaces(self, fqdn: str) -> bool:
-        """  check if fqdn is identical to or in a wildcard-namespace of a registered namespace (independet of signer) """
+        """  check if fqdn is identical to or in a wildcard-namespace of a
+             registered namespace (independet of signer) """
         # TODO: change to explicit wildcards
         registered_ns = self.policystore.get_registered_namespaces()
         namespace = PolicyStore.get_namesp_for_fqdn(fqdn, registered_ns)
         return (namespace is not None)
 
     def remove_enveloped_signature(self):
-        lxml_helper.delete_element_if_existing(self.ed.tree,
+        lxml_helper.delete_element_if_existing(
+            self.ed.tree,
             '/md:EntityDescriptor/ds:Signature',
             {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
 
     @staticmethod
     def set_registrationinfo(tree, authority, fixed_date_for_unittest=False):
-        lxml_helper.delete_element_if_existing(tree,
+        lxml_helper.delete_element_if_existing(
+            tree,
             '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
             {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
         new = lxml.etree.Element(XMLNS_MD_PREFIX + "Extensions")
-        lxml_helper.insert_if_missing (tree,
+        lxml_helper.insert_if_missing(
+            tree,
             '//md:EntityDescriptor',
             '//md:EntityDescriptor/md:Extensions',
             new,
             {'md': XMLNS_MD, 'mdrpi': XMLNS_MDRPI})
         new = lxml.etree.Element(XMLNS_MDRPI_PREFIX + "RegistrationInfo")
-        new.set(XMLNS_MDRPI_PREFIX+'registrationAuthority', authority)
+        new.set(XMLNS_MDRPI_PREFIX + 'registrationAuthority', authority)
         if fixed_date_for_unittest:
             now = datetime(1900, 1, 1, 0, 0, 0, 0)
         else:
             now = datetime.now()
         now_iso8601 = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-        new.set(XMLNS_MDRPI_PREFIX+'registrationInstant', now_iso8601)
-        lxml_helper.insert_if_missing (tree,
+        new.set(XMLNS_MDRPI_PREFIX + 'registrationInstant', now_iso8601)
+        lxml_helper.insert_if_missing(
+            tree,
             '//md:EntityDescriptor/md:Extensions',
             '//md:EntityDescriptor/md:Extensions/mdrpi:RegistrationInfo',
             new,
@@ -187,8 +194,8 @@ class SAMLEntityDescriptorPVP:
         pass  # TODO: implement
 
     def validateSignature(self) -> str:
-        xml_sig_verifyer = XmlSigVerifyer();
-        xml_sig_verifyer_response = xml_sig_verifyer.verify(self.ed_path)
+        xml_sig_verifyer = XmlSigVerifyer()
+        xml_sig_verifyer_response = xml_sig_verifyer.verify(Path(self.ed_path))
         return xml_sig_verifyer_response
 
     def validate_xsd(self):
@@ -199,9 +206,9 @@ class SAMLEntityDescriptorPVP:
         basefn = os.path.basename(self.ed_path)
         # file name must have the format "*compressedEntityId.xml". Check right substring:
         fn = SAMLEntityDescriptor.get_filename_from_entityid(self.ed.get_entityid())
-        if not re.search(str(fn)+'$', basefn):
+        if not re.search(str(fn) + '$', basefn):
             raise InputValueError('Invalid format for EntitiyDescriptor filename "%s". The file name '
-                                  'for entityID %s must end with "%s" - see PAtool documentation.' % \
+                                  'for entityID %s must end with "%s" - see PAtool documentation.' %
                                   (basefn, self.get_entityid(), fn))
 
     def write(self, new_filename=None):

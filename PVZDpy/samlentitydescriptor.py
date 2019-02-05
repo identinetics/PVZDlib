@@ -1,8 +1,11 @@
-import logging, os, re, sys, tempfile
+import os
+import re
+import tempfile
 import lxml.etree
-from PVZDpy.constants import *
+from PVZDpy.constants import PROJLIB, XMLNS_DSIG, XMLNS_DSIG_PREFIX, XMLNS_MD, XMLNS_MD_PREFIX
 import PVZDpy.lxml_helper as lxml_helper
-from PVZDpy.userexceptions import *
+from PVZDpy.userexceptions import EmptySamlEDError, EntityRoleNotSupportedError, InvalidSamlXmlSchemaError, \
+    InputValueError, MultipleEntitiesNotAllowed
 from PVZDpy.xmlschemavalidator import XmlSchemaValidator
 from PVZDpy.xy509cert import XY509cert
 
@@ -49,6 +52,7 @@ class SAMLEntityDescriptor:
             self.xml_str = SAMLEntityDescriptor.cert2ed(createfromcertstr, entityid, samlrole)
             self.rootelem = lxml.etree.fromstring(self.xml_str.encode('utf-8'))
             self.tree = self.rootelem.getroottree()
+        self.samlrole = samlrole
 
     @staticmethod
     def cert2ed(cert_str, entityid, samlrole):
@@ -91,20 +95,21 @@ class SAMLEntityDescriptor:
             </ds:X509Data>
           </ds:KeyInfo>
         </md:KeyDescriptor>
-        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="{eid}/acs/unused" index="0" isDefault="true"/>
+        <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                     Location="{eid}/acs/unused" index="0" isDefault="true"/>
       </md:SPSSODescriptor>
     </md:EntityDescriptor>""".format(eid=entityid, pem=cert_str_nodelimiters)
         else:
             raise EntityRoleNotSupportedError(
-                "Only IDP and SP entity roles implemented, but %s given" % self.args.samlrole)
+                f"Only IDP and SP entity roles implemented, but %s given {samlrole}")
         return entityDescriptor
 
     def get_entitydescriptor(self, tree) -> lxml.etree.ElementTree:
-        if tree.getroot().tag == XMLNS_MD_PREFIX+'EntityDescriptor':
+        if tree.getroot().tag == XMLNS_MD_PREFIX + 'EntityDescriptor':
             return tree
         elif tree.getroot().tag == XMLNS_MD_PREFIX + 'EntitiesDescriptor':
             if len(tree.getroot()) == 1:
-               return lxml.etree.ElementTree(tree.getroot()[0])
+                return lxml.etree.ElementTree(tree.getroot()[0])
             elif len(tree.getroot()) > 1:
                 raise MultipleEntitiesNotAllowed
             else:
@@ -138,7 +143,6 @@ class SAMLEntityDescriptor:
                 upper = True
         return r + '.xml'
 
-
     @staticmethod
     def get_namespace_prefix(ed_str: str) -> str:
         """
@@ -152,56 +156,54 @@ class SAMLEntityDescriptor:
         m = p.search(ed_str)
         return m.group(1)
 
-
     def get_signing_certs(self, samlrole='IDP') -> [XY509cert]:
         x509certs = []
-        #if samlrole not in ('any', 'IDP', 'SP'):
-        #    raise InputValueError("samlrole must be on of 'any', 'IDP', 'SP'")
+        # if samlrole not in ('any', 'IDP', 'SP'):
+        #     raise InputValueError("samlrole must be on of 'any', 'IDP', 'SP'")
         if samlrole not in ('IDP', ):
             raise InputValueError("samlrole must be 'IDP'")
         idpssodesc = self.tree.xpath('//md:IDPSSODescriptor', namespaces={'md': XMLNS_MD})
         if len(idpssodesc) > 0:
-            keydescriptors = idpssodesc[0].findall(XMLNS_MD_PREFIX+'KeyDescriptor')
+            keydescriptors = idpssodesc[0].findall(XMLNS_MD_PREFIX + 'KeyDescriptor')
             for kd in keydescriptors:
                 if 'use' in kd.attrib and kd.attrib['use'] == 'encryption':
                     pass
                 else:  # signing certs are those with use="signing" or have no use attribute
-                    for x509cert in kd.iter(XMLNS_DSIG_PREFIX+'X509Certificate'):
+                    for x509cert in kd.iter(XMLNS_DSIG_PREFIX + 'X509Certificate'):
                         x509certs.append(XY509cert(x509cert.text.strip()))
         return x509certs
-
 
     def get_xml_str(self):
         xml_str = lxml.etree.tostring(self.tree, encoding='utf-8', pretty_print=False)
         return xml_str.decode('utf-8')
 
-
     @staticmethod
     def has_enveloped_signature(self) -> bool:
-        lxml_helper.delete_element_if_existing(self.ed.tree,
+        lxml_helper.delete_element_if_existing(
+            self.ed.tree,
             '/md:EntityDescriptor/ds:Signature',
             {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
 
     def remove_enveloped_signature(self):
-        lxml_helper.delete_element_if_existing(self.tree,
+        lxml_helper.delete_element_if_existing(
+            self.tree,
             '/md:EntityDescriptor/ds:Signature',
             {'md': XMLNS_MD, 'ds': XMLNS_DSIG})
 
     def validate_schematron(self):
         pass  # TODO: implement
 
-
     def validate_xsd(self):
         schema_dir_abs = os.path.join(PROJLIB, 'SAML_MD_Schema')
         saml_schema_validator = XmlSchemaValidator(schema_dir_abs)
         retmsg = saml_schema_validator.validate_xsd(self.ed_path_abs)
         if retmsg is not None:
-            raise InvalidSamlXmlSchemaError('File ' + self.ed_path_abs +
-                                            ' is not schema valid:\n' + retmsg)
+            raise InvalidSamlXmlSchemaError(f"File {self.ed_path_abs} is not schema valid:\n{retmsg})")
 
     def write(self, filename):
-        # CAVEAT: This function does not take the signed info part of an XML DSig-validated
-        # document, but uses the internal tree represenation initialized with XML-parsing the
-        # signed document. Processing a document after signature valideation mnust not use this
-        # function!
+        ''' CAVEAT: This function does not take the signed info part of an XML DSig-validated
+            document, but uses the internal tree represenation initialized with XML-parsing the
+            signed document. Processing a document after signature valideation mnust not use this
+            function!
+        '''
         self.tree.write(filename, encoding='utf-8', xml_declaration=True)

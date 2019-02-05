@@ -1,8 +1,7 @@
-import logging, os
+import logging
 from OpenSSL import crypto
 from . import xy509cert
 
-__author__ = 'r2h2'
 
 class Xy509certStore:
     def __init__(self, issuers, pvprole):
@@ -16,5 +15,5 @@ class Xy509certStore:
                 caCert = xy509cert.XY509cert(cert_pem)
                 self.x509store.add_cert(caCert.cert)
                 self.emtpy = False
-                #logging.debug('Adding CA cert for pvprole=' + pvprole + '; subject=' +
-                #              caCert.getSubject_str() + '; cert:' + cert_pem)
+                # logging.debug('Adding CA cert for pvprole=' + pvprole + '; subject=' +
+                #               caCert.getSubject_str() + '; cert:' + cert_pem)

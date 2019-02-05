@@ -1,41 +1,49 @@
-import json
 import lxml.etree
+import os
 import pytest
 import tempfile
-from PVZDpy.constants import *
-from PVZDpy.userexceptions import *
+from PVZDpy.constants import SAML_MDPRI_REGISTRATIONAUTHORITY
+from PVZDpy.userexceptions import CertExpiredError, CertInvalidError, InputValueError, InvalidFQDNinEntityID, \
+    InvalidFQDNInEndpoint, InvalidSamlXmlSchemaError, EdHostnameNotMatchingCertSubject, \
+    MultipleEntitiesNotAllowed, ValidationError
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
-from PVZDpy.tests.common_fixtures import *
+from PVZDpy.tests.common_fixtures import ed_path, ed0, ed1, ed2, ed4, ed5, ed6, ed7, ed9 # NOQA
+from PVZDpy.tests.common_fixtures import ed10, ed11, ed12, ed14, ed15, namespaces7, policydir1, policystore1  # NOQA
 
 
 def assert_equal(expected, actual, fn=''):
     # workaround because pycharm does not display the full string (despite pytest -vv etc)
-    msg = fn+"\n'"+actual+"' != '"+expected+"' "
+    msg = fn + "\n'" + actual + "' != '" + expected + "' "
     assert expected == actual, msg
-
 
 
 def test_checkCerts1(ed1):
     ed1.checkCerts()
 
+
 def test_checkCerts2(ed2):
     with pytest.raises(CertInvalidError):
         ed2.checkCerts()
+
 
 def test_checkCerts5(ed5):
     with pytest.raises(CertInvalidError):
         ed5.checkCerts()
 
+
 def test_checkCerts6(ed6):
     ed6.checkCerts()
+
 
 def test_checkCerts12(ed12):
     with pytest.raises(CertExpiredError):
         ed12.checkCerts()
 
+
 def test_checkCerts13(policystore1):
     with pytest.raises(MultipleEntitiesNotAllowed):
-        ed13 = SAMLEntityDescriptorPVP(ed_path(13), policystore1)
+        _ = SAMLEntityDescriptorPVP(ed_path(13), policystore1)
+
 
 def test_checkCerts14(ed14):
     with pytest.raises(EdHostnameNotMatchingCertSubject):
@@ -51,12 +59,14 @@ def test_create_delete():
 def test_get_namespace1(ed1):
     assert ed1.get_namespace() is None
 
-def test_get_namespace1(ed7):
+
+def test_get_namespace1(
+        ed7):
     assert '*.identinetics.com' == ed7.get_namespace()
 
 
 def test_isInAllowedNamespaces():
-    allowed_namespaces =  {
+    allowed_namespaces = {
         "*.identinetics.com": ["AT:VKZ:XFN-318886a"],
         "some.net": ["AT:VKZ:XZVR:4711"],
         "some.org": ["AT:VKZ:XZVR:4711"],
@@ -90,6 +100,7 @@ def test_isInRegisteredNamespaces(ed1):
 def test_isDeletionRequest2(ed2):
     assert not ed2.isDeletionRequest()
 
+
 def test_isDeletionRequest4(ed4):
     assert ed4.isDeletionRequest()
 
@@ -105,7 +116,10 @@ def test_remove_enveloped_signature(ed10):
 
 def test_set_registrationinfo(ed1):
     # make expected equal to actual with fake registrationInstant = "1900-01-01T00:00:00Z"
-    SAMLEntityDescriptorPVP.set_registrationinfo(ed1.ed.tree, SAML_MDPRI_REGISTRATIONAUTHORITY, fixed_date_for_unittest=True)
+    SAMLEntityDescriptorPVP.set_registrationinfo(
+        ed1.ed.tree,
+        SAML_MDPRI_REGISTRATIONAUTHORITY,
+        fixed_date_for_unittest=True)
     fn1_edit = tempfile.NamedTemporaryFile(mode='w', prefix='test1_edit', suffix='xml').name
     ed1.write(fn1_edit)
     with open(ed_path(16)) as fd2:
@@ -124,7 +138,7 @@ def test_validate_xsd2(ed2):
 
 def test_validate_xsd8(policystore1):
     with pytest.raises(lxml.etree.XMLSyntaxError):
-        ed8 = SAMLEntityDescriptorPVP(ed_path(8), policystore1)
+        _ = SAMLEntityDescriptorPVP(ed_path(8), policystore1)
 
 
 def test_validate_xsd9(ed9):
@@ -168,6 +182,5 @@ def test_verify_filename0(ed0):
     ed0.verify_filename()
 
 
-#def test_write():
-#   test included by test_remove_enveloped_signature
-
+# def test_write():
+#    test included by test_remove_enveloped_signature
