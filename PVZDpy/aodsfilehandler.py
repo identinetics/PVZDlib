@@ -3,23 +3,25 @@ import bz2
 import json
 import logging
 import xml.etree.ElementTree as ET
-from PVZDpy.config.get_pvzdlib_config import get_pvzdlib_config
+from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
 from PVZDpy.constants import DATA_HEADER_B64BZIP
 from PVZDpy.cresignedxml_seclay_direct import cre_signedxml_seclay
 from PVZDpy.trustedcerts import TrustedCerts
-from PVZDpy.userexceptions import UnauthorizedAODSSignerError, ValidationError
+from PVZDpy.userexceptions import PolicyJournalNotInitialized, UnauthorizedAODSSignerError, ValidationError
 from PVZDpy.xmlsigverifyer import XmlSigVerifyer
 
 
 class AodsFileHandler():
     def __init__(self):
-        self.config = get_pvzdlib_config()
-        self.backend = self.config.polstore_backend
+        self.pvzdconf = PVZDlibConfigAbstract.get_config()
+        self.backend = self.pvzdconf.polstore_backend
         self.trusted_certs = TrustedCerts().certs
 
     def read(self):
-        if self.config.xmlsign:
+        if self.pvzdconf.xmlsign:
             pj_path = self.backend.get_policy_journal_path()
+            if not pj_path.is_file():
+                raise PolicyJournalNotInitialized
             xml_sig_verifyer = XmlSigVerifyer()
             xml_sig_verifyer_response = xml_sig_verifyer.verify(pj_path)
             logging.debug('XML signature is valid')
@@ -46,11 +48,11 @@ class AodsFileHandler():
         return aods
 
     def remove(self):
-        self.config.polstore_backend.reset_pjournal_and_derived()
+        self.pvzdconf.polstore_backend.reset_pjournal_and_derived()
 
     def save_journal(self, journal: dict):
         journal_json = json.dumps(journal)
-        if self.config.xmlsign:
+        if self.pvzdconf.xmlsign:
             xml_str = cre_signedxml_seclay(journal_json)
         else:
             xml_str = ''
@@ -67,4 +69,4 @@ class AodsFileHandler():
         self.backend.set_shibacl(shibacl)
 
     def save_trustedcerts_report(self, cert_report: str):
-        self.backend.set_trustedcerts_copy(cert_report)
+        self.backend.set_trustedcerts_report(cert_report)

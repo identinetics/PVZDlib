@@ -31,11 +31,11 @@ class XmlSigVerifyerMoasp(XmlSigVerifyerAbstract):
         self.pvzd_verify_sig = self.pvzd_verify_sig_pkg + '/' + 'PvzdVerifySig'
         self.pywrapper = autoclass(self.pvzd_verify_sig)
 
-    def verify(self, xml_file_name) -> str:
-        """ verify xmldsig and return signerCertificate """
+    def verify(self, xml_file_name) -> XmlSigVerifyerResponse:
         moaspss_conf = os.path.join(PROJLIB, 'moa-spss.conf/MOASPSSConfiguration.xml')
         log4j_conf = os.path.join(PROJLIB, 'log4jconf/log4j.properties')
         sig_doc = xml_file_name
+        with open(sig_doc, 'r'): pass
         # logging.debug('verifying signature of %s using moa-sp, config path=%s' % (sig_doc, moaspss_conf))
         pvzdverifysig = self.pywrapper(
             moaspss_conf,

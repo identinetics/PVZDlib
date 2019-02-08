@@ -1,3 +1,6 @@
 .DS_Store
 .idea/
+.pytest_cache
+config/policystore
+config.trustedcerts
 PVZDpy/tests/testout

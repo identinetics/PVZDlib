@@ -40,7 +40,7 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
     def get_shibacl(self) -> bytes:
         return self.shibacl.read_byteswrite()
 
-    def get_trustedcerts_copy(self) -> str:
+    def get_trustedcerts_report(self) -> str:
         return self.trustedcerts_report.read_text()
 
     # ---
@@ -66,7 +66,7 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
     def set_shibacl(self, xml_bytes: str):
         self.shibacl.write_bytes(xml_bytes)
 
-    def set_trustedcerts_copy(self, t: str):
+    def set_trustedcerts_report(self, t: str):
         self.trustedcerts_report.write_text(t)
 
     # ---

@@ -24,7 +24,7 @@ class PolicyStoreBackendAbstract():
     def get_poldict_html(self) -> str:
         raise NotImplementedError()
 
-    def get_trustedcerts_copy(self) -> str:
+    def get_trustedcerts_report(self) -> str:
         raise NotImplementedError()
 
     def get_shibacl(self) -> bytes:
@@ -42,7 +42,7 @@ class PolicyStoreBackendAbstract():
     def set_poldict_html(self):
         raise NotImplementedError()
 
-    def set_trustedcerts_copy(self):
+    def set_trustedcerts_report(self):
         raise NotImplementedError()
 
     def set_shibacl(self):

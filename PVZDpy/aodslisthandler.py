@@ -7,7 +7,7 @@ from datetime import datetime
 from json2html import *
 from PVZDpy.aods_record import AodsRecord
 from PVZDpy.aodsfilehandler import AodsFileHandler
-from PVZDpy.config.get_pvzdlib_config import get_pvzdlib_config
+#from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
 from PVZDpy.contentrecord import ContentRecord
 from PVZDpy.policychange import PolicyChangeList, PolicyChangeHeader
 from PVZDpy.trustedcerts import TrustedCerts
@@ -26,7 +26,7 @@ class AodsListHandler:
     def __init__(self):
         self.aods = None  # a.k.a. policy journal
         self.aodsfh = AodsFileHandler()
-        self.config = get_pvzdlib_config()
+        #self.pvzdconf = PVZDlibConfigAbstract.get_config()
         self.trusted_certs = TrustedCerts().certs
         self.last_seq = None
         self.last_hash = None
@@ -91,7 +91,7 @@ class AodsListHandler:
         aodsrec = AodsRecord(changeitem)
         seed_str = str(datetime.now())
         seed_bytes = base64.b64encode(hashlib.sha256(seed_str.encode('ascii')).digest())
-        # if self.config.debug: seed_bytes = 'fixedValueForDebugOnly'.encode('ascii')
+        # if self.pvzdconf.debug: seed_bytes = 'fixedValueForDebugOnly'.encode('ascii')
         logging.debug("0 seedVal: " + seed_bytes.decode('ascii'))
         logging.warning('Policy Journal was empty - created initial record')
         return {"AODS": [aodsrec.get_rec_with_hash(0, seed_bytes.decode('ascii'))]}

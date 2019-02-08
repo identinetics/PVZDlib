@@ -2,8 +2,6 @@ import lxml.etree
 import OpenSSL.crypto
 import tempfile
 
-# from PVZDpy.aodsfilehandler import AodsFileHandler
-# from PVZDpy.aodslisthandler import AodsListHandler
 from PVZDpy.policystore import PolicyStore
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import InputValueError, PVZDuserexception
