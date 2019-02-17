@@ -37,6 +37,7 @@ def test_01_create_add_read_OK():
     test = SetupTest('append01_OK.json', 'poldict01.json')
     test.aodslh.append(test.changelist)
     poldict = test.aodslh.read()
+
     assert test.expected_poldict == poldict
 
 

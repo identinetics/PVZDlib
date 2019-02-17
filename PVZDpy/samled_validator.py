@@ -1,7 +1,7 @@
 import lxml.etree
 import OpenSSL.crypto
 import tempfile
-
+import enforce
 from PVZDpy.policystore import PolicyStore
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import InputValueError, PVZDuserexception
@@ -15,13 +15,16 @@ from PVZDpy.xy509cert import XY509cert
     but str from the database
 """
 
+enforce.config({'enabled': True, 'mode': 'covariant'})
+
 
 class NoFurtherValidation(Exception):
     pass
 
 
+@enforce.runtime_validation
 class SamlEdValidator:
-    def __init__(self, policystore: PolicyStore):
+    def __init__(self, policystore: PolicyStore) -> None:
         if not isinstance(policystore, PolicyStore):
             raise Exception('create SamlEdValidator requires PolicyStore')
         self._reset_validation_result()
@@ -30,7 +33,7 @@ class SamlEdValidator:
         self.schematron_ok = None
         self.certcheck_ok = None
 
-    def _format_val_msg(self, exception, exception_str_edited=None):
+    def _format_val_msg(self, exception: Exception, exception_str_edited: str = None) -> str:
         testid_str = ' (test{}) '.format(self.testid) if self.testid else ''
         e_str = exception_str_edited if exception_str_edited else str(exception)
         return '[{}] {}{}'.format(exception.__class__.__name__, testid_str, e_str)
@@ -48,7 +51,7 @@ class SamlEdValidator:
             'authz_ok': self.authz_ok,
         }
 
-    def _get_xml_str(self, ed_str='', ed_path='') -> str:
+    def _get_xml_str(self, ed_str: str = '', ed_path: str = '') -> str:
         if (ed_str and ed_path) or (not ed_str and not ed_path):
             raise InputValueError('one and only one argument out of (ed_str, ed_path) is required')
         if ed_str:
@@ -59,7 +62,7 @@ class SamlEdValidator:
             xml_str = lxml.etree.tostring(tree, encoding='utf-8', pretty_print=False)
             return xml_str.decode('utf-8')
 
-    def _reset_validation_result(self):
+    def _reset_validation_result(self) -> None:
         self.deletionRequest = None
         self.ed_str = ''
         self.entityID = ''
@@ -71,7 +74,12 @@ class SamlEdValidator:
         self.content_val_ok = None
         self.authz_ok = None
 
-    def validate_entitydescriptor(self, ed_str_new='', ed_path_new='', sigval=True, testid=None):
+    def validate_entitydescriptor(
+            self,
+            ed_str_new: str = '',
+            ed_path_new: str = '',
+            sigval: bool = True,
+            testid: bool = None) -> None:
         self.testid = testid
         self._reset_validation_result()
         if not getattr(self, 'policydir', False):
@@ -93,30 +101,30 @@ class SamlEdValidator:
         except NoFurtherValidation:
             pass
 
-    def _validate_parse_xml(self, ed_str_new, ed_path_new):
+    def _validate_parse_xml(self, ed_str_new: str, ed_path_new: str) -> None:
         try:
             self.ed_str = self._get_xml_str(ed_str_new, ed_path_new)
         except(lxml.etree.XMLSyntaxError) as e:
             self.val_mesg_dict['Parse XML'] = self._format_val_msg(e)
             raise NoFurtherValidation
 
-    def _create_tempfile_from_edstr(self):
+    def _create_tempfile_from_edstr(self) -> None:
         # make xml available for lxml file parsing (to avoid encoding issues)
         self.fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml', encoding='utf-8')
         self.fd.write(self.ed_str)
         self.fd.flush()
 
-    def _discard_tempfile(self):
+    def _discard_tempfile(self) -> None:
         self.fd.close()
 
-    def _validate_instantiate_ed(self):
+    def _validate_instantiate_ed(self) -> None:
         try:
             self.ed = SAMLEntityDescriptorPVP(self.fd.name, self.policystore)
         except(PVZDuserexception) as e:
             self.val_mesg_dict['Parse XML'] = self._format_val_msg(e)
             raise NoFurtherValidation
 
-    def _validate_xsd(self):
+    def _validate_xsd(self) -> None:
         try:
             self.ed.validate_xsd()
         except(PVZDuserexception) as e:
@@ -126,7 +134,7 @@ class SamlEdValidator:
             self.val_mesg_dict['SAML XML schema'] = self._format_val_msg(e, fixed_part)
             raise NoFurtherValidation
 
-    def _validate_saml_profile(self):
+    def _validate_saml_profile(self) -> None:
         try:
             self.ed.validate_schematron()
             self.schematron_ok = True
@@ -134,7 +142,7 @@ class SamlEdValidator:
             self.schematron_ok = False
             self.val_mesg_dict['Validate profile'] = self._format_val_msg(e)
 
-    def _validate_certcheck(self):
+    def _validate_certcheck(self) -> None:
         try:
             if self.ed.isDeletionRequest():
                 self.certcheck_ok = True
@@ -145,12 +153,12 @@ class SamlEdValidator:
             self.certcheck_ok = False
             self.val_mesg_dict['Entity cert'] = self._format_val_msg(e)
 
-    def _validate_is_registered_namespace(self):
+    def _validate_is_registered_namespace(self) -> None:
         fqdn = self.ed.get_entityid_hostname()
         if not self.ed.isInRegisteredNamespaces(fqdn):
             self.val_mesg_dict['Hostname'] = fqdn + ' is not registered with anybody'
 
-    def _validate_authz(self):
+    def _validate_authz(self) -> None:
         try:
             xml_sig_verifyer_response = self.ed.validateSignature()
             self.signer_cert_pem = xml_sig_verifyer_response.signer_cert_pem

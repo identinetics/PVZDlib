@@ -1,0 +1,1 @@
+Subject: /C=AT/CN=Rainer H\xC3\xB6rbe/SN=H\xC3\xB6rbe/GN=Rainer/serialNumber=891348061310; issuer: /C=AT/O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH/OU=a-sign-Premium-Sig-02/CN=a-sign-Premium-Sig-02; not valid after: 20200710082413Z

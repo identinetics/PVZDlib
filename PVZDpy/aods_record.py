@@ -19,10 +19,11 @@ class AodsRecord:
         else:
             raise Exception('invalid arg type')
 
-    def create_from_changeitem(self, 
-                               changeitem: PolicyChangeItemAbstract, 
-                               registrant='',
-                               submitter=''):
+    def create_from_changeitem(
+            self,
+            changeitem: PolicyChangeItemAbstract,
+            registrant: str = '',
+            submitter: str = '') -> None:
         try:
             self.hash = None
             self.seq = None
@@ -49,7 +50,7 @@ class AodsRecord:
             logging.error(str(self))
             raise e
 
-    def get_ContentRecord(self):
+    def get_ContentRecord(self) -> list:
         return ContentRecord(self.contentfields)
 
     def validate_hash(self, prevHash: str) -> bool:
@@ -67,7 +68,7 @@ class AodsRecord:
         digest_bytes = base64.b64encode(hashlib.sha256(digestbase.encode('ascii')).digest())
         return (digest_bytes.decode('ascii') == self.hash)
 
-    def get_rec_with_hash(self, newSeq, lastHash) -> list:
+    def get_rec_with_hash(self, newSeq: str, lastHash: str) -> list:
         """ compute hash: take last hash and append the representation of the wrapped structure
         of json.dumps in compact representaion
         :param newSeq: Sequence number to be assigned to the new record
@@ -92,5 +93,5 @@ class AodsRecord:
         logging.debug('digestbase=' + digestbase + '\n        digest_str=' + digest_str)
         return [digest_str] + aodsrec_list[1:]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.seq) + ' ' + self.hash

@@ -1,16 +1,19 @@
 import re
 import textwrap
 from datetime import datetime
+import enforce
 from OpenSSL import crypto
 from PVZDpy.userexceptions import ValidationError
-__author__ = 'r2h2'
+
+enforce.config({'enabled': True, 'mode': 'covariant'})
 
 
+@enforce.runtime_validation
 class XY509cert:
     ''' Wrapper for OpenSSL.crypto.x509 to add a few methods. (yes, could have
         been done with a subclass as well)
     '''
-    def __init__(self, cert_str, inform='PEM'):
+    def __init__(self, cert_str: str, inform: str = 'PEM'):
         if inform == 'PEM':
             c = XY509cert.pem_add_rfc7468_delimiters(cert_str)
             self.cert = crypto.load_certificate(crypto.FILETYPE_PEM, c)
@@ -44,9 +47,9 @@ class XY509cert:
         return re.sub(r'\n\s*\n', '\n', c)  # openssl dislikes blank lines before the end line
 
     @staticmethod
-    def pem_remove_rfc7468_delimiters(cert_str,
-                                      optional_delimiter=False,
-                                      remove_whitespace=False) -> str:
+    def pem_remove_rfc7468_delimiters(cert_str: str,
+                                      optional_delimiter: bool = False,
+                                      remove_whitespace: bool = False) -> str:
         """ take a base64-encoded certificate and remove BEGIN/END lines
             raise ValidationError if either is missing, unless optional_delimiter is True
         """
@@ -93,7 +96,7 @@ class XY509cert:
         issuer_str = str(issuer_dn).replace("<X509Name object '", '')[:-2]
         return issuer_str
 
-    def notValidAfter(self, formatted=False) -> str:
+    def notValidAfter(self, formatted: bool = False) -> str:
         raw = self.cert.get_notAfter().decode('ascii')
         if formatted:
             datestr = '%s-%s-%s %s:%s:%s' % (raw[0:4], raw[4:6], raw[6:8], raw[8:10], raw[10:12], raw[12:])
@@ -121,5 +124,5 @@ class XY509cert:
         pkey_pem = crypto.dump_publickey(crypto.FILETYPE_PEM, self.cert.get_pubkey())
         return pkey_pem
 
-    def digest(self, dgst='SHA1') -> str:
+    def digest(self, dgst: str = 'SHA1') -> str:
         return self.cert.digest(dgst).decode('ascii')

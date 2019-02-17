@@ -12,7 +12,7 @@ class ContentRecord:
             primary key
             one or more attributes
     '''
-    def __init__(self, fields: list):
+    def __init__(self, fields: list) -> None:
         if len(fields) < 3:
             raise InputValueError('ContentRecord must be created with a field list at least 3 elements long')
         if fields[0] not in RECORDTYPES:

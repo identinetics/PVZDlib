@@ -1,8 +1,12 @@
 from pathlib import Path
+import enforce
 from PVZDpy.config.policystore_backend_abstract import PolicyStoreBackendAbstract
 from PVZDpy.userexceptions import PolicyJournalNotInitialized
 
+enforce.config({'enabled': True, 'mode': 'covariant'})
 
+
+@enforce.runtime_validation
 class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
     def __init__(self, polstore_dir: Path):
         polstore_dir.mkdir(parents=True, exist_ok=True)
@@ -45,7 +49,7 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
 
     # ---
 
-    def set_policy_journal_xml(self, xml_bytes: str):
+    def set_policy_journal_xml(self, xml_bytes: bytes):
         if len(xml_bytes) > 0:
             self.p_journal_xml.write_bytes(xml_bytes)
         else:
@@ -63,7 +67,7 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
     def set_poldict_html(self, html_str: str):
         self.p_dict_html.write_text(html_str)
 
-    def set_shibacl(self, xml_bytes: str):
+    def set_shibacl(self, xml_bytes: bytes):
         self.shibacl.write_bytes(xml_bytes)
 
     def set_trustedcerts_report(self, t: str):

@@ -23,7 +23,7 @@ class PVZDlibConfigAbstract():
         self._set_config()
 
     @staticmethod
-    def get_config() -> GenericConfig:
+    def get_config() -> GenericConfig:  # noqa F821
         if 'PVZDLIB_CONFIG_MODULE' in os.environ:
             path = Path(os.environ["PVZDLIB_CONFIG_MODULE"])
             if path.is_file():

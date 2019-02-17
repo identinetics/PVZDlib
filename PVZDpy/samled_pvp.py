@@ -15,6 +15,7 @@ from PVZDpy.userexceptions import InputValueError, InvalidFQDNInEndpoint
 from PVZDpy.userexceptions import InvalidFQDNinEntityID
 from PVZDpy.xy509cert import XY509cert
 from PVZDpy.xmlsigverifyer import XmlSigVerifyer
+from PVZDpy.xmlsigverifyer_response import XmlSigVerifyerResponse
 from PVZDpy.xy509certstore import Xy509certStore
 from PVZDpy.xy509cert import XY509cert
 
@@ -25,7 +26,7 @@ class SAMLEntityDescriptorPVP:
     """
     Instance of SAML EntityDescriptor with PVP profile specific extensions
     """
-    def __init__(self, ed_path, policystore):
+    def __init__(self, ed_path: str, policystore: PolicyStore):
         self.ed_path = ed_path
         self.ed = SAMLEntityDescriptor(ed_path)
         self.policystore = policystore
@@ -33,7 +34,7 @@ class SAMLEntityDescriptorPVP:
         self.IDP_trustStore = Xy509certStore(issuers, 'IDP')
         self.SP_trustStore = Xy509certStore(issuers, 'SP')
 
-    def checkCerts(self):
+    def checkCerts(self) -> None:
         """ validate that included signing and encryption certificates meet following conditions:
             * not expired AND
             * issued by a CA listed as issuer in the related trust store) AND
@@ -70,7 +71,7 @@ class SAMLEntityDescriptorPVP:
         logging.debug('Entity certificates valid for ' + self.ed.get_entityid())
 
     @staticmethod
-    def create_delete(entityid) -> str:
+    def create_delete(entityid: str) -> str:
         return """\
     <!-- DELETE entity descriptor from metadata -->
     <md:EntityDescriptor entityID="{eid}" xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
@@ -83,7 +84,7 @@ class SAMLEntityDescriptorPVP:
       </md:IDPSSODescriptor>
     </md:EntityDescriptor>""".format(eid=entityid)
 
-    def _getCerts(self, role) -> list:
+    def _getCerts(self, role: str) -> list:
         certs = []
         if role == 'IDP':
             xp = 'md:IDPSSODescriptor//ds:X509Certificate'
@@ -96,13 +97,13 @@ class SAMLEntityDescriptorPVP:
             i += 1
         return certs
 
-    def get_entityid(self):
+    def get_entityid(self) -> str:
         return self.ed.get_entityid()
 
     def get_filename_from_entityid(self) -> str:
         return SAMLEntityDescriptor.get_filename_from_entityid(self.ed.get_entityid)
 
-    def get_entityid_hostname(self):
+    def get_entityid_hostname(self) -> str:
         entityID_url = self.ed.get_entityid()
         hostname = urlparse(entityID_url).hostname
         if hostname is None:
@@ -116,10 +117,10 @@ class SAMLEntityDescriptorPVP:
         namespace = PolicyStore.get_namesp_for_fqdn(fqdn, allowed_namespaces)
         return namespace
 
-    def get_xml_str(self):
+    def get_xml_str(self) -> None:
         return self.ed.get_xml_str()
 
-    def isDeletionRequest(self):
+    def isDeletionRequest(self) -> None:
         tree = lxml.etree.parse(self.ed_path)
         rootelem_attr = tree.getroot().attrib
         try:
@@ -142,7 +143,7 @@ class SAMLEntityDescriptorPVP:
         namespace = PolicyStore.get_namesp_for_fqdn(fqdn, registered_ns)
         return (namespace is not None)
 
-    def remove_enveloped_signature(self):
+    def remove_enveloped_signature(self) -> None:
         lxml_helper.delete_element_if_existing(
             self.ed.tree,
             '/md:EntityDescriptor/ds:Signature',
@@ -190,18 +191,18 @@ class SAMLEntityDescriptorPVP:
             logging.debug('signer is allowed to use %s in %s' % (location_hostname, attr_value))
         return True
 
-    def validate_schematron(self):
+    def validate_schematron(self) -> None:
         pass  # TODO: implement
 
-    def validateSignature(self) -> str:
+    def validateSignature(self) -> XmlSigVerifyerResponse:
         xml_sig_verifyer = XmlSigVerifyer()
         xml_sig_verifyer_response = xml_sig_verifyer.verify(Path(self.ed_path))
         return xml_sig_verifyer_response
 
-    def validate_xsd(self):
+    def validate_xsd(self) -> None:
         return self.ed.validate_xsd()
 
-    def verify_filename(self):
+    def verify_filename(self) -> None:
         """ verify if filename convention maps the entityID. Do _not_ call on object creation """
         basefn = os.path.basename(self.ed_path)
         # file name must have the format "*compressedEntityId.xml". Check right substring:
@@ -211,6 +212,6 @@ class SAMLEntityDescriptorPVP:
                                   'for entityID %s must end with "%s" - see PAtool documentation.' %
                                   (basefn, self.get_entityid(), fn))
 
-    def write(self, new_filename=None):
+    def write(self, new_filename: str = None) -> None:
         fn = self.ed.ed_path if new_filename is None else new_filename
         self.ed.write(fn)

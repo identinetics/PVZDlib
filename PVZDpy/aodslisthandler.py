@@ -4,7 +4,8 @@ import json
 import logging
 import sys
 from datetime import datetime
-from json2html import *
+import enforce
+from json2html import json2html
 from PVZDpy.aods_record import AodsRecord
 from PVZDpy.aodsfilehandler import AodsFileHandler
 #from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
@@ -16,8 +17,10 @@ from PVZDpy.userexceptions import PolicyJournalNotInitialized, ValidationError
 from PVZDpy.xy509cert import XY509cert
 
 assert sys.version_info >= (3, 6)
+enforce.config({'enabled': True, 'mode': 'covariant'})
 
 
+@enforce.runtime_validation
 class AodsListHandler:
     ''' The append-only data structure is agnostic of the record type, which is defined in as content record. Its
         primitives are append (implies create if empty), read and remove.
