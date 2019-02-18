@@ -48,7 +48,10 @@ class AodsFileHandler():
         return aods
 
     def remove(self):
-        self.pvzdconf.polstore_backend.reset_pjournal_and_derived()
+        try:
+            self.pvzdconf.polstore_backend.reset_pjournal_and_derived()
+        except PolicyJournalNotInitialized:   # customize this to actual storage
+            pass
 
     def save_journal(self, journal: dict):
         journal_json = json.dumps(journal)

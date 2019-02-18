@@ -3,6 +3,8 @@ from PVZDpy.userexceptions import PolicyJournalNotInitialized
 
 
 class PolicyStoreBackendAbstract():
+    # concrete classes must not raise PolicyJournalNotInitialized during __init__()
+
     def get_policy_journal(self) -> bytes:
         try:
             raise NotImplementedError()
