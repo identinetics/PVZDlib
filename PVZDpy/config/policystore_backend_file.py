@@ -20,7 +20,7 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
 
     # ---
 
-    def get_policy_journal(self) -> bytes:
+    def get_policy_journal_xml(self) -> bytes:
         if self.p_journal_xml.exists():
             return self.p_journal_xml.read_bytes()
         else:
@@ -42,7 +42,7 @@ class PolicyStoreBackendFile(PolicyStoreBackendAbstract):
         return self.p_dict_html.read_text()
 
     def get_shibacl(self) -> bytes:
-        return self.shibacl.read_byteswrite()
+        return self.shibacl.read_bytes()
 
     def get_trustedcerts_report(self) -> str:
         return self.trustedcerts_report.read_text()

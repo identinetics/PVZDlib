@@ -9,13 +9,16 @@ from PVZDpy.userexceptions import PolicyJournalNotInitialized
 
 @pytest.fixture
 def testdata_dir() -> Path:
-    return Path('testdata/pvzdlib_config')
+    dir = Path('testdata/pvzdlib_config')
+    dir.mkdir(parents=True, exist_ok=True)
+    return dir
 
 
 @pytest.fixture
 def testout_dir() -> Path:
     dir = Path('testout/pvzdlib_config')
     dir.mkdir(parents=True, exist_ok=True)
+    return dir
 
 
 # --- 01 ---
@@ -64,5 +67,20 @@ def expected_poldict_json03(testdata_dir):
 def test_03_initialize(pvzdconfig03, expected_poldict_json03):
     pvzdconf = PVZDlibConfigAbstract.get_config()
     backend = pvzdconf.polstore_backend
-    policy_journal_json = backend.get_policy_journal_json()
-    assert json.loads(policy_journal_json) == expected_poldict_json03
+    try:
+        pvzdconf.polstore_backend.reset_pjournal_and_derived()
+    except PolicyJournalNotInitialized:  # customize this to actual storage
+        pass
+
+    backend.set_policy_journal_xml(b'\x00')
+    backend.set_policy_journal_json('{"journaltestentry": ""}')
+    backend.set_poldict_json('{"dicttestentry": ""}')
+    backend.set_poldict_html('<html/>')
+    backend.set_shibacl(b'\x01')
+    backend.set_trustedcerts_report('lore ipsum')
+    assert backend.get_policy_journal_xml() == b'\x00'
+    assert backend.get_policy_journal_json() == '{"journaltestentry": ""}'
+    assert backend.get_poldict_json() == '{"dicttestentry": ""}'
+    assert backend.get_poldict_html() == '<html/>'
+    assert backend.get_shibacl() == b'\x01'
+    assert backend.get_trustedcerts_report() == 'lore ipsum'

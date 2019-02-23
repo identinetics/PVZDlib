@@ -7,7 +7,7 @@ class PolicyStoreBackendAbstract():
     def __init__(self):
         raise NotImplementedError()
 
-    def get_policy_journal(self) -> bytes:
+    def get_policy_journal_xml(self) -> bytes:
         try:
             raise NotImplementedError()
         except FileNotFoundError:   # customize this to actual storage
