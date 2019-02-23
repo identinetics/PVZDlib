@@ -2,7 +2,7 @@ import filecmp
 import os
 
 
-def are_dir_trees_equal(dir1, dir2) -> bool:
+def are_dir_trees_equal(dir1: str, dir2: str) -> bool:
     """ Compare two directories recursively. Files in each directory are
         assumed to be equal if their names and contents are equal.
         @return: True if the directory trees are the same and  there were no errors

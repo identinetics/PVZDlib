@@ -12,16 +12,6 @@ from PVZDpy.xy509cert import XY509cert
 __author__ = 'r2h2'
 
 
-def SAMLEntityDescriptorFromStrFactory(ed_str):
-    ''' Create SamlEdValidator from string - only for utf-8 (default) XML encoding '''
-    fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml', encoding='utf-8')
-    fd.write(ed_str)
-    fd.flush()
-    ed = SAMLEntityDescriptor(fd.name)
-    fd.close
-    return ed
-
-
 class SAMLEntityDescriptor:
     """
     Instance of plain SAML EntityDescriptor without deployment profile specific extensions
@@ -104,7 +94,7 @@ class SAMLEntityDescriptor:
                 f"Only IDP and SP entity roles implemented, but %s given {samlrole}")
         return entityDescriptor
 
-    def get_entitydescriptor(self, tree) -> lxml.etree.ElementTree:
+    def get_entitydescriptor(self, tree: lxml.etree.ElementTree) -> lxml.etree.ElementTree:
         if tree.getroot().tag == XMLNS_MD_PREFIX + 'EntityDescriptor':
             return tree
         elif tree.getroot().tag == XMLNS_MD_PREFIX + 'EntitiesDescriptor':
@@ -117,11 +107,11 @@ class SAMLEntityDescriptor:
         else:
             raise InputValueError('XML file must have md:EntityDescriptor as root element')
 
-    def get_entityid(self):
+    def get_entityid(self) -> str:
         return self.tree.getroot().attrib['entityID']
 
     @staticmethod
-    def get_filename_from_entityid(entityid) -> str:
+    def get_filename_from_entityid(entityid: str) -> str:
         """ remove non-alpha characters, uppercase first char after no-alpha;
             add _ after hostname and .xml as extension
         """
@@ -156,7 +146,7 @@ class SAMLEntityDescriptor:
         m = p.search(ed_str)
         return m.group(1)
 
-    def get_signing_certs(self, samlrole='IDP') -> [XY509cert]:
+    def get_signing_certs(self, samlrole:str = 'IDP') -> [XY509cert]:
         x509certs = []
         # if samlrole not in ('any', 'IDP', 'SP'):
         #     raise InputValueError("samlrole must be on of 'any', 'IDP', 'SP'")
@@ -173,7 +163,7 @@ class SAMLEntityDescriptor:
                         x509certs.append(XY509cert(x509cert.text.strip()))
         return x509certs
 
-    def get_xml_str(self):
+    def get_xml_str(self) -> str:
         xml_str = lxml.etree.tostring(self.tree, encoding='utf-8', pretty_print=False)
         return xml_str.decode('utf-8')
 
@@ -200,10 +190,20 @@ class SAMLEntityDescriptor:
         if retmsg is not None:
             raise InvalidSamlXmlSchemaError(f"File {self.ed_path_abs} is not schema valid:\n{retmsg})")
 
-    def write(self, filename):
+    def write(self, filename: str):
         ''' CAVEAT: This function does not take the signed info part of an XML DSig-validated
             document, but uses the internal tree represenation initialized with XML-parsing the
             signed document. Processing a document after signature valideation mnust not use this
             function!
         '''
         self.tree.write(filename, encoding='utf-8', xml_declaration=True)
+
+
+def SAMLEntityDescriptorFromStrFactory(ed_str: str) -> SAMLEntityDescriptor:
+    ''' Create SamlEdValidator from string - only for utf-8 (default) XML encoding '''
+    fd = tempfile.NamedTemporaryFile(mode='w', prefix='pvzd_', suffix='.xml', encoding='utf-8')
+    fd.write(ed_str)
+    fd.flush()
+    ed = SAMLEntityDescriptor(fd.name)
+    fd.close
+    return ed

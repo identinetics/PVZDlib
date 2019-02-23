@@ -58,13 +58,7 @@ def pvzdconfig03(testdata_dir):
     os.environ['PVZDLIB_CONFIG_MODULE'] = str(testdata_dir / 'pvzdlib_config03.py')
 
 
-@pytest.fixture
-def expected_poldict_json03(testdata_dir):
-    p = testdata_dir / 'expected_results' / 'policy_journal03.json'
-    return json.load(p.open())
-
-
-def test_03_initialize(pvzdconfig03, expected_poldict_json03):
+def test_03_initialize(pvzdconfig03):
     pvzdconf = PVZDlibConfigAbstract.get_config()
     backend = pvzdconf.polstore_backend
     try:

@@ -4,7 +4,7 @@ from . import xy509cert
 
 
 class Xy509certStore:
-    def __init__(self, issuers, pvprole):
+    def __init__(self, issuers: list, pvprole: str):
         ''' transform isser-certs into trust stores '''
         self.x509store = crypto.X509Store()
         self.emtpy = True
