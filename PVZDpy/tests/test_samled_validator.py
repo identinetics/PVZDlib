@@ -4,7 +4,7 @@ import os
 # from PVZDpy.constants import *
 from PVZDpy.samled_validator import SamlEdValidator
 from PVZDpy.tests.common_fixtures import ed_path, path_prefix_testin, path_prefix_testout
-from PVZDpy.tests.common_fixtures import policydir1, policystore1 # NOQA
+from PVZDpy.tests.common_fixtures import policydict_plain1, policydict1 # NOQA
 
 
 def assert_equal(expected, actual, fn=''):
@@ -42,68 +42,68 @@ def run_test_with_edpath(file_index: int, policystore, sigval=False, test_index=
     os.unlink(fn1_testout)
 
 
-def test01_edval_edpath1(policystore1):
-    run_test_with_edpath(1, policystore1, sigval=False, test_index=1)
+def test01_edval_edpath1(policydict1):
+    run_test_with_edpath(1, policydict1, sigval=False, test_index=1)
 
 
-def test01_edval_edpath2(policystore1):
-    run_test_with_edpath(2, policystore1, sigval=False, test_index=1)
+def test01_edval_edpath2(policydict1):
+    run_test_with_edpath(2, policydict1, sigval=False, test_index=1)
 
 
-def test01_edval_edpath3(policystore1):
-    run_test_with_edpath(3, policystore1, sigval=False, test_index=1)
+def test01_edval_edpath3(policydict1):
+    run_test_with_edpath(3, policydict1, sigval=False, test_index=1)
 
 
-def test01_edval_edpath4(policystore1):
-    run_test_with_edpath(4, policystore1, sigval=False, test_index=1)
+def test01_edval_edpath4(policydict1):
+    run_test_with_edpath(4, policydict1, sigval=False, test_index=1)
 
 
-def test01_edval_edpath5(policystore1):
-    run_test_with_edpath(5, policystore1, sigval=False, test_index=1)
+def test01_edval_edpath5(policydict1):
+    run_test_with_edpath(5, policydict1, sigval=False, test_index=1)
 
 
-def test01_edval_edpath6(policystore1):
-    run_test_with_edpath(6, policystore1, sigval=False, test_index=1)
+def test01_edval_edpath6(policydict1):
+    run_test_with_edpath(6, policydict1, sigval=False, test_index=1)
 
 
-def test01_edval_edpath7(policystore1):
-    run_test_with_edpath(7, policystore1, sigval=False, test_index=1)
+def test01_edval_edpath7(policydict1):
+    run_test_with_edpath(7, policydict1, sigval=False, test_index=1)
 
 
-def test01_edval_edpath8(policystore1):
-    run_test_with_edpath(8, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath8(policydict1):
+    run_test_with_edpath(8, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath9(policystore1):
-    run_test_with_edpath(9, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath9(policydict1):
+    run_test_with_edpath(9, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath10(policystore1):
-    run_test_with_edpath(10, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath10(policydict1):
+    run_test_with_edpath(10, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath11(policystore1):
-    run_test_with_edpath(11, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath11(policydict1):
+    run_test_with_edpath(11, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath12(policystore1):
-    run_test_with_edpath(12, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath12(policydict1):
+    run_test_with_edpath(12, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath13(policystore1):
-    run_test_with_edpath(13, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath13(policydict1):
+    run_test_with_edpath(13, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath21(policystore1):
-    run_test_with_edpath(21, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath21(policydict1):
+    run_test_with_edpath(21, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath22(policystore1):
-    run_test_with_edpath(22, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath22(policydict1):
+    run_test_with_edpath(22, policydict1, sigval=True, test_index=1)
 
 
-def test01_edval_edpath23(policystore1):
-    run_test_with_edpath(23, policystore1, sigval=True, test_index=1)
+def test01_edval_edpath23(policydict1):
+    run_test_with_edpath(23, policydict1, sigval=True, test_index=1)
 
 
 def run_test_with_xmlstr(file_index: int, policystore, sigval=False, test_index=None):
@@ -121,57 +121,57 @@ def run_test_with_xmlstr(file_index: int, policystore, sigval=False, test_index=
     os.unlink(fn1_testout)
 
 
-def test02_edval_str01(policystore1):
-    run_test_with_xmlstr(1, policystore1, sigval=False, test_index=2)
+def test02_edval_str01(policydict1):
+    run_test_with_xmlstr(1, policydict1, sigval=False, test_index=2)
 
 
-def test02_edval_str02(policystore1):
-    run_test_with_xmlstr(2, policystore1, sigval=False, test_index=2)
+def test02_edval_str02(policydict1):
+    run_test_with_xmlstr(2, policydict1, sigval=False, test_index=2)
 
 
-def test02_edval_str03(policystore1):
-    run_test_with_xmlstr(3, policystore1, sigval=False, test_index=2)
+def test02_edval_str03(policydict1):
+    run_test_with_xmlstr(3, policydict1, sigval=False, test_index=2)
 
 
-def test02_edval_str04(policystore1):
-    run_test_with_xmlstr(4, policystore1, sigval=False, test_index=2)
+def test02_edval_str04(policydict1):
+    run_test_with_xmlstr(4, policydict1, sigval=False, test_index=2)
 
 
-def test02_edval_str05(policystore1):
-    run_test_with_xmlstr(5, policystore1, sigval=False, test_index=2)
+def test02_edval_str05(policydict1):
+    run_test_with_xmlstr(5, policydict1, sigval=False, test_index=2)
 
 
-def test02_edval_str06(policystore1):
-    run_test_with_xmlstr(6, policystore1, sigval=False, test_index=2)
+def test02_edval_str06(policydict1):
+    run_test_with_xmlstr(6, policydict1, sigval=False, test_index=2)
 
 
-def test02_edval_str07(policystore1):
-    run_test_with_xmlstr(7, policystore1, sigval=False, test_index=2)
+def test02_edval_str07(policydict1):
+    run_test_with_xmlstr(7, policydict1, sigval=False, test_index=2)
 
 
-def test02_edval_str08(policystore1):
-    run_test_with_xmlstr(8, policystore1, sigval=True, test_index=2)
+def test02_edval_str08(policydict1):
+    run_test_with_xmlstr(8, policydict1, sigval=True, test_index=2)
 
 
-def test02_edval_str09(policystore1):
-    run_test_with_xmlstr(9, policystore1, sigval=True, test_index=2)
+def test02_edval_str09(policydict1):
+    run_test_with_xmlstr(9, policydict1, sigval=True, test_index=2)
 
 
-def test02_edval_str10(policystore1):
-    run_test_with_xmlstr(10, policystore1, sigval=True, test_index=2)
+def test02_edval_str10(policydict1):
+    run_test_with_xmlstr(10, policydict1, sigval=True, test_index=2)
 
 
-def test02_edval_str11(policystore1):
-    run_test_with_xmlstr(11, policystore1, sigval=True, test_index=2)
+def test02_edval_str11(policydict1):
+    run_test_with_xmlstr(11, policydict1, sigval=True, test_index=2)
 
 
-def test02_edval_st12(policystore1):
-    run_test_with_xmlstr(12, policystore1, sigval=True, test_index=2)
+def test02_edval_st12(policydict1):
+    run_test_with_xmlstr(12, policydict1, sigval=True, test_index=2)
 
 
-def test02_edval_str13(policystore1):
-    run_test_with_xmlstr(13, policystore1, sigval=True, test_index=2)
+def test02_edval_str13(policydict1):
+    run_test_with_xmlstr(13, policydict1, sigval=True, test_index=2)
 
 
-def test03_edval_str_unsigned(policystore1):
-    run_test_with_xmlstr(18, policystore1, sigval=True, test_index=3)
+def test03_edval_str_unsigned(policydict1):
+    run_test_with_xmlstr(18, policydict1, sigval=True, test_index=3)

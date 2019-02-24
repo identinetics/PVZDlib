@@ -9,15 +9,15 @@ path_prefix_testout = opj('testout', 'samled_validator')
 
 
 @pytest.fixture(scope='module')
-def policydir1():
+def policydict_plain1():
     with open(opj(path_prefix_testin, 'poldir1.json')) as fd:
         d = json.load(fd)
     return d
 
 
 @pytest.fixture(scope='module')
-def policystore1(policydir1):
-    return PolicyDict(test_policydict=policydir1)
+def policydict1(policydict_plain1):
+    return PolicyDict(test_policydict=policydict_plain1)
 
 
 def ed_path(file_index: int, dir=None):
@@ -76,61 +76,61 @@ def signerCert7():
 
 
 @pytest.fixture
-def ed0(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(0), policystore1)
+def ed0(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(0), policydict1)
 
 @pytest.fixture
-def ed1(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(1), policystore1)
+def ed1(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(1), policydict1)
 
 @pytest.fixture
-def ed2(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(2), policystore1)
+def ed2(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(2), policydict1)
 
 @pytest.fixture
-def ed3(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(3), policystore1)
+def ed3(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(3), policydict1)
 
 @pytest.fixture
-def ed4(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(4), policystore1)
+def ed4(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(4), policydict1)
 
 @pytest.fixture
-def ed5(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(5), policystore1)
+def ed5(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(5), policydict1)
 
 @pytest.fixture
-def ed6(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(6), policystore1)
+def ed6(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(6), policydict1)
 
 @pytest.fixture
-def ed7(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(7), policystore1)
+def ed7(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(7), policydict1)
 
 # cannot use ed8 as fixture - instantiation raises (expected) exception
 
 @pytest.fixture
-def ed9(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(9), policystore1)
+def ed9(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(9), policydict1)
 
 @pytest.fixture
-def ed10(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(10), policystore1)
+def ed10(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(10), policydict1)
 
 @pytest.fixture
-def ed11(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(11), policystore1)
+def ed11(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(11), policydict1)
 
 @pytest.fixture
-def ed12(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(12), policystore1)
+def ed12(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(12), policydict1)
 
 # cannot use ed13 as fixture - instantiation raises (expected) exception
 
 @pytest.fixture
-def ed14(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(14), policystore1)
+def ed14(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(14), policydict1)
 
 @pytest.fixture
-def ed15(policystore1):
-    return SAMLEntityDescriptorPVP(ed_path(15), policystore1)
+def ed15(policydict1):
+    return SAMLEntityDescriptorPVP(ed_path(15), policydict1)

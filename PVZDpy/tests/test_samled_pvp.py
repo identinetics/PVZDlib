@@ -8,7 +8,7 @@ from PVZDpy.userexceptions import CertExpiredError, CertInvalidError, InputValue
     MultipleEntitiesNotAllowed, ValidationError
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.tests.common_fixtures import ed_path, ed0, ed1, ed2, ed4, ed5, ed6, ed7, ed9 # NOQA
-from PVZDpy.tests.common_fixtures import ed10, ed11, ed12, ed14, ed15, namespaces7, policydir1, policystore1  # NOQA
+from PVZDpy.tests.common_fixtures import ed10, ed11, ed12, ed14, ed15, namespaces7, policydict_plain1, policydict1  # NOQA
 
 
 def assert_equal(expected, actual, fn=''):
@@ -40,9 +40,9 @@ def test_checkCerts12(ed12):
         ed12.checkCerts()
 
 
-def test_checkCerts13(policystore1):
+def test_checkCerts13(policydict1):
     with pytest.raises(MultipleEntitiesNotAllowed):
-        _ = SAMLEntityDescriptorPVP(ed_path(13), policystore1)
+        _ = SAMLEntityDescriptorPVP(ed_path(13), policydict1)
 
 
 def test_checkCerts14(ed14):
@@ -136,9 +136,9 @@ def test_validate_xsd2(ed2):
     ed2.validate_xsd()
 
 
-def test_validate_xsd8(policystore1):
+def test_validate_xsd8(policydict1):
     with pytest.raises(lxml.etree.XMLSyntaxError):
-        _ = SAMLEntityDescriptorPVP(ed_path(8), policystore1)
+        _ = SAMLEntityDescriptorPVP(ed_path(8), policydict1)
 
 
 def test_validate_xsd9(ed9):
