@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 import pytest
-from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
+from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.trustedcerts import TrustedCerts
 from PVZDpy.userexceptions import PolicyJournalNotInitialized
 

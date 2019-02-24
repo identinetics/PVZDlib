@@ -3,7 +3,7 @@ import bz2
 import json
 import logging
 import xml.etree.ElementTree as ET
-from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
+from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.constants import DATA_HEADER_B64BZIP
 from PVZDpy.cresignedxml_seclay_direct import cre_signedxml_seclay
 from PVZDpy.trustedcerts import TrustedCerts

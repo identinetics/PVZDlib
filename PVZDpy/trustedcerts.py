@@ -1,5 +1,5 @@
 import logging
-from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
+from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.userexceptions import ValidationError
 from PVZDpy.xy509cert import XY509cert
 

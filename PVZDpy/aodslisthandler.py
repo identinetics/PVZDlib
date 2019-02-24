@@ -8,7 +8,7 @@ import enforce
 from json2html import json2html
 from PVZDpy.aods_record import AodsRecord
 from PVZDpy.aodsfilehandler import AodsFileHandler
-#from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
+#from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.contentrecord import ContentRecord
 from PVZDpy.policychange import PolicyChangeList, PolicyChangeHeader
 from PVZDpy.trustedcerts import TrustedCerts

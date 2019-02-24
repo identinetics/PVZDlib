@@ -1,6 +1,6 @@
 """ create an invocation class specific for AODSFileHandler """
 from pathlib import Path
-from PVZDpy.config.appconfig_abstract import PVZDlibConfigAbstract
+from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.config.policystore_backend_file import PolicyStoreBackendFile
 
 
