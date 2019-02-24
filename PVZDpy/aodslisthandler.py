@@ -8,7 +8,6 @@ import enforce
 from json2html import json2html
 from PVZDpy.aods_record import AodsRecord
 from PVZDpy.aodsfilehandler import AodsFileHandler
-#from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.contentrecord import ContentRecord
 from PVZDpy.policychange import PolicyChangeList, PolicyChangeHeader
 from PVZDpy.trustedcerts import TrustedCerts
@@ -29,7 +28,7 @@ class AodsListHandler:
     def __init__(self):
         self.aods = None  # a.k.a. policy journal
         self.aodsfh = AodsFileHandler()
-        #self.pvzdconf = PVZDlibConfigAbstract.get_config()
+        # self.pvzdconf = PVZDlibConfigAbstract.get_config()
         self.trusted_certs = TrustedCerts().certs
         self.last_seq = None
         self.last_hash = None
@@ -63,7 +62,7 @@ class AodsListHandler:
         ''' load policy dictionary from policy journal '''
         if not self.aods:
             self._read_or_init_aods()
-        policyDict = {"domain": {}, "issuer": {}, "organization": {}, "revocation": {}, "userprivilege": {}}
+        policydict = {"domain": {}, "issuer": {}, "organization": {}, "revocation": {}, "userprivilege": {}}
         for aodsrec_fieldlist in self.aods['AODS']:
             aodsrec = AodsRecord(aodsrec_fieldlist)
             contentrec = aodsrec.get_ContentRecord()
@@ -75,10 +74,10 @@ class AodsListHandler:
             if not aodsrec.validate_hash(self.prev_hash):
                 raise HashChainError('AODS hash chain is broken -> data not trustworthy, revert to last good version')
             if aodsrec.deleteflag:
-                self._policy_dict_delete(policyDict, contentrec)
+                self._policy_dict_delete(policydict, contentrec)
             else:
-                self._policy_dict_add(policyDict, contentrec)
-        return policyDict
+                self._policy_dict_add(policydict, contentrec)
+        return policydict
 
     def _read_or_init_aods(self) -> None:
         try:

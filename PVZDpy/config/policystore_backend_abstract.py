@@ -56,5 +56,3 @@ class PolicyStoreBackendAbstract():
     def reset_policy_and_derived(self):
         # delete data except for trustedcerts_copy
         raise NotImplementedError()
-
-

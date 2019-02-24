@@ -17,7 +17,7 @@ def policydir1():
 
 @pytest.fixture(scope='module')
 def policystore1(policydir1):
-    return PolicyStore(policydir=policydir1)
+    return PolicyStore(test_policydir=policydir1)
 
 
 def ed_path(file_index: int, dir=None):
