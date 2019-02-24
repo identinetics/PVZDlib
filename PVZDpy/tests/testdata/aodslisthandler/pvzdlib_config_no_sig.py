@@ -15,5 +15,5 @@ class PVZDlibConfig(PVZDlibConfigAbstract):
         # Trusted Fedop Certificates: Always stored in filesystem
         config.trustedcertsdir = Path(__file__).parent / 'trustedcerts_rh'
 
-        config.xmlsign = True  # False: only for development to skip interactive signing
+        config.xmlsign = False  # False: only for development to skip interactive signing
         config.debug = False

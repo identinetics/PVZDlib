@@ -37,5 +37,5 @@ def test_create_read():
     aodsfh.save_shibacl(b'<root/>')
     aodsfh.save_trustedcerts_report('some text')
     policyjournal = aodsfh.read()
-    policyjournal_expected = aodsfh.backend.get_policy_journal_path().parent / 'policyjournal_expected.json'
+    policyjournal_expected = aodsfh.pvzdconf.polstore_backend.get_policy_journal_path().parent / 'policyjournal_expected.json'
     assert policyjournal == json.load(policyjournal_expected.open())

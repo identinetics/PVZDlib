@@ -14,12 +14,12 @@ from PVZDpy.xmlsigverifyer import XmlSigVerifyer
 class AodsFileHandler():
     def __init__(self):
         self.pvzdconf = PVZDlibConfigAbstract.get_config()
-        self.backend = self.pvzdconf.polstore_backend
         self.trusted_certs = TrustedCerts().certs
+        self.be = self.pvzdconf.polstore_backend
 
     def read(self):
         if self.pvzdconf.xmlsign:
-            pj_path = self.backend.get_policy_journal_path()
+            pj_path = self.be.get_policy_journal_path()
             if not pj_path.is_file():
                 raise PolicyJournalNotInitialized
             xml_sig_verifyer = XmlSigVerifyer()
@@ -43,7 +43,7 @@ class AodsFileHandler():
             aods = json.loads(j.decode('UTF-8'))
         else:
             logging.warning('Loaded policy directory from unsigned JSON source - NO CRYPTOGRAPHIC TRUST')
-            aods_json = self.backend.get_policy_journal_json()
+            aods_json = self.be.get_policy_journal_json()
             aods = json.loads(aods_json)
         return aods
 
@@ -59,17 +59,17 @@ class AodsFileHandler():
             xml_str = cre_signedxml_seclay(journal_json)
         else:
             xml_str = ''
-        self.backend.set_policy_journal_xml(xml_str.encode('utf-8'))
-        self.backend.set_policy_journal_json(journal_json)
+        self.be.set_policy_journal_xml(xml_str.encode('utf-8'))
+        self.be.set_policy_journal_json(journal_json)
 
     def save_policydict_json(self, dict_json: str):
-        self.backend.set_poldict_json(dict_json)
+        self.be.set_poldict_json(dict_json)
 
     def save_policydict_html(self, dict_html: str):
-        self.backend.set_poldict_html(dict_html)
+        self.be.set_poldict_html(dict_html)
 
     def save_shibacl(self, shibacl: str):
-        self.backend.set_shibacl(shibacl)
+        self.be.set_shibacl(shibacl)
 
     def save_trustedcerts_report(self, cert_report: str):
-        self.backend.set_trustedcerts_report(cert_report)
+        self.be.set_trustedcerts_report(cert_report)

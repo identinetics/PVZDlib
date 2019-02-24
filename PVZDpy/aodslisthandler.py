@@ -35,7 +35,7 @@ class AodsListHandler:
         self.last_hash = None
         self.prev_hash = None
 
-    def append(self, policy_change_list: PolicyChangeList):
+    def append(self, policy_change_list: PolicyChangeList) -> None:
         def validate_contentrec():
             contentrec = changeitem.get_ContentRecord()
             logging.debug("%d rectype=%s pk=%s" % (logging_counter, contentrec.rectype, contentrec.primarykey))
@@ -80,7 +80,7 @@ class AodsListHandler:
                 self._policy_dict_add(policyDict, contentrec)
         return policyDict
 
-    def _read_or_init_aods(self):
+    def _read_or_init_aods(self) -> None:
         try:
             self.aods = self.aodsfh.read()
         except PolicyJournalNotInitialized:
@@ -89,7 +89,7 @@ class AodsListHandler:
             print(str(e))
         self.validate_aods_format()
 
-    def _initialize(self):
+    def _initialize(self) -> dict:
         changeitem = PolicyChangeHeader()
         aodsrec = AodsRecord(changeitem)
         seed_str = str(datetime.now())
@@ -99,7 +99,7 @@ class AodsListHandler:
         logging.warning('Policy Journal was empty - created initial record')
         return {"AODS": [aodsrec.get_rec_with_hash(0, seed_bytes.decode('ascii'))]}
 
-    def _policy_dict_delete(self, policyDict, new_rec: ContentRecord):
+    def _policy_dict_delete(self, policyDict: dict, new_rec: ContentRecord) -> None:
         ''' Delete an entry from the policy directory
             Multiple userprivilege records with the same key are accumulated into a single entry with a list of orgids.
         '''
@@ -129,7 +129,7 @@ class AodsListHandler:
                 raise InputValueError('Input error: deleting record without previous entry: ' +
                                       new_rec.rectype + ', ' + new_rec.primarykey)
 
-    def _policy_dict_add(self, policyDict, new_rec: ContentRecord):
+    def _policy_dict_add(self, policyDict: dict, new_rec: ContentRecord) -> None:
         ''' Add an entry to the policy directory
             Multiple userprivilege records with the same key are accumulated into a single entry with a list of orgids.
         '''
@@ -152,10 +152,10 @@ class AodsListHandler:
             logging.error("Add to policy dict {str(new_rec)}\n{str(e)}", file=sys.stderr)
             raise e
 
-    def remove(self):
+    def remove(self) -> None:
         self.aodsfh.remove()
 
-    def save(self):
+    def save(self) -> None:
         self.aodsfh.save_journal(self.aods)
         polcydict = self.read()
         self.aodsfh.save_policydict_json(json.dumps(polcydict))
@@ -163,13 +163,13 @@ class AodsListHandler:
         self._save_shibacl(polcydict)
         self._save_trustedcerts_report()
 
-    def _save_policydict_html(self, policydict):
+    def _save_policydict_html(self, policydict) -> None:
         html = '<html><head><meta charset="UTF-8"><link rel="stylesheet" type="text/css" ' \
                'href="../tables.css"></head><body><h1>PVZD Policy Directory</h1>%s</body></html>'
         tabhtml = json2html.convert(json=policydict, table_attributes='class="pure-table"')
         self.aodsfh.save_policydict_html(html % tabhtml)
 
-    def _save_shibacl(self, polcydict):
+    def _save_shibacl(self, polcydict: dict) -> None:
         '''  List of user certificates from policy dict AND trusted certificates
              The output file is to be included in a shibboleth2.xml <RequestMapper> element
         '''
@@ -187,7 +187,7 @@ class AodsListHandler:
         xml += '  </Rule>\n</AccessControl>'
         self.aodsfh.save_shibacl(xml.encode('UTF-8'))
 
-    def _save_trustedcerts_report(self):
+    def _save_trustedcerts_report(self) -> None:
         '''  Print human readable copy of trusted certificates, non-authoritative  '''
         pass
         for cert_pem in self.trusted_certs:
@@ -197,6 +197,6 @@ class AodsListHandler:
                            f"not valid after: {cert.notAfter_str()}\n")
         self.aodsfh.save_trustedcerts_report(cert_report)
 
-    def validate_aods_format(self):
+    def validate_aods_format(self) -> None:
         if self.aods['AODS'][0][3][0] != 'header':
             raise ValidationError('Cannot locate aods header record')
