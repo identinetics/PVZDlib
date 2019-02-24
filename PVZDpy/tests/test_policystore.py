@@ -1,10 +1,8 @@
 import json
 from os.path import join as opj
 import pytest
-#from PVZDpy.constants import *
-#from PVZDpy.userexceptions import *
-from ..policystore import PolicyStore
-from .common_fixtures import *
+from PVZDpy.policystore import OrgDict, PolicyStore
+from PVZDpy.tests.common_fixtures import *
 
 path_prefix_testin = opj('testdata', 'policystore')
 
@@ -127,3 +125,20 @@ def test_get_revoked_certs(policystore1, policystore1_revoked_certs):
 def test_get_userprivileges(policystore1, policystore1_userprivileges):
     u_recs = policystore1.get_userprivileges()
     assert policystore1_userprivileges == u_recs
+
+
+def test_get_org_sync_changelist(policystore1):
+    def _run_test(new_orgs: dict, expected_result):
+        new_orgdict = OrgDict()
+        for gvouid, cn in new_orgs.items():
+            new_orgdict.append(gvouid, cn)
+        org_changelist = policystore1.get_org_sync_changelist(new_orgdict)
+        assert org_changelist.dict2list_for_compare() == expected_result
+
+    # case 1: no diff; case2: add item; case 3: delete two items
+    for i in (1, 2, 3):
+        with open(opj(path_prefix_testin, 'new_orglist{}.json'.format(i))) as fd:
+            new_orgdict = json.load(fd)
+            with open(opj(path_prefix_testin, 'expected_results', 'org_sync_changelist{}.json'.format(i))) as fd:
+                expected_result = json.load(fd)
+                _run_test(new_orgdict, expected_result)

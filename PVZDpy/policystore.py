@@ -1,20 +1,35 @@
 import re
 
-from PVZDpy.aodsfilehandler import AodsFileHandler
 from PVZDpy.aodslisthandler import AodsListHandler
+from PVZDpy.policychange import PolicyChangeList, PolicyChangeOrganization
 from PVZDpy.userexceptions import UnauthorizedSignerError
 
 
+class OrgDict:
+    """ Auxiliary class to pass around a list of organizations """
+    def __init__(self):
+        self._orgs = {}
+
+    def append(self, gvouid: str, cn: str) -> None:
+        assert gvouid
+        assert cn
+        self._orgs[gvouid] = cn
+
+    def get_orgs(self) -> dict:
+        return self._orgs
+
+    def exists(self, gvouid: str) -> bool:
+        return gvouid in self._orgs.keys()
+
+
 class PolicyStore:
-    def __init__(self, invocation=None, policydir: dict=None):
-        if not any([invocation, policydir]):
-            raise Exception('PolicyStore.__init__ requires either invocation or policydir arg')
-        if invocation:
-            aodsFileHandler = AodsFileHandler(invocation)
-            aodsListHandler = AodsListHandler(aodsFileHandler, invocation)
+    ''' provide high-level API to policy store '''
+    def __init__(self, test_policydir: dict=None):
+        if test_policydir:
+            self._policydir = test_policydir
+        else:
+            aodsListHandler = AodsListHandler()
             self._policydir = aodsListHandler.read()
-        elif policydir:
-            self._policydir = policydir
 
     def getAllowedNamespacesForOrgs(self, org_ids: list) -> list:
         allowedDomains = []
@@ -38,9 +53,9 @@ class PolicyStore:
             return None
 
     def get_orgcn(self, orgid) -> str:
-        if orgid:
+        try:
             return self._policydir["organization"].get(orgid)[0]
-        else:
+        except Exception:
             return ''
 
     def get_orgid(self, fqdn) -> str:
@@ -56,6 +71,31 @@ class PolicyStore:
     def get_all_orgids(self) -> list:
         org_recs = self._policydir["organization"]
         return org_recs
+
+    def get_org_sync_changelist(self, orgs: OrgDict) -> PolicyChangeList:
+        ''' compare the passed list of organizations with the current policy dict
+            and return the list of add and delete records to sync the journal
+        '''
+        def get_inputrec(gvouid, cn, delete=None) -> dict:
+            return PolicyChangeOrganization(gvouid, cn, delete)
+
+        def append_missing_items():
+            for gvouid in orgs.get_orgs().keys():
+                if gvouid not in poldict_gvouids:
+                    cn = self.get_orgcn(gvouid)
+                    org_changelist.append(get_inputrec(gvouid, cn, delete=False))
+
+        def append_orphan_items():
+            for gvouid in sorted(poldict_gvouids):  # need stable order for unit test
+                if not orgs.exists(gvouid):
+                    cn = self.get_orgcn(gvouid)
+                    org_changelist.append(get_inputrec(gvouid, cn, delete=True))
+
+        poldict_gvouids = set(self.get_all_orgids().keys())
+        org_changelist = PolicyChangeList()
+        append_missing_items()
+        append_orphan_items()
+        return org_changelist
 
     def get_issuers(self):
         return self._policydir["issuer"]

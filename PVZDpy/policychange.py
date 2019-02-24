@@ -125,10 +125,16 @@ class PolicyChangeList:
 
     def append(self, changeitem: PolicyChangeItemAbstract):
         assert isinstance(changeitem, PolicyChangeItemAbstract)
-        self.changelist += changeitem
+        self.changelist.append(changeitem)
 
     def load(self, testdata_json: Path):
         changelist_of_dict = json.load(testdata_json.open())
         for changeitem_dict in changelist_of_dict:
             changeitem_generic = PolicyChangeGeneric(changeitem_dict)
             self.changelist.append(changeitem_generic)
+
+    def dict2list_for_compare(self) -> str:
+        changelist4json = []
+        for changeitem in self.changelist:
+            changelist4json.append(changeitem.inputrec)
+        return changelist4json

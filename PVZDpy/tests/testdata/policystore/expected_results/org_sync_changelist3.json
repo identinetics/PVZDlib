@@ -1,0 +1,4 @@
+[
+  {"content": ["organization", "AT:VKZ:XZVR:4711", "Org"], "delete": true},
+  {"content": ["organization", "org333", "Org"], "delete": true}
+]
