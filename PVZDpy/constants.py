@@ -1,11 +1,4 @@
 import os
-__author__ = 'r2h2'
-
-GIT_REQUESTQUEUE = 'submitted'
-GIT_DELETED = 'unpublished'
-GIT_REJECTED = 'rejected'
-GIT_POLICYDIR = 'policydir'
-GIT_PUBLISHED = 'published'
 
 DATA_HEADER_B64BZIP = '{signed data format: base64(bzip2)}\n'
 

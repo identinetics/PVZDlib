@@ -2,7 +2,7 @@ import lxml.etree
 import OpenSSL.crypto
 import tempfile
 import enforce
-from PVZDpy.policystore import PolicyStore
+from PVZDpy.policydict import PolicyDict
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import InputValueError, PVZDuserexception
 from PVZDpy.xy509cert import XY509cert
@@ -24,11 +24,11 @@ class NoFurtherValidation(Exception):
 
 @enforce.runtime_validation
 class SamlEdValidator:
-    def __init__(self, policystore: PolicyStore) -> None:
-        if not isinstance(policystore, PolicyStore):
-            raise Exception('create SamlEdValidator requires PolicyStore')
+    def __init__(self, policydict: PolicyDict) -> None:
+        if not isinstance(policydict, PolicyDict):
+            raise Exception('create SamlEdValidator requires PolicyDict')
         self._reset_validation_result()
-        self.policystore = policystore
+        self.policydict = policydict
         self.ed_str = ''
         self.schematron_ok = None
         self.certcheck_ok = None
@@ -82,8 +82,8 @@ class SamlEdValidator:
             testid: bool = None) -> None:
         self.testid = testid
         self._reset_validation_result()
-        if not getattr(self, 'policydir', False):
-            self.policydir = self.policystore.get_policydir()
+        if not getattr(self, 'policydict', False):
+            self.policydict = self.policydict.get_policydict()
         try:
             self._validate_parse_xml(ed_str_new, ed_path_new)
             self._create_tempfile_from_edstr()
@@ -119,7 +119,7 @@ class SamlEdValidator:
 
     def _validate_instantiate_ed(self) -> None:
         try:
-            self.ed = SAMLEntityDescriptorPVP(self.fd.name, self.policystore)
+            self.ed = SAMLEntityDescriptorPVP(self.fd.name, self.policydict)
         except(PVZDuserexception) as e:
             self.val_mesg_dict['Parse XML'] = self._format_val_msg(e)
             raise NoFurtherValidation
@@ -168,11 +168,11 @@ class SamlEdValidator:
                 self.val_mesg_dict['Hostname'] = 'Cannot authorize: no hostname found when URL-parsing entityID'
                 raise NoFurtherValidation
             try:
-                org_ids = self.policystore.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
-                allowedDomains = self.policystore.getAllowedNamespacesForOrgs(org_ids)
+                org_ids = self.policydict.get_orgids_for_signer(xml_sig_verifyer_response.signer_cert_pem)
+                allowedDomains = self.policydict.getAllowedNamespacesForOrgs(org_ids)
                 self.ed.validateDomainNames(allowedDomains)
-                self.orgid = self.policystore.get_orgid(self.ed.get_entityid_hostname())
-                self.orgcn = self.policystore.get_orgcn(self.orgid)
+                self.orgid = self.policydict.get_orgid(self.ed.get_entityid_hostname())
+                self.orgcn = self.policydict.get_orgcn(self.orgid)
                 self.authz_ok = True
             except(PVZDuserexception) as e:
                 self.authz_ok = False

@@ -1,10 +1,10 @@
 import json
 from os.path import join as opj
 import pytest
-from PVZDpy.policystore import OrgDict, PolicyStore
+from PVZDpy.policydict import OrgDict, PolicyDict
 from PVZDpy.tests.common_fixtures import *
 
-path_prefix_testin = opj('testdata', 'policystore')
+path_prefix_testin = opj('testdata', 'policydict')
 
 def assert_equal(expected, actual, fn=''):
     # workaround because pycharm does not display the full string (despite pytest -vv etc)
@@ -71,19 +71,19 @@ def test_get_namesp_for_fqdn():
     ]
     fqdn1 = 'idp.identinetics.com'
     expected_result1 = '*.identinetics.com'
-    assert expected_result1 == PolicyStore.get_namesp_for_fqdn(fqdn1, allowed_namespaces)
+    assert expected_result1 == PolicyDict.get_namesp_for_fqdn(fqdn1, allowed_namespaces)
     fqdn2 = 'idp.iam.identinetics.com'
     expected_result2 = None  # wildcard MUST NOT match subdomains
-    assert expected_result2 == PolicyStore.get_namesp_for_fqdn(fqdn2, allowed_namespaces)
+    assert expected_result2 == PolicyDict.get_namesp_for_fqdn(fqdn2, allowed_namespaces)
     fqdn3 = 'sp.somenew.org'
     expected_result3 = fqdn3
-    assert expected_result3 == PolicyStore.get_namesp_for_fqdn(fqdn3, allowed_namespaces)
+    assert expected_result3 == PolicyDict.get_namesp_for_fqdn(fqdn3, allowed_namespaces)
     fqdn4 = 'idp.some.net'
     expected_result4 = None
-    assert expected_result4 == PolicyStore.get_namesp_for_fqdn(fqdn4, allowed_namespaces)
+    assert expected_result4 == PolicyDict.get_namesp_for_fqdn(fqdn4, allowed_namespaces)
     fqdn5 = 'idp.some.net'
     expected_result5 = None
-    assert expected_result5 == PolicyStore.get_namesp_for_fqdn(fqdn5, {})
+    assert expected_result5 == PolicyDict.get_namesp_for_fqdn(fqdn5, {})
 
 
 def test_get_orgids_for_signer(policystore1, signerCert7):

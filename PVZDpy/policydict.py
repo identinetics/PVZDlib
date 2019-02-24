@@ -22,24 +22,24 @@ class OrgDict:
         return gvouid in self._orgs.keys()
 
 
-class PolicyStore:
+class PolicyDict:
     ''' provide high-level API to policy store '''
-    def __init__(self, test_policydir: dict=None):
-        if test_policydir:
-            self._policydir = test_policydir
+    def __init__(self, test_policydict: dict=None):
+        if test_policydict:
+            self._policydict = test_policydict
         else:
             aodsListHandler = AodsListHandler()
-            self._policydir = aodsListHandler.read()
+            self._policydict = aodsListHandler.read()
 
     def getAllowedNamespacesForOrgs(self, org_ids: list) -> list:
         allowedDomains = []
-        for dn in self._policydir["domain"].keys():
-            if self._policydir["domain"][dn][0] in org_ids:
+        for dn in self._policydict["domain"].keys():
+            if self._policydict["domain"][dn][0] in org_ids:
                 allowedDomains.append(dn)
         return allowedDomains
 
     def get_issuers(self):
-        return self._policydir["issuer"]
+        return self._policydict["issuer"]
 
     @staticmethod
     def get_namesp_for_fqdn(fqdn: str, allowed_namespaces: list) -> str:
@@ -54,14 +54,14 @@ class PolicyStore:
 
     def get_orgcn(self, orgid) -> str:
         try:
-            return self._policydir["organization"].get(orgid)[0]
+            return self._policydict["organization"].get(orgid)[0]
         except Exception:
             return ''
 
     def get_orgid(self, fqdn) -> str:
-        allowed_namespaces = list(self._policydir["domain"].keys())
+        allowed_namespaces = list(self._policydict["domain"].keys())
         namespace = self.get_namesp_for_fqdn(fqdn, allowed_namespaces)
-        domain_rec = self._policydir["domain"].get(namespace)
+        domain_rec = self._policydict["domain"].get(namespace)
         if domain_rec:
             orgid = domain_rec[0]
             return orgid
@@ -69,7 +69,7 @@ class PolicyStore:
             return None
 
     def get_all_orgids(self) -> list:
-        org_recs = self._policydir["organization"]
+        org_recs = self._policydict["organization"]
         return org_recs
 
     def get_org_sync_changelist(self, orgs: OrgDict) -> PolicyChangeList:
@@ -98,29 +98,29 @@ class PolicyStore:
         return org_changelist
 
     def get_issuers(self):
-        return self._policydir["issuer"]
+        return self._policydict["issuer"]
 
     def get_orgids_for_signer(self, signerCert) -> list:
         """ return associated organizations for signer.
             The paths is signer-cert -> portaladmin -> [orgid]
         """
         try:
-            org_ids = self._policydir["userprivilege"]['{cert}' + signerCert][0]
+            org_ids = self._policydict["userprivilege"]['{cert}' + signerCert][0]
         except KeyError:
             raise UnauthorizedSignerError('Signer certificate not found in policy directory')
         return org_ids
 
-    def get_policydir(self) -> dict:
-        return self._policydir
+    def get_policydict(self) -> dict:
+        return self._policydict
 
     def get_registered_namespaces(self) -> list:
-        return sorted(list(self._policydir["domain"].keys()))
+        return sorted(list(self._policydict["domain"].keys()))
 
     def get_registered_namespace_objs(self) -> list:
-        return self._policydir["domain"]
+        return self._policydict["domain"]
 
     def get_revoked_certs(self) -> list:
-        return sorted(list(self._policydir["revocation"].keys()))
+        return sorted(list(self._policydict["revocation"].keys()))
 
     def get_userprivileges(self):
-        return self._policydir["userprivilege"]
+        return self._policydict["userprivilege"]
