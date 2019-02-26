@@ -94,4 +94,6 @@ class AodsRecord:
         return [digest_str] + aodsrec_list[1:]
 
     def __str__(self) -> str:
-        return str(self.seq or '') + ' ' + str(self.hash or '')
+        op = 'del' if self.deleteflag else 'add'
+        cf = ', '.join(self.contentfields)
+        return str(self.seq or '') + ' ' + str(self.hash or '') + f" {op} {cf}"
