@@ -2,6 +2,7 @@ import lxml.etree
 import OpenSSL.crypto
 import tempfile
 import enforce
+enforce.config({'enabled': True, 'mode': 'covariant'})
 from PVZDpy.policydict import PolicyDict
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import InputValueError, PVZDuserexception
@@ -15,7 +16,6 @@ from PVZDpy.xy509cert import XY509cert
     but str from the database
 """
 
-enforce.config({'enabled': True, 'mode': 'covariant'})
 
 
 class NoFurtherValidation(Exception):

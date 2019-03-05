@@ -26,7 +26,11 @@ class PVZDlibConfigAbstract():
     def get_config() -> GenericConfig:  # noqa F821
         if 'PVZDLIB_CONFIG_MODULE' in os.environ:
             path = Path(os.environ["PVZDLIB_CONFIG_MODULE"])
-            if path.is_file():
+            if os.environ["PVZDLIB_CONFIG_MODULE"] == 'default':
+                import PVZDpy.config.pvzdlib_config_default
+                app_config = PVZDpy.config.pvzdlib_config_default.PVZDlibConfig()
+                return app_config.config['confkey']
+            elif path.is_file():
                 spec = importlib.util.spec_from_file_location("config", path)
                 config = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(config)
@@ -35,6 +39,4 @@ class PVZDlibConfigAbstract():
             else:
                 raise Exception(f"File specified by PVZDLIB_CONFIG_MODULE does not exist: {path}")
         else:
-            import PVZDpy.config.pvzdlib_config_default
-            app_config = PVZDpy.config.pvzdlib_config_default.PVZDlibConfig()
-            return app_config.config['confkey']
+            raise Exception(f"PVZDLIB_CONFIG_MODULE not set")
