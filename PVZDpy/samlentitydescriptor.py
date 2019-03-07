@@ -98,9 +98,10 @@ class SAMLEntityDescriptor:
         if tree.getroot().tag == XMLNS_MD_PREFIX + 'EntityDescriptor':
             return tree
         elif tree.getroot().tag == XMLNS_MD_PREFIX + 'EntitiesDescriptor':
-            if len(tree.getroot()) == 1:
+            entity_count = len(tree.findall(XMLNS_MD_PREFIX + 'EntityDescriptor'))
+            if entity_count == 1:
                 return lxml.etree.ElementTree(tree.getroot()[0])
-            elif len(tree.getroot()) > 1:
+            elif entity_count > 1:
                 raise MultipleEntitiesNotAllowed
             else:
                 raise InputValueError('Missing md:EntityDescriptor')
