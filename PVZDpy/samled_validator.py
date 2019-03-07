@@ -78,7 +78,8 @@ class SamlEdValidator:
             self,
             ed_str_new: str = '',
             ed_path_new: str = '',
-            sigval: bool = True,
+            portaladmin_sigval: bool = True,
+            keydesc_certval: bool = True,
             testid: bool = None) -> None:
         self.testid = testid
         self._reset_validation_result()
@@ -92,10 +93,13 @@ class SamlEdValidator:
             self.entityID = self.ed.get_entityid()
             self._validate_saml_profile()
             self.deletionRequest = self.ed.isDeletionRequest()
-            self._validate_certcheck()
+            if keydesc_certval:
+                self._validate_keydesc_certs()
+            else:
+                self.certcheck_ok = True
             self.content_val_ok = self.schematron_ok and self.certcheck_ok
             self._validate_is_registered_namespace()
-            if sigval:
+            if portaladmin_sigval:
                 self._validate_authz()
             self._discard_tempfile()
         except NoFurtherValidation:
@@ -142,7 +146,7 @@ class SamlEdValidator:
             self.schematron_ok = False
             self.val_mesg_dict['Validate profile'] = self._format_val_msg(e)
 
-    def _validate_certcheck(self) -> None:
+    def _validate_keydesc_certs(self) -> None:
         try:
             if self.ed.isDeletionRequest():
                 self.certcheck_ok = True

@@ -29,7 +29,7 @@ def ed_path_test_expected(file_index: int, test_index: int):
 
 def run_test_with_edpath(file_index: int, policystore, sigval=False, test_index=None):
     ed = SamlEdValidator(policystore)
-    ed.validate_entitydescriptor(ed_path_new=ed_path_testin(file_index), sigval=sigval)
+    ed.validate_entitydescriptor(ed_path_new=ed_path_testin(file_index), portaladmin_sigval=sigval)
     ed_dict = ed.get_obj_as_dict()
     fn1_testout = ed_path_testout(file_index, test_index)
     fn2_testexp = ed_path_test_expected(file_index, test_index)
@@ -109,7 +109,7 @@ def test01_edval_edpath23(policydict1):
 def run_test_with_xmlstr(file_index: int, policystore, sigval=False, test_index=None):
     ed = SamlEdValidator(policystore)
     with open(ed_path_testin(file_index)) as fd:
-        ed.validate_entitydescriptor(ed_str_new=fd.read(), sigval=sigval)
+        ed.validate_entitydescriptor(ed_str_new=fd.read(), portaladmin_sigval=sigval)
     ed_dict = ed.get_obj_as_dict()
     fn1_testout = ed_path_testout(file_index, test_index)
     fn2_testexp = ed_path_test_expected(file_index, test_index)
