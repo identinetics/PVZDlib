@@ -1,6 +1,9 @@
 import json
 from os.path import join as opj
 import os
+import enforce
+enforce.config({'enabled': True, 'mode': 'covariant'})
+import pytest
 # from PVZDpy.constants import *
 from PVZDpy.samled_validator import SamlEdValidator
 from PVZDpy.tests.common_fixtures import ed_path, path_prefix_testin, path_prefix_testout
@@ -175,3 +178,19 @@ def test02_edval_str13(policydict1):
 
 def test03_edval_str_unsigned(policydict1):
     run_test_with_xmlstr(18, policydict1, sigval=True, test_index=3)
+
+#@enforce.runtime_validation
+@pytest.mark.recent
+def test04_normalize_ed(policydict1):
+    with open(ed_path_testin(24), 'rb') as fd:
+        ed_bytes: bytes = fd.read()
+        try:
+            ed_norm: bytes = SamlEdValidator.normalize_ed(ed_bytes)
+        except Exception as e:
+            raise e
+    fn1_testout = opj(path_prefix_testout, 'test04_ed24_norm.xml')
+    fn2_testexp = opj(path_prefix_testin, 'samled_val_expected_results/test04_ed24_norm.xml')
+    with open(fn1_testout, 'wb') as fd1:
+        fd1.write(ed_norm)
+        with open(fn2_testexp, 'rb') as fd2:
+            assert fd2.read() == ed_norm

@@ -3,6 +3,7 @@ import OpenSSL.crypto
 import tempfile
 import enforce
 enforce.config({'enabled': True, 'mode': 'covariant'})
+from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.policydict import PolicyDict
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import InputValueError, PVZDuserexception
@@ -22,7 +23,7 @@ class NoFurtherValidation(Exception):
     pass
 
 
-@enforce.runtime_validation
+#@enforce.runtime_validation
 class SamlEdValidator:
     def __init__(self, policydict: PolicyDict) -> None:
         if not isinstance(policydict, PolicyDict):
@@ -61,6 +62,30 @@ class SamlEdValidator:
             tree = lxml.etree.parse(ed_path)
             xml_str = lxml.etree.tostring(tree, encoding='utf-8', pretty_print=False)
             return xml_str.decode('utf-8')
+
+    @staticmethod
+    def _extract_saml_entitydescriptor(pvzdconf: dict, tree: lxml.etree.ElementTree) -> lxml.etree.ElementTree:
+        ''' Make EntityDescriptor the root element (useful if wrapped in EntitiesDescriptor) '''
+        xslt = lxml.etree.parse(pvzdconf.extract_samlentityescriptor_xslt)
+        transform = lxml.etree.XSLT(xslt)
+        return transform(tree)
+
+    @staticmethod
+    def _tidy_saml_entitydescriptor(pvzdconf: dict, tree: lxml.etree.ElementTree) -> lxml.etree.ElementTree:
+        xslt = lxml.etree.parse(pvzdconf.tidy_samlentityescriptor_xslt)
+        transform = lxml.etree.XSLT(xslt)
+        return transform(tree)
+
+    @staticmethod
+    def normalize_ed(xml: bytes) -> bytes:
+        ''' convert EntityDescriptor to UTF-8, move namespace declarations to the top,
+            remove EntitiesDescriptor root element,
+            remove signature/validuntil/cacheduration pretty-print '''
+        pvzdconf = PVZDlibConfigAbstract.get_config()
+        tree: lxml.etree.ElementTree = lxml.etree.fromstring(xml).getroottree()
+        tree: lxml.etree.ElementTree = SamlEdValidator._extract_saml_entitydescriptor(pvzdconf, tree)
+        tree: lxml.etree.ElementTree = SamlEdValidator._tidy_saml_entitydescriptor(pvzdconf, tree)
+        return lxml.etree.tostring(tree, encoding='UTF-8', xml_declaration=True, pretty_print=True)
 
     def _reset_validation_result(self) -> None:
         self.deletionRequest = None

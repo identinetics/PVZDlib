@@ -17,3 +17,5 @@ class PVZDlibConfig(PVZDlibConfigAbstract):
         config.xmlsign = True  # False: only for development to skip interactive signing
         config.debug = False
         config.projhome = Path('sys.argv[0]').parent.parent.parent.resolve()
+        config.extract_samlentityescriptor_xslt = str(Path(__file__).parent / 'extract_ed.xslt')
+        config.tidy_samlentityescriptor_xslt = str(Path(__file__).parent / 'tidy_samled.xslt')

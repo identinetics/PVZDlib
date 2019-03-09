@@ -47,6 +47,7 @@ def ed_path(file_index: int, dir=None):
         opj('signed_ed', '21_idp_urn_entityid.xml'),
         opj('signed_ed', '22_idp22_identinetics_valid.xml'),
         opj('unsigned_ed', '23_idp23_delete.xml'),
+        opj('unsigned_ed', '24_entities_utf16.xml'),
     )
     if dir:
         return opj(dir, path[file_index])
