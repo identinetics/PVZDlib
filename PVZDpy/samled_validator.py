@@ -4,6 +4,7 @@ import tempfile
 import enforce
 enforce.config({'enabled': True, 'mode': 'covariant'})
 from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
+from PVZDpy.constants import EXTRACT_SAMLED_XSLT, TIDY_SAMLED_XSLT
 from PVZDpy.policydict import PolicyDict
 from PVZDpy.samled_pvp import SAMLEntityDescriptorPVP
 from PVZDpy.userexceptions import InputValueError, PVZDuserexception
@@ -66,13 +67,13 @@ class SamlEdValidator:
     @staticmethod
     def _extract_saml_entitydescriptor(pvzdconf: dict, tree: lxml.etree.ElementTree) -> lxml.etree.ElementTree:
         ''' Make EntityDescriptor the root element (useful if wrapped in EntitiesDescriptor) '''
-        xslt = lxml.etree.parse(pvzdconf.extract_samlentityescriptor_xslt)
+        xslt = lxml.etree.parse(EXTRACT_SAMLED_XSLT)
         transform = lxml.etree.XSLT(xslt)
         return transform(tree)
 
     @staticmethod
     def _tidy_saml_entitydescriptor(pvzdconf: dict, tree: lxml.etree.ElementTree) -> lxml.etree.ElementTree:
-        xslt = lxml.etree.parse(pvzdconf.tidy_samlentityescriptor_xslt)
+        xslt = lxml.etree.parse(TIDY_SAMLED_XSLT)
         transform = lxml.etree.XSLT(xslt)
         return transform(tree)
 

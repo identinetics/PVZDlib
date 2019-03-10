@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 DATA_HEADER_B64BZIP = '{signed data format: base64(bzip2)}\n'
 
@@ -32,3 +33,6 @@ RECORDTYPES_MAXLEN = 0
 for r in RECORDTYPES:
     if len(r) > RECORDTYPES_MAXLEN:
         RECORDTYPES_MAXLEN = len(r)
+
+EXTRACT_SAMLED_XSLT= str(Path(__file__).parent / 'extract_ed.xslt')
+TIDY_SAMLED_XSLT = str(Path(__file__).parent / 'tidy_samled.xslt')
