@@ -4,10 +4,10 @@ import logging
 import requests
 import re
 # import socket
+from PVZDpy.config.pvzdlib_config_abstract import PVZDlibConfigAbstract
 from PVZDpy.constants import DATA_HEADER_B64BZIP
 from PVZDpy.get_seclay_request import get_seclay_request
 from PVZDpy.userexceptions import SecurityLayerCancelledError, ValidationError
-
 
 def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=None):
     ''' Create XAdES signature using AT Bürgerkarte/Security Layer
@@ -44,6 +44,9 @@ def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=No
             '-----------HTTP Request End -----------'
         )
         logging.debug(logmsg)
+        pvzdconf = PVZDlibConfigAbstract.get_config()
+        testout_path = pvzdconf.testout / 'cresigrequ.xml'
+        testout_path.write_text(logmsg)
         r = s.send(prepped)
     except requests.exceptions.ConnectionError as e:
         raise ValidationError("Cannot connect to security layer (MOCCA) to create a signature " + e.strerror)
@@ -61,6 +64,10 @@ def cre_signedxml_seclay(sig_data, sig_type='envelopingB64BZIP', sig_position=No
     # Strip xml root element (CreateXMLSignatureResponse), making disg:Signature the new root:
     # (keeping namespace prefixes - otherwise the signature would break. Therefore not using etree.)
     logging.debug('security layer create signature response:\n%s\n' % r.text)
+    testout_path = pvzdconf.testout / 'cresigresp.xml'
+    testout_path.write_text(r.text)
     r1 = re.sub(r'<sl:CreateXMLSignatureResponse [^>]*>', '', r.text)
     r2 = re.sub(r'</sl:CreateXMLSignatureResponse>', '', r1)
+    testout_path = pvzdconf.testout / 'signedxml.xml'
+    testout_path.write_text(r2)
     return r2
