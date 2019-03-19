@@ -14,7 +14,7 @@ class PVZDlibConfig(PVZDlibConfigAbstract):
         # Trusted Fedop Certificates: Always stored in filesystem
         config.trustedcertsdir = Path(__file__).parent.parent / 'tests/testdata/aodslisthandler/trustedcerts_rh'
 
-        config.xmlsign = True  # False: only for development to skip interactive signing
+        config.xmlsign = False  # False: only for development to skip interactive signing
         config.debug = False
         config.projhome = Path('sys.argv[0]').resolve().parent.parent
         config.testout = config.projhome / 'tests/testout/cresignedxml'  # remove this unless required for debugging
