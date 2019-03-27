@@ -1,0 +1,10 @@
+[
+{"content": ["organization", "org111", "Org"], "delete": false},
+{"content": ["organization", "org333", "Org"], "delete": false},
+{"content": ["organization", "org444", "Org"], "delete": false},
+{"content": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org111", "add ok"], "delete": false},
+{"content": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org333", "add ok"], "delete": false},
+{"content": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org444", "add ok"], "delete": false},
+{"content": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org111", "delete existing"], "delete": true},
+{"content": ["userprivilege", "{cert}Test key1 for aods list handler - not good for authN", "org333", "update existing"], "delete": false}
+]

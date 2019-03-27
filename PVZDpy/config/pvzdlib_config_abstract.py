@@ -26,7 +26,7 @@ class PVZDlibConfigAbstract():
     def get_config() -> GenericConfig:  # noqa F821
         if 'PVZDLIB_CONFIG_MODULE' in os.environ:
             path = Path(os.environ["PVZDLIB_CONFIG_MODULE"])
-            if os.environ["PVZDLIB_CONFIG_MODULE"] == 'default':
+            if os.environ["PVZDLIB_CONFIG_MODULE"] == 'DEFAULT':
                 import PVZDpy.config.pvzdlib_config_default
                 app_config = PVZDpy.config.pvzdlib_config_default.PVZDlibConfig()
                 return app_config.config['confkey']
